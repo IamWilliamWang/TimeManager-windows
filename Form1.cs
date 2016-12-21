@@ -42,18 +42,17 @@ namespace 关机小程序
             return process.StandardOutput.ReadToEnd();
         }
 
-        private void runShutdownCommand(Mode mode)
+        private void cancelShutdownCommand()
         {
-            if (mode == Mode.取消)
-                runCommand(Mode.取消, -1);
+            runShutdownCommand(Mode.取消, -1);
         }
 
-        private void runCommand(Mode mode, float seconds)
+        private void runShutdownCommand(Mode mode, float seconds)
         {
-            runCommand(mode, (int)seconds);
+            runShutdownCommand(mode, (int)seconds);
         }
 
-        private void runCommand(Mode mode, int seconds)
+        private void runShutdownCommand(Mode mode, int seconds)
         {
             String command = "shutdown ";
             switch (mode)
@@ -76,35 +75,48 @@ namespace 关机小程序
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            this.cancelShutdownCommand();
             switch (this.comboBoxMode.Text)
             {
                 case "关机":
-                    runCommand(Mode.关机, float.Parse(this.comboBoxTime.Text) * 60);
+                    float seconds = float.Parse(this.comboBoxTime.Text) * 60;
+                    if (seconds == 0.0) seconds = (float)3;
+                    runShutdownCommand(Mode.关机, seconds);
+                    if (seconds == 3.0)
+                    {
+                        MessageBox.Show("如为误点，请按确定", "调整为3秒后关机。");
+                        this.cancelShutdownCommand();
+                    }
                     break;
                 case "重启":
-                    runCommand(Mode.重启, float.Parse(this.comboBoxTime.Text) * 60);
+                    runShutdownCommand(Mode.重启, float.Parse(this.comboBoxTime.Text) * 60);
                     break;
             }
 
         }
-       
+
+        private void 确定button2_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("出现未知错误!","错误",MessageBoxButtons.OK,MessageBoxIcon.Error);
+        }
+
         private void 现在ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("现在要关机吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
-            runCommand(Mode.关机, 0);
+            runShutdownCommand(Mode.关机, 0);
             return;
         }
 
         private void HalfMinuteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            runCommand(Mode.关机, 30);
+            runShutdownCommand(Mode.关机, 30);
             return;
         }
 
         private void TenMinutesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            runCommand(Mode.关机, 600);
+            runShutdownCommand(Mode.关机, 600);
             return;
         }
 
@@ -113,7 +125,7 @@ namespace 关机小程序
             try
             {
                 float second = float.Parse(Interaction.InputBox("几分钟呢？", "关机时间选择", "", -1, -1)) * 60;
-                runCommand(Mode.关机, second);
+                runShutdownCommand(Mode.关机, second);
             }
             catch
             {
@@ -125,19 +137,19 @@ namespace 关机小程序
         {
             if (MessageBox.Show("现在要重启电脑吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
-            runCommand(Mode.重启, 0);
+            runShutdownCommand(Mode.重启, 0);
             return;
         }
 
         private void HalfMinuteToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            runCommand(Mode.重启, 30);
+            runShutdownCommand(Mode.重启, 30);
             return;
         }
 
         private void TenMinutesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            runCommand(Mode.重启, 600);
+            runShutdownCommand(Mode.重启, 600);
             return;
         }
 
@@ -145,7 +157,7 @@ namespace 关机小程序
         {
             try {
                 float second = float.Parse(Interaction.InputBox("几分钟：", "重启时间选择", "", -1, -1)) * 60;
-                runCommand(Mode.重启, second);
+                runShutdownCommand(Mode.重启, second);
             }
             catch
             {
@@ -155,7 +167,7 @@ namespace 关机小程序
 
         private void 取消指令ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            runShutdownCommand(Mode.取消);
+            this.cancelShutdownCommand();
             return;
         }
 
@@ -174,20 +186,11 @@ namespace 关机小程序
                 MessageBox.Show("失败！请使用管理员权限重启本程序");
                 return;
             }
-            MessageBox.Show("注册成功！");
+            MessageBox.Show("注册成功！开机"+minutes+"分钟后自动关机");
         }
 
         private void 销毁关机事件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                File.WriteAllText(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\autoshutdown.cmd", "");
-            }
-            catch
-            {
-                MessageBox.Show("失败！请使用管理员权限重启本程序");
-                return;
-            }
             system("del " + "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\autoshutdown.cmd\"");
             MessageBox.Show("销毁成功！");
         }
@@ -199,12 +202,18 @@ namespace 关机小程序
 
         private void 显现ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.ShowInTaskbar = true;
+            this.ShowInTaskbar = false;
         }
 
         private void 打开启动文件夹ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("Explorer.exe", @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\");
+        }
+
+        private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            system("copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\"");
+            MessageBox.Show("尝试完成");
         }
 
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
