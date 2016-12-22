@@ -1,81 +1,31 @@
 ﻿using Microsoft.VisualBasic;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using static 关机小程序.SystemCommand;
 
 namespace 关机小程序
 {
     public partial class Form1 : Form
     {
+        private static Form form1 = null;
+        public static Form getForm()
+        {
+            return form1;
+        }
         public Form1()
         {
             InitializeComponent();
+            form1 = this;
+
             for(int i=0;i<=60;i+=5)
                 this.comboBoxTime.Items.Add(i);
             comboBoxMode.SelectedIndex = 0;
-            
-        }
-
-        static String system(String command)
-        {
-            Process process = new Process();
-
-            process.StartInfo.FileName = "cmd";
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardInput = true;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.CreateNoWindow = true;
-
-            process.Start();
-            process.StandardInput.WriteLine(command);
-            process.StandardInput.WriteLine("exit");
-
-            return process.StandardOutput.ReadToEnd();
-        }
-
-        private void cancelShutdownCommand()
-        {
-            runShutdownCommand(Mode.取消, -1);
-        }
-
-        private void runShutdownCommand(Mode mode, float seconds)
-        {
-            runShutdownCommand(mode, (int)seconds);
-        }
-
-        private void runShutdownCommand(Mode mode, int seconds)
-        {
-            String command = "shutdown ";
-            switch (mode)
-            {
-                case Mode.关机:
-                    command += "-s -t " + seconds;
-                    break;
-                case Mode.重启:
-                    command += "-g -t " + seconds;
-                    break;
-                case Mode.取消:
-                    command += "-a";
-                    break;
-                default:
-                    MessageBox.Show("Error!");
-                    return;
-            }
-            system(command);
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            this.cancelShutdownCommand();
+            cancelShutdownCommand();
             switch (this.comboBoxMode.Text)
             {
                 case "关机":
@@ -85,7 +35,7 @@ namespace 关机小程序
                     if (seconds == 3.0)
                     {
                         MessageBox.Show("如为误点，请按确定", "调整为3秒后关机。");
-                        this.cancelShutdownCommand();
+                        cancelShutdownCommand();
                     }
                     break;
                 case "重启":
@@ -97,14 +47,31 @@ namespace 关机小程序
 
         private void 确定button2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("出现未知错误!","错误",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            int hoursRest;
+            int minutesRest;
+            int secondsRest;
+            int restTime_seconds;
+            hoursRest = this.dateTimePicker1.Value.Hour - DateTime.Now.Hour;
+            minutesRest = this.dateTimePicker1.Value.Minute - DateTime.Now.Minute;
+            secondsRest = this.dateTimePicker1.Value.Second - DateTime.Now.Second;
+
+            restTime_seconds = hoursRest * 3600 + minutesRest * 60 + secondsRest;
+
+            Boolean nextDay = false;
+            if (restTime_seconds <= 0)
+            {
+                restTime_seconds += 24 * 3600;
+                nextDay = true;
+            }
+            SystemCommand.runShutdownCommand(Mode.关机, restTime_seconds);
+            MessageBox.Show("将在"+(nextDay? "明日" : "今日")+this.dateTimePicker1.Value.ToLongTimeString()+"关机","离关机还剩"+ restTime_seconds+"秒", MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
 
         private void 现在ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("现在要关机吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
-            runShutdownCommand(Mode.关机, 0);
+            runShutdownCommand(Mode.关机, 1);
             return;
         }
 
@@ -167,7 +134,7 @@ namespace 关机小程序
 
         private void 取消指令ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.cancelShutdownCommand();
+            cancelShutdownCommand();
             return;
         }
 
@@ -212,15 +179,19 @@ namespace 关机小程序
 
         private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            system("copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\"");
+            system("copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"");
             MessageBox.Show("尝试完成");
+        }
+
+        private void 帮助ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            new FormHelp().Show();
         }
 
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
-
-        enum Mode { 取消, 关机, 重启 };
     }
 }

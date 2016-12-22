@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.应用AppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关机ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.现在ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HalfMinuteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,12 +60,11 @@
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.确定button2 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.应用AppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.contextMenuStripButtonOk.SuspendLayout();
             this.contextMenuStripMainForm.SuspendLayout();
-            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -80,6 +81,21 @@
             this.menuStrip1.Size = new System.Drawing.Size(292, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.应用AppToolStripMenuItem,
+            this.帮助ToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(153, 70);
+            // 
+            // 应用AppToolStripMenuItem
+            // 
+            this.应用AppToolStripMenuItem.Name = "应用AppToolStripMenuItem";
+            this.应用AppToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.应用AppToolStripMenuItem.Text = "应用App";
+            this.应用AppToolStripMenuItem.Click += new System.EventHandler(this.应用AppToolStripMenuItem_Click);
             // 
             // 关机ToolStripMenuItem
             // 
@@ -336,19 +352,12 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "指定时间关机";
             // 
-            // contextMenuStrip
+            // 帮助ToolStripMenuItem
             // 
-            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.应用AppToolStripMenuItem});
-            this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(125, 26);
-            // 
-            // 应用AppToolStripMenuItem
-            // 
-            this.应用AppToolStripMenuItem.Name = "应用AppToolStripMenuItem";
-            this.应用AppToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.应用AppToolStripMenuItem.Text = "应用App";
-            this.应用AppToolStripMenuItem.Click += new System.EventHandler(this.应用AppToolStripMenuItem_Click);
+            this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.帮助ToolStripMenuItem.Text = "帮助";
+            this.帮助ToolStripMenuItem.Click += new System.EventHandler(this.帮助ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -370,12 +379,12 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Opacity = 0.96D;
-            this.Text = "关机管理";
+            this.Text = "关机管理 1.3.1.0";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.contextMenuStripButtonOk.ResumeLayout(false);
             this.contextMenuStripMainForm.ResumeLayout(false);
-            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -414,6 +423,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem 应用AppToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
     }
 }
 
