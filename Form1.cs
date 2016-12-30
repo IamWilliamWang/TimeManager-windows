@@ -9,10 +9,13 @@ namespace 关机小程序
     public partial class Form1 : Form
     {
         private static Form form1 = null;
+        public static readonly String version="1.3.2.0";
+
         public static Form getForm()
         {
             return form1;
         }
+
         public Form1()
         {
             InitializeComponent();
@@ -63,6 +66,7 @@ namespace 关机小程序
                 restTime_seconds += 24 * 3600;
                 nextDay = true;
             }
+            SystemCommand.cancelShutdownCommand();
             SystemCommand.runShutdownCommand(Mode.关机, restTime_seconds);
             MessageBox.Show("将在"+(nextDay? "明日" : "今日")+this.dateTimePicker1.Value.ToLongTimeString()+"关机","离关机还剩"+ restTime_seconds+"秒", MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
@@ -71,18 +75,21 @@ namespace 关机小程序
         {
             if (MessageBox.Show("现在要关机吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
+            cancelShutdownCommand();
             runShutdownCommand(Mode.关机, 1);
             return;
         }
 
         private void HalfMinuteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            cancelShutdownCommand();
             runShutdownCommand(Mode.关机, 30);
             return;
         }
 
         private void TenMinutesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            cancelShutdownCommand();
             runShutdownCommand(Mode.关机, 600);
             return;
         }
@@ -146,10 +153,12 @@ namespace 关机小程序
                 MessageBox.Show("选择0分钟是危险行为！已阻止");
                 return;
             }
-            try {
+            try
+            {
                 File.WriteAllText(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\autoshutdown.cmd", "shutdown -s -t " + minutes * 60);
             }
-            catch {
+            catch
+            {
                 MessageBox.Show("失败！请使用管理员权限重启本程序");
                 return;
             }
@@ -164,7 +173,18 @@ namespace 关机小程序
 
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)
         {
-            this.Opacity = float.Parse(this.toolStripComboBox透明度.Text) / 60;
+            float opacity = 100;
+            try {
+                opacity = float.Parse(this.toolStripComboBox透明度.Text);
+            }
+            catch
+            {
+                this.toolStripComboBox透明度.Text = "100";
+            }
+            finally
+            {
+                this.Opacity = opacity / 100;
+            }
         }
 
         private void 显现ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -192,6 +212,11 @@ namespace 关机小程序
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void Form1_DoubleClick(object sender, EventArgs e)
+        {
+            this.开发者模式contextMenuStrip.Items[0].Enabled = true;
         }
     }
 }

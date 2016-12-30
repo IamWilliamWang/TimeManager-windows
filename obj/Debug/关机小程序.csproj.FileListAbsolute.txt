@@ -7,5 +7,4 @@ F:\Visual Studio 2015\关机小程序\bin\Debug\关机小程序.pdb
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.exe
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.pdb
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.exe.licenses
-F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.csprojResolveAssemblyReference.cache
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.FormHelp.resources
