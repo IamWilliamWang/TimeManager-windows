@@ -9,7 +9,7 @@ namespace 关机小程序
     public partial class Form1 : Form
     {
         private static Form form1 = null;
-        public static readonly String version="1.3.2.0";
+        public static readonly String version="1.3.2.1";
 
         public static Form getForm()
         {
@@ -33,13 +33,13 @@ namespace 关机小程序
             {
                 case "关机":
                     float seconds = float.Parse(this.comboBoxTime.Text) * 60;
-                    if (seconds == 0.0) seconds = (float)3;
+                    //if (seconds == 0.0) seconds = (float)3;
                     runShutdownCommand(Mode.关机, seconds);
-                    if (seconds == 3.0)
-                    {
-                        MessageBox.Show("如为误点，请按确定", "调整为3秒后关机。");
-                        cancelShutdownCommand();
-                    }
+                    //if (seconds == 3.0)
+                    //{
+                    //    MessageBox.Show("如为误点，请按确定", "调整为3秒后关机。");
+                    //    cancelShutdownCommand();
+                    //}
                     break;
                 case "重启":
                     runShutdownCommand(Mode.重启, float.Parse(this.comboBoxTime.Text) * 60);
@@ -76,7 +76,7 @@ namespace 关机小程序
             if (MessageBox.Show("现在要关机吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
             cancelShutdownCommand();
-            runShutdownCommand(Mode.关机, 1);
+            runShutdownCommand(Mode.关机, 0);
             return;
         }
 
@@ -147,7 +147,16 @@ namespace 关机小程序
 
         private void 注册关机事件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            float minutes = float.Parse(this.comboBoxTime.Text);
+
+            float? minutes = null;
+            try {
+                minutes = float.Parse(this.comboBoxTime.Text);
+            }
+            catch
+            {
+                MessageBox.Show("请输入正确的数据！");
+                return;
+            }
             if (minutes == 0)
             {
                 MessageBox.Show("选择0分钟是危险行为！已阻止");
