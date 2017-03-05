@@ -193,11 +193,13 @@
             // 
             this.comboBoxTime.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.comboBoxTime.FormattingEnabled = true;
+            this.comboBoxTime.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.comboBoxTime.Location = new System.Drawing.Point(90, 62);
             this.comboBoxTime.Name = "comboBoxTime";
             this.comboBoxTime.Size = new System.Drawing.Size(109, 22);
             this.comboBoxTime.TabIndex = 1;
             this.comboBoxTime.Text = "0";
+            this.comboBoxTime.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboBoxTime_KeyPress);
             // 
             // comboBoxMode
             // 
@@ -335,11 +337,13 @@
             // 
             this.dateTimePicker1.CustomFormat = "HH:mm:ss";
             this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker1.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.dateTimePicker1.Location = new System.Drawing.Point(90, 99);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.ShowUpDown = true;
             this.dateTimePicker1.Size = new System.Drawing.Size(109, 21);
             this.dateTimePicker1.TabIndex = 6;
+            this.dateTimePicker1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dateTimePicker1_KeyPress);
             // 
             // 确定button2
             // 
@@ -349,7 +353,7 @@
             this.确定button2.TabIndex = 7;
             this.确定button2.Text = "确定";
             this.确定button2.UseVisualStyleBackColor = true;
-            this.确定button2.Click += new System.EventHandler(this.确定button2_Click);
+            this.确定button2.Click += new System.EventHandler(this.button2OK_Click);
             // 
             // label3
             // 
@@ -380,7 +384,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Opacity = 0.96D;
-            this.Text = "关机管理 1.3.2.1";
+            this.Text = "关机管理 1.4.0";
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

@@ -29,26 +29,33 @@ namespace 关机小程序
         private void buttonOK_Click(object sender, EventArgs e)
         {
             cancelShutdownCommand();
-            switch (this.comboBoxMode.Text)
+            try
             {
-                case "关机":
-                    float seconds = float.Parse(this.comboBoxTime.Text) * 60;
-                    //if (seconds == 0.0) seconds = (float)3;
-                    runShutdownCommand(Mode.关机, seconds);
-                    //if (seconds == 3.0)
-                    //{
-                    //    MessageBox.Show("如为误点，请按确定", "调整为3秒后关机。");
-                    //    cancelShutdownCommand();
-                    //}
-                    break;
-                case "重启":
-                    runShutdownCommand(Mode.重启, float.Parse(this.comboBoxTime.Text) * 60);
-                    break;
+                switch (this.comboBoxMode.Text)
+                {
+                    case "关机":
+                        float seconds = float.Parse(this.comboBoxTime.Text) * 60;
+                        //if (seconds == 0.0) seconds = (float)3;
+                        runShutdownCommand(Mode.关机, seconds);
+                        //if (seconds == 3.0)
+                        //{
+                        //    MessageBox.Show("如为误点，请按确定", "调整为3秒后关机。");
+                        //    cancelShutdownCommand();
+                        //}
+                        break;
+                    case "重启":
+                        runShutdownCommand(Mode.重启, float.Parse(this.comboBoxTime.Text) * 60);
+                        break;
+                }
             }
-
+            catch (FormatException e1)
+            {
+                MessageBox.Show("请输入正确的数据！","错误警告",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
         }
 
-        private void 确定button2_Click(object sender, EventArgs e)
+        private void button2OK_Click(object sender, EventArgs e)
         {
             int hoursRest;
             int minutesRest;
@@ -103,7 +110,7 @@ namespace 关机小程序
             }
             catch
             {
-                MessageBox.Show("输入错误！");
+                MessageBox.Show("输入错误！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -135,7 +142,7 @@ namespace 关机小程序
             }
             catch
             {
-                MessageBox.Show("输入错误！");
+                MessageBox.Show("输入错误！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -154,12 +161,12 @@ namespace 关机小程序
             }
             catch
             {
-                MessageBox.Show("请输入正确的数据！");
+                MessageBox.Show("请输入正确的数据！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (minutes == 0)
             {
-                MessageBox.Show("选择0分钟是危险行为！已阻止");
+                MessageBox.Show("选择0分钟是危险行为！已阻止","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             try
@@ -168,16 +175,16 @@ namespace 关机小程序
             }
             catch
             {
-                MessageBox.Show("失败！请使用管理员权限重启本程序");
+                MessageBox.Show("失败！请使用管理员权限重启本程序","失败警示", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            MessageBox.Show("注册成功！开机"+minutes+"分钟后自动关机");
+            MessageBox.Show("注册成功！开机"+minutes+"分钟后自动关机","成功提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void 销毁关机事件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             system("del " + "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\autoshutdown.cmd\"");
-            MessageBox.Show("销毁成功！");
+            MessageBox.Show("销毁成功！","成功提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)
@@ -209,7 +216,7 @@ namespace 关机小程序
         private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
         {
             system("copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"");
-            MessageBox.Show("尝试完成");
+            MessageBox.Show("尝试完成","", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         private void 帮助ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -226,6 +233,26 @@ namespace 关机小程序
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
             this.开发者模式contextMenuStrip.Items[0].Enabled = true;
+        }
+
+        private void comboBoxTime_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\n' || e.KeyChar == '\r')
+                buttonOK_Click(sender, e);
+            else if (e.KeyChar == 'q')
+                this.取消指令ToolStripMenuItem_Click(sender, e);
+            else if (e.KeyChar == 27)
+                Application.Exit();
+        }
+
+        private void dateTimePicker1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\n' || e.KeyChar == '\r')
+                button2OK_Click(sender, e);
+            else if (e.KeyChar == 'q')
+                this.取消指令ToolStripMenuItem_Click(sender, e);
+            else if (e.KeyChar == 27)
+                Application.Exit();
         }
     }
 }
