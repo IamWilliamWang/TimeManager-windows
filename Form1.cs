@@ -9,7 +9,7 @@ namespace 关机小程序
     public partial class Form1 : Form
     {
         private static Form form1 = null;
-        public static readonly String version="1.3.2.1";
+        //public static readonly String version="1.4.0";
 
         public static Form getForm()
         {
@@ -28,6 +28,9 @@ namespace 关机小程序
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            if (this.记录关机时间checkBox.Checked)
+                SqlServerResult.记录关机事件();
+
             cancelShutdownCommand();
             try
             {
@@ -50,13 +53,17 @@ namespace 关机小程序
             }
             catch (FormatException e1)
             {
-                MessageBox.Show("请输入正确的数据！","错误警告",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show("请输入正确的数据！", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.comboBoxTime.Text = "0";
                 return;
             }
         }
 
         private void button2OK_Click(object sender, EventArgs e)
         {
+            if (this.记录关机时间checkBox.Checked)
+                SqlServerResult.记录关机事件();
+
             int hoursRest;
             int minutesRest;
             int secondsRest;
@@ -75,7 +82,7 @@ namespace 关机小程序
             }
             SystemCommand.cancelShutdownCommand();
             SystemCommand.runShutdownCommand(Mode.关机, restTime_seconds);
-            MessageBox.Show("将在"+(nextDay? "明日" : "今日")+this.dateTimePicker1.Value.ToLongTimeString()+"关机","离关机还剩"+ restTime_seconds+"秒", MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show("将在" + (nextDay ? "明日" : "今日") + this.dateTimePicker1.Value.ToLongTimeString() + "关机", "离关机还剩" + restTime_seconds + "秒", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void 现在ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -114,37 +121,37 @@ namespace 关机小程序
             }
         }
 
-        private void 现在ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("现在要重启电脑吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-                return;
-            runShutdownCommand(Mode.重启, 0);
-            return;
-        }
+        //private void 现在ToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    if (MessageBox.Show("现在要重启电脑吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+        //        return;
+        //    runShutdownCommand(Mode.重启, 0);
+        //    return;
+        //}
 
-        private void HalfMinuteToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            runShutdownCommand(Mode.重启, 30);
-            return;
-        }
+        //private void HalfMinuteToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    runShutdownCommand(Mode.重启, 30);
+        //    return;
+        //}
 
-        private void TenMinutesToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            runShutdownCommand(Mode.重启, 600);
-            return;
-        }
+        //private void TenMinutesToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    runShutdownCommand(Mode.重启, 600);
+        //    return;
+        //}
 
-        private void 自定义ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            try {
-                float second = float.Parse(Interaction.InputBox("几分钟：", "重启时间选择", "", -1, -1)) * 60;
-                runShutdownCommand(Mode.重启, second);
-            }
-            catch
-            {
-                MessageBox.Show("输入错误！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        //private void 自定义ToolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+        //    try {
+        //        float second = float.Parse(Interaction.InputBox("几分钟：", "重启时间选择", "", -1, -1)) * 60;
+        //        runShutdownCommand(Mode.重启, second);
+        //    }
+        //    catch
+        //    {
+        //        MessageBox.Show("输入错误！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
         private void 取消指令ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -253,6 +260,12 @@ namespace 关机小程序
                 this.取消指令ToolStripMenuItem_Click(sender, e);
             else if (e.KeyChar == 27)
                 Application.Exit();
+        }
+
+        private void 管理主窗口ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form manager = new SqlServerResult();
+            manager.ShowDialog();
         }
     }
 }
