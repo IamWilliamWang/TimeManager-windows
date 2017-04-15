@@ -43,6 +43,7 @@
             this.插入一条开机记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.删除所有记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关闭此窗口ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.删除最后一条记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource1)).BeginInit();
@@ -130,7 +131,8 @@
             // 
             this.管理员选项ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.插入一条开机记录ToolStripMenuItem,
-            this.删除所有记录ToolStripMenuItem});
+            this.删除所有记录ToolStripMenuItem,
+            this.删除最后一条记录ToolStripMenuItem});
             this.管理员选项ToolStripMenuItem.Name = "管理员选项ToolStripMenuItem";
             this.管理员选项ToolStripMenuItem.Size = new System.Drawing.Size(80, 21);
             this.管理员选项ToolStripMenuItem.Text = "管理员选项";
@@ -155,6 +157,13 @@
             this.关闭此窗口ToolStripMenuItem.Size = new System.Drawing.Size(80, 21);
             this.关闭此窗口ToolStripMenuItem.Text = "关闭此窗口";
             this.关闭此窗口ToolStripMenuItem.Click += new System.EventHandler(this.关闭此窗口ToolStripMenuItem_Click);
+            // 
+            // 删除最后一条记录ToolStripMenuItem
+            // 
+            this.删除最后一条记录ToolStripMenuItem.Name = "删除最后一条记录ToolStripMenuItem";
+            this.删除最后一条记录ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.删除最后一条记录ToolStripMenuItem.Text = "删除最后一条记录";
+            this.删除最后一条记录ToolStripMenuItem.Click += new System.EventHandler(this.删除最后一条记录ToolStripMenuItem_Click);
             // 
             // SqlServerResult
             // 
@@ -197,5 +206,6 @@
         private System.Windows.Forms.ToolStripMenuItem 插入一条开机记录ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 删除所有记录ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 关闭此窗口ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 删除最后一条记录ToolStripMenuItem;
     }
 }

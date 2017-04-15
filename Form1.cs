@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using static 关机小程序.SystemCommand;
+using static 关机小程序.ShutdownCommand;
 
 namespace 关机小程序
 {
@@ -80,8 +80,8 @@ namespace 关机小程序
                 restTime_seconds += 24 * 3600;
                 nextDay = true;
             }
-            SystemCommand.cancelShutdownCommand();
-            SystemCommand.runShutdownCommand(Mode.关机, restTime_seconds);
+            ShutdownCommand.cancelShutdownCommand();
+            ShutdownCommand.runShutdownCommand(Mode.关机, restTime_seconds);
             MessageBox.Show("将在" + (nextDay ? "明日" : "今日") + this.dateTimePicker1.Value.ToLongTimeString() + "关机", "离关机还剩" + restTime_seconds + "秒", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -190,7 +190,7 @@ namespace 关机小程序
 
         private void 销毁关机事件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            system("del " + "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\autoshutdown.cmd\"");
+            SystemCommand.ExcuteCommand("del " + "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\autoshutdown.cmd\"");
             MessageBox.Show("销毁成功！","成功提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -222,7 +222,7 @@ namespace 关机小程序
 
         private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            system("copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"");
+            SystemCommand.ExcuteCommand("copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"");
             MessageBox.Show("尝试完成","", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 

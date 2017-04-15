@@ -49,13 +49,22 @@ namespace 关机小程序
 
         public static void 记录关机事件()
         {
+            记录关机事件("'00:00:00'");
+        }
+
+        private static void 记录关机事件(string 关机倒计时字段)//Doesn't work yet
+        {
+            if (关机倒计时字段.Contains("'") == false)
+            {
+                关机倒计时字段 = "'" + 关机倒计时字段 + "'";
+            }
             //DateTime now = DateTime.Now;
             //String sql = "UPDATE " + SqlServerResult.TableName + " "
             //            + "SET 关机时间=\'" + DateTime.Now + "\' "
             //            + "WHERE 序号=" + get最大序号() + " ";
             String sql = 
                 "UPDATE [Table] "+
-                "SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 "+
+                "SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 + "+关机倒计时字段+" "+
                 "WHERE 序号 in "+
                 "(SELECT MAX(序号) "+
                 "FROM[Table]) "+
@@ -171,13 +180,31 @@ namespace 关机小程序
 
         private void 禁止开机记录时间ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SystemCommand.system("del \"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\TimeSaver.exe\"");
+            SystemCommand.ExcuteCommand("del \"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\TimeSaver.exe\"");
             MessageBox.Show("成功！！");
         }
 
         private void 关闭此窗口ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void 删除最后一条记录ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string connStr = Properties.Settings.Default.TimeDatabaseConnectionString;//连接字符串
+            String sql= "DELETE "+
+                        "FROM[Table] "+
+                        "WHERE 序号 = ( "+
+                        "SELECT MAX(序号) "+
+                        "FROM[Table])";
+            SqlConnection conn = new SqlConnection(connStr);//建立到数据库的连接
+            adapter = new SqlDataAdapter(sql, conn);
+            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            table = new DataTable();
+            adapter.Fill(table);
+            dataGridView1.DataSource = table;
+
+            MessageBox.Show("Success!");
         }
     }   
 }

@@ -380,7 +380,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Opacity = 0.96D;
-            this.Text = "关机管理 2.2.0";
+            this.Text = "关机管理 2.3.0 PublicBeta1";
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

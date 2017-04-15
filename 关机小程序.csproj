@@ -47,6 +47,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
@@ -99,6 +102,7 @@
     <Compile Include="SqlServerResult.Designer.cs">
       <DependentUpon>SqlServerResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="ShutdownCommand.cs" />
     <Compile Include="SystemCommand.cs" />
     <Compile Include="TimeDatabaseDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
