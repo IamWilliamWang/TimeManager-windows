@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.开发者模式contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.应用AppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -363,6 +364,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(300, 143);
             this.ContextMenuStrip = this.主界面contextMenuStrip;
             this.Controls.Add(this.记录关机时间checkBox);
@@ -376,11 +378,12 @@
             this.Controls.Add(this.comboBoxTime);
             this.Controls.Add(this.menuStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Opacity = 0.96D;
-            this.Text = "关机管理 2.3.0 PublicBeta1";
+            this.Text = "关机管理 2.3.0";
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

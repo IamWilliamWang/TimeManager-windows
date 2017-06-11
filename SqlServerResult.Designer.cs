@@ -42,8 +42,10 @@
             this.管理员选项ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.插入一条开机记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.删除所有记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关闭此窗口ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.删除最后一条记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.储存表格至excelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.关闭此窗口ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.开始统计结算ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource1)).BeginInit();
@@ -132,7 +134,9 @@
             this.管理员选项ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.插入一条开机记录ToolStripMenuItem,
             this.删除所有记录ToolStripMenuItem,
-            this.删除最后一条记录ToolStripMenuItem});
+            this.删除最后一条记录ToolStripMenuItem,
+            this.开始统计结算ToolStripMenuItem,
+            this.储存表格至excelToolStripMenuItem});
             this.管理员选项ToolStripMenuItem.Name = "管理员选项ToolStripMenuItem";
             this.管理员选项ToolStripMenuItem.Size = new System.Drawing.Size(80, 21);
             this.管理员选项ToolStripMenuItem.Text = "管理员选项";
@@ -151,6 +155,20 @@
             this.删除所有记录ToolStripMenuItem.Text = "删除所有记录";
             this.删除所有记录ToolStripMenuItem.Click += new System.EventHandler(this.删除所有记录ToolStripMenuItem_Click);
             // 
+            // 删除最后一条记录ToolStripMenuItem
+            // 
+            this.删除最后一条记录ToolStripMenuItem.Name = "删除最后一条记录ToolStripMenuItem";
+            this.删除最后一条记录ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.删除最后一条记录ToolStripMenuItem.Text = "删除最后一条记录";
+            this.删除最后一条记录ToolStripMenuItem.Click += new System.EventHandler(this.删除最后一条记录ToolStripMenuItem_Click);
+            // 
+            // 储存表格至excelToolStripMenuItem
+            // 
+            this.储存表格至excelToolStripMenuItem.Name = "储存表格至excelToolStripMenuItem";
+            this.储存表格至excelToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.储存表格至excelToolStripMenuItem.Text = "储存表格至excel";
+            this.储存表格至excelToolStripMenuItem.Click += new System.EventHandler(this.储存表格至excelToolStripMenuItem_Click);
+            // 
             // 关闭此窗口ToolStripMenuItem
             // 
             this.关闭此窗口ToolStripMenuItem.Name = "关闭此窗口ToolStripMenuItem";
@@ -158,12 +176,12 @@
             this.关闭此窗口ToolStripMenuItem.Text = "关闭此窗口";
             this.关闭此窗口ToolStripMenuItem.Click += new System.EventHandler(this.关闭此窗口ToolStripMenuItem_Click);
             // 
-            // 删除最后一条记录ToolStripMenuItem
+            // 开始统计结算ToolStripMenuItem
             // 
-            this.删除最后一条记录ToolStripMenuItem.Name = "删除最后一条记录ToolStripMenuItem";
-            this.删除最后一条记录ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.删除最后一条记录ToolStripMenuItem.Text = "删除最后一条记录";
-            this.删除最后一条记录ToolStripMenuItem.Click += new System.EventHandler(this.删除最后一条记录ToolStripMenuItem_Click);
+            this.开始统计结算ToolStripMenuItem.Name = "开始统计结算ToolStripMenuItem";
+            this.开始统计结算ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.开始统计结算ToolStripMenuItem.Text = "开始统计结算";
+            this.开始统计结算ToolStripMenuItem.Click += new System.EventHandler(this.开始统计结算ToolStripMenuItem_Click);
             // 
             // SqlServerResult
             // 
@@ -207,5 +225,7 @@
         private System.Windows.Forms.ToolStripMenuItem 删除所有记录ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 关闭此窗口ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 删除最后一条记录ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 储存表格至excelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 开始统计结算ToolStripMenuItem;
     }
 }

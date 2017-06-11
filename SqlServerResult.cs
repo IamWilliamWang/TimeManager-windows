@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -67,22 +68,7 @@ namespace 关机小程序
                 "SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 + "+关机倒计时字段+" "+
                 "WHERE 序号 in "+
                 "(SELECT MAX(序号) "+
-                "FROM[Table]) "+
-                " "+
-                "UPDATE[Table] " +
-                "SET 当天使用次数 = ("+
-                "SELECT COUNT(*) "+
-                "FROM[Table] AS FatherTable "+
-                "WHERE EXISTS("+
-                "SELECT * "+
-                "FROM[Table] "+
-                "WHERE 序号 = (SELECT MAX(序号) FROM[Table]) "+
-                "AND YEAR([Table].开机时间) = YEAR([FatherTable].开机时间) "+
-                "AND MONTH([Table].开机时间) = MONTH([FatherTable].开机时间) "+
-                "AND DAY([Table].开机时间) = DAY([FatherTable].开机时间))) "+
-                "WHERE 序号 = ("+
-                "SELECT MAX(序号) "+
-                "FROM[Table])";
+                "FROM[Table]) ";
 
             String connString = Properties.Settings.Default.TimeDatabaseConnectionString;
             SqlConnection conn = new SqlConnection(connString);
@@ -91,6 +77,43 @@ namespace 关机小程序
             cmd.ExecuteNonQuery();
             conn.Close();
         }
+
+        public static void 记录结算()
+        {
+            if(MessageBox.Show("结算可能会持续数十秒，是否继续？","结算使用记录",MessageBoxButtons.YesNo,MessageBoxIcon.Information)==DialogResult.No)
+            {
+                return;
+            }
+            String sql = 
+                "declare @i int " +
+                "set @i = (SELECT MAX(序号) FROM[Table]) " +
+                "while @i > 0 " +
+                "begin " +
+                "    UPDATE[Table] " +
+                "    SET 当天使用次数 = ( " +
+                "        SELECT COUNT(*) " +
+                "        FROM[Table] AS FatherTable " +
+                "        WHERE EXISTS( " +
+                "            SELECT * " +
+                "            FROM[Table] " +
+                "            WHERE 序号 = (@i) " +
+                "                AND YEAR([Table].开机时间) = YEAR([FatherTable].开机时间) " +
+                "                AND MONTH([Table].开机时间) = MONTH([FatherTable].开机时间) " +
+                "                AND DAY([Table].开机时间) = DAY([FatherTable].开机时间) " +
+                "            ) " +
+                "        ) " +
+                "    WHERE 序号 = (@i) " +
+                "    set @i = @i - 1 " +
+                "end ";
+
+            String connString = Properties.Settings.Default.TimeDatabaseConnectionString;
+            SqlConnection conn = new SqlConnection(connString);
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            conn.Open();
+            cmd.ExecuteNonQuery();
+            conn.Close();
+        }
+                
 
         private void 删除所有记录ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -206,5 +229,58 @@ namespace 关机小程序
 
             MessageBox.Show("Success!");
         }
-    }   
+
+        private void 储存表格至excelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("即将输出所有内容到EXCEL表格中，期间可能要等待数十秒。是否继续？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                return;
+            if (!this.DataSetToExcel(true))
+                MessageBox.Show("输出失败！");
+        }
+
+        public bool DataSetToExcel(bool isShowExcle)
+        {
+            DataTable dataTable = table;
+            int rowNumber = dataTable.Rows.Count;
+            int columnNumber = dataTable.Columns.Count;
+            String stringBuffer = "";
+
+            if (rowNumber == 0)
+            {
+                MessageBox.Show("没有任何数据可以导入到Excel文件！");
+                return false;
+            }
+
+            //建立Excel对象 
+            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+            excel.Application.Workbooks.Add(true);
+            excel.Visible = isShowExcle;//是否打开该Excel文件 
+
+            //填充数据 
+            for (int i = 0; i < rowNumber; i++)
+            {
+                for (int j = 0; j < columnNumber; j++)
+                {
+                    stringBuffer += dataTable.Rows[i].ItemArray[j].ToString();
+                    if (j < columnNumber - 1)
+                    {
+                        stringBuffer += "\t";
+                    }
+                }
+                stringBuffer += "\n";
+            }
+            Clipboard.Clear();
+            Clipboard.SetDataObject(stringBuffer);
+            ((Microsoft.Office.Interop.Excel.Range)excel.Cells[1, 1]).Select();
+            ((Microsoft.Office.Interop.Excel.Worksheet)excel.ActiveWorkbook.ActiveSheet).Paste(Missing.Value, Missing.Value);
+            Clipboard.Clear();
+
+            return true;
+        }
+
+        private void 开始统计结算ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SqlServerResult.记录结算();
+        }
+    }
 }

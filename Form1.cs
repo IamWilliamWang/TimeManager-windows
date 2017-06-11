@@ -26,6 +26,18 @@ namespace 关机小程序
             comboBoxMode.SelectedIndex = 0;
         }
 
+        public Form1(string fastMode)
+        {
+            InitializeComponent();
+            form1 = this;
+
+            for (int i = 0; i <= 60; i += 5)
+                this.comboBoxTime.Items.Add(i);
+            comboBoxMode.SelectedIndex = 0;
+
+            buttonOK_Click(new object(),new EventArgs());
+        }
+
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (this.记录关机时间checkBox.Checked)
@@ -57,6 +69,7 @@ namespace 关机小程序
                 this.comboBoxTime.Text = "0";
                 return;
             }
+            Application.Exit();
         }
 
         private void button2OK_Click(object sender, EventArgs e)
@@ -143,13 +156,14 @@ namespace 关机小程序
 
         //private void 自定义ToolStripMenuItem1_Click(object sender, EventArgs e)
         //{
-        //    try {
+        //    try
+        //    {
         //        float second = float.Parse(Interaction.InputBox("几分钟：", "重启时间选择", "", -1, -1)) * 60;
         //        runShutdownCommand(Mode.重启, second);
         //    }
         //    catch
         //    {
-        //        MessageBox.Show("输入错误！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        MessageBox.Show("输入错误！", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
         //    }
         //}
 
