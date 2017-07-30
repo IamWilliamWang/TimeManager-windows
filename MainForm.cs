@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using System;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using 关机小程序.Util;
 using static 关机小程序.ShutdownUtil;
@@ -12,37 +13,77 @@ namespace 关机小程序
         private static Form form1 = null;
         //public static readonly String version="1.4.0";
 
-        public static Form getForm()
-        {
-            return form1;
-        }
-
         public MainForm()
         {
             InitializeComponent();
-            form1 = this;
+            saveForm1();
 
-            for(int i=0;i<=60;i+=5)
-                this.comboBoxTime.Items.Add(i);
-            comboBoxMode.SelectedIndex = 0;
+            addSelectOptionsInComboBoxTime();
+
+            this.MouseWheel += new MouseEventHandler(comboBoxTime_MouseWheel);
+
+            addNowTimeToFormTitle();
+
+            flushTitleInEverySecond();
+            //if(updateTitleBackgroundWorker.IsBusy == false)
+            //    this.updateTitleBackgroundWorker.RunWorkerAsync();
         }
 
         public MainForm(string fastMode)
         {
             InitializeComponent();
-            form1 = this;
+            saveForm1();
+            addSelectOptionsInComboBoxTime();
+            
+            buttonOK_Click(new object(), new EventArgs());//Click the OK button
+        }
 
+        private void addSelectOptionsInComboBoxTime()
+        {
             for (int i = 0; i <= 60; i += 5)
                 this.comboBoxTime.Items.Add(i);
             comboBoxMode.SelectedIndex = 0;
-
-            buttonOK_Click(new object(),new EventArgs());
         }
+
+        private void addNowTimeToFormTitle()
+        {
+            this.Text += " " + DateTime.Now.ToLongTimeString();
+
+        }
+
+        private void flushTitleInEverySecond()
+        {
+            this.updateTitleTimer.Interval = 10000;
+            this.updateTitleTimer.Start();
+        }
+
+        private void saveForm1()
+        {
+            form1 = this;
+        }
+
+        public static Form getForm()
+        {
+            return form1;
+        }
+
+        private void comboBoxTime_MouseWheel(object sender, MouseEventArgs e)
+        {
+            int nowNumber = int.Parse(comboBoxTime.Text);
+            if (e.Delta > 0)
+                this.comboBoxTime.Text = (nowNumber + 1).ToString();
+            else if (e.Delta < 0)
+            {
+                if (nowNumber == 0)
+                    nowNumber += 60;
+                this.comboBoxTime.Text = (nowNumber - 1).ToString();
+            }
+        }        
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             if (this.记录关机时间checkBox.Checked)
-                SqlExecuter.getInstance().记录关机事件();
+                SqlExecuter.记录关机事件();
 
             cancelShutdownCommand();
             try
@@ -70,7 +111,6 @@ namespace 关机小程序
                 this.comboBoxTime.Text = "0";
                 return;
             }
-            Application.Exit();
         }
 
         private int getRestTime_Seconds()
@@ -90,7 +130,7 @@ namespace 关机小程序
         private void button2OK_Click(object sender, EventArgs e)
         {
             if (this.记录关机时间checkBox.Checked)
-                SqlExecuter.getInstance().记录关机事件();
+                SqlExecuter.记录关机事件();
 
             int restTime_seconds = getRestTime_Seconds();
 
@@ -141,6 +181,7 @@ namespace 关机小程序
             }
         }
 
+        #region Obsolete Code
         //private void 现在ToolStripMenuItem1_Click(object sender, EventArgs e)
         //{
         //    if (MessageBox.Show("现在要重启电脑吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
@@ -173,6 +214,7 @@ namespace 关机小程序
         //        MessageBox.Show("输入错误！", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
         //    }
         //}
+        #endregion
 
         private void 取消指令ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -238,13 +280,23 @@ namespace 关机小程序
 
         private void 打开启动文件夹ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("Explorer.exe", @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\");
+            System.Diagnostics.Process.Start("Explorer.exe", systemStartupFolder());
+        }
+
+        private string systemStartupFolder()
+        {
+            return @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\";
         }
 
         private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SystemCommandUtil.ExcuteCommand("copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"");
+            SystemCommandUtil.ExcuteCommand(copyEXECommand());
             MessageBox.Show("尝试完成","", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private string copyEXECommand()
+        {
+            return "copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"";
         }
 
         private void 帮助ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -255,6 +307,7 @@ namespace 关机小程序
 
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            this.updateTitleTimer.Enabled = false;
             Application.Exit();
         }
 
@@ -266,7 +319,10 @@ namespace 关机小程序
         private void comboBoxTime_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\n' || e.KeyChar == '\r')
+            {
                 buttonOK_Click(sender, e);
+                Application.Exit();
+            }
             else if (e.KeyChar == 'q')
                 this.取消指令ToolStripMenuItem_Click(sender, e);
             else if (e.KeyChar == 27)
@@ -285,8 +341,40 @@ namespace 关机小程序
 
         private void 管理主窗口ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form manager = new DatabaseAdministerForm();
+            Form manager = new DatabaseManagerForm();
             manager.ShowDialog();
+        }
+
+
+        private string contentTime;
+        private void updateTitleBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            String nowTime = "";
+            Thread updateDataTimeThread = new Thread(new ThreadStart(() =>
+            {
+                for (int i = 1; i <= 100; i++)
+                {
+                    nowTime = DateTime.Now.ToLongTimeString();
+                    contentTime = nowTime;
+
+                    //this.updateTitleBackgroundWorker.ReportProgress(i);
+                    Thread.Sleep(1000);
+                }
+            }));
+
+            updateDataTimeThread.IsBackground = true;
+            updateDataTimeThread.Start();
+        }
+
+        private void updateTitleBackgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            this.Text = this.Text.Substring(0, this.Text.LastIndexOf(' ')) + " " + contentTime;
+        }
+
+        private void updateTitleTimer_Tick(object sender, EventArgs e)
+        {
+            this.Text = this.Text.Substring(0, this.Text.LastIndexOf(' ')) + " " + DateTime.Now.ToLongTimeString();
+            Thread.Sleep(1000);
         }
     }
 }

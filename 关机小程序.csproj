@@ -69,6 +69,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -95,19 +96,21 @@
     </Compile>
     <Compile Include="ProgramLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="DatabaseAdministerForm.cs">
+    <Compile Include="DatabaseManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DatabaseAdministerForm.Designer.cs">
-      <DependentUpon>DatabaseAdministerForm.cs</DependentUpon>
+    <Compile Include="DatabaseManagerForm.Designer.cs">
+      <DependentUpon>DatabaseManagerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowUsingTimeOfEachMonthForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowUsingTimeOfEachMonthForm.Designer.cs">
+      <DependentUpon>ShowUsingTimeOfEachMonthForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\ShutdownUtil.cs" />
     <Compile Include="Util\SqlExecuter.cs" />
+    <Compile Include="Util\SqlServerStatement.cs" />
     <Compile Include="Util\SystemCommandUtil.cs" />
     <Compile Include="SqlServerDatabase\TimeDatabaseDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -130,12 +133,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="DatabaseManagerForm.resx">
+      <DependentUpon>DatabaseManagerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseAdministerForm.resx">
-      <DependentUpon>DatabaseAdministerForm.cs</DependentUpon>
+    <EmbeddedResource Include="ShowUsingTimeOfEachMonthForm.resx">
+      <DependentUpon>ShowUsingTimeOfEachMonthForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -203,8 +205,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\开机小程序.exe" />
+    <None Include="记录关机时间点.sql" />
     <Content Include="Resources\icon_main.ico" />
+    <None Include="Resources\开机小程序.exe" />
     <Content Include="SqlServerDatabase\TimeDatabase.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

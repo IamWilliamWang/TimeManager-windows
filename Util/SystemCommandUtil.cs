@@ -23,11 +23,18 @@ namespace 关机小程序
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
-
-            process.Start();
-            process.StandardInput.WriteLine(command);
-            process.StandardInput.WriteLine("exit");
-
+            
+            try
+            {
+                process.Start();
+                process.StandardInput.WriteLine(command);
+                process.StandardInput.WriteLine("exit");
+            }
+            catch(Exception exception)
+            {
+                System.Windows.Forms.MessageBox.Show(exception.ToString(), "错误信息", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+            
             return process.StandardOutput.ReadToEnd();
         }
     }

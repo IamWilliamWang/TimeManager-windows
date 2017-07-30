@@ -56,7 +56,7 @@
             this.textBoxUpdateLog.TabIndex = 1;
             this.textBoxUpdateLog.Text = resources.GetString("textBoxUpdateLog.Text");
             // 
-            // FormHelp
+            // HelpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -64,7 +64,7 @@
             this.Controls.Add(this.textBoxUpdateLog);
             this.Controls.Add(this.button返回);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "FormHelp";
+            this.Name = "HelpForm";
             this.Text = "FormHelp";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormHelp_FormClosing);
             this.ResumeLayout(false);

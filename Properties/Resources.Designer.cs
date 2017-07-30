@@ -59,5 +59,15 @@ namespace 关机小程序.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] 开机小程序 {
+            get {
+                object obj = ResourceManager.GetObject("开机小程序", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
