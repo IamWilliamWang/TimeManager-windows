@@ -391,7 +391,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Opacity = 0.96D;
-            this.Text = "关机管理 3.0.0";
+            this.Text = "关机管理 3.1.4";
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

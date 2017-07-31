@@ -61,6 +61,44 @@ namespace 关机小程序.Properties {
         }
         
         /// <summary>
+        ///   查找类似 F:\Visual Studio 2015\关机小程序\bin\Debug\关机小程序.exe 的本地化字符串。
+        /// </summary>
+        internal static string ExeDevelopFullFilename {
+            get {
+                return ResourceManager.GetString("ExeDevelopFullFilename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon icon_main {
+            get {
+                object obj = ResourceManager.GetObject("icon_main", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap icon_main1 {
+            get {
+                object obj = ResourceManager.GetObject("icon_main1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 F:\Visual Studio 2015\TimeDatabase.mdf 的本地化字符串。
+        /// </summary>
+        internal static string MdfFullFilename {
+            get {
+                return ResourceManager.GetString("MdfFullFilename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
         internal static byte[] 开机小程序 {

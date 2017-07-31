@@ -117,7 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExeDevelopFullFilename" xml:space="preserve">
+    <value>F:\Visual Studio 2015\关机小程序\bin\Debug\关机小程序.exe</value>
+    <comment>vs生成exe全文件名</comment>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="icon_main" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_main.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_main1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_main.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MdfFullFilename" xml:space="preserve">
+    <value>F:\Visual Studio 2015\TimeDatabase.mdf</value>
+    <comment>数据库文件全文件名</comment>
+  </data>
   <data name="开机小程序" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\开机小程序.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

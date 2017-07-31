@@ -85,6 +85,9 @@ namespace 关机小程序
             if (this.记录关机时间checkBox.Checked)
                 SqlExecuter.记录关机事件();
 
+            if (float.Parse(this.comboBoxTime.Text) < 0)
+                return;
+
             cancelShutdownCommand();
             try
             {
@@ -296,8 +299,10 @@ namespace 关机小程序
 
         private string copyEXECommand()
         {
-            return "copy /Y \"F:\\Visual Studio 2015\\关机小程序\\bin\\Debug\\关机小程序.exe\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"";
+            return "copy /Y \"" + Properties.Resources.ExeDevelopFullFilename + "\" \"C:\\Users\\william\\Desktop\\关机小程序(0).exe\"";
         }
+
+
 
         private void 帮助ToolStripMenuItem_Click(object sender, EventArgs e)
         {

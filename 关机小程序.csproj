@@ -102,11 +102,11 @@
     <Compile Include="DatabaseManagerForm.Designer.cs">
       <DependentUpon>DatabaseManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShowUsingTimeOfEachMonthForm.cs">
+    <Compile Include="AnalyseUsingTimeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShowUsingTimeOfEachMonthForm.Designer.cs">
-      <DependentUpon>ShowUsingTimeOfEachMonthForm.cs</DependentUpon>
+    <Compile Include="AnalyseUsingTimeForm.Designer.cs">
+      <DependentUpon>AnalyseUsingTimeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\ShutdownUtil.cs" />
     <Compile Include="Util\SqlExecuter.cs" />
@@ -117,6 +117,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TimeDatabaseDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Util\GZipUtil.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -136,8 +137,8 @@
     <EmbeddedResource Include="DatabaseManagerForm.resx">
       <DependentUpon>DatabaseManagerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShowUsingTimeOfEachMonthForm.resx">
-      <DependentUpon>ShowUsingTimeOfEachMonthForm.cs</DependentUpon>
+    <EmbeddedResource Include="AnalyseUsingTimeForm.resx">
+      <DependentUpon>AnalyseUsingTimeForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -208,6 +209,7 @@
     <None Include="记录关机时间点.sql" />
     <Content Include="Resources\icon_main.ico" />
     <None Include="Resources\开机小程序.exe" />
+    <None Include="Resources\icon_main.jpg" />
     <Content Include="SqlServerDatabase\TimeDatabase.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

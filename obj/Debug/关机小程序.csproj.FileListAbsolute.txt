@@ -8,7 +8,8 @@ F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.MainForm.resourc
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.HelpForm.resources
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.Properties.Resources.resources
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.DatabaseManagerForm.resources
-F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.ShowUsingTimeOfEachMonthForm.resources
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.csproj.GenerateResource.Cache
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.exe
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.pdb
+F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.AnalyseUsingTimeForm.resources
+F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.csprojResolveAssemblyReference.cache

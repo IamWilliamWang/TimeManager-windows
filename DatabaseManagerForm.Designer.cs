@@ -50,9 +50,11 @@ namespace 关机小程序
             this.导入所有数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.导出所有数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.储存表格至excelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.无损导出数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.一键填补空处ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.全面总结汇报ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关闭此窗口ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.无损加载数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource1)).BeginInit();
@@ -189,7 +191,8 @@ namespace 关机小程序
             // 
             // 导入所有数据ToolStripMenuItem
             // 
-            this.导入所有数据ToolStripMenuItem.Enabled = false;
+            this.导入所有数据ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.无损加载数据库ToolStripMenuItem});
             this.导入所有数据ToolStripMenuItem.Name = "导入所有数据ToolStripMenuItem";
             this.导入所有数据ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.导入所有数据ToolStripMenuItem.Text = "导入所有数据";
@@ -197,7 +200,8 @@ namespace 关机小程序
             // 导出所有数据ToolStripMenuItem
             // 
             this.导出所有数据ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.储存表格至excelToolStripMenuItem});
+            this.储存表格至excelToolStripMenuItem,
+            this.无损导出数据库ToolStripMenuItem});
             this.导出所有数据ToolStripMenuItem.Name = "导出所有数据ToolStripMenuItem";
             this.导出所有数据ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.导出所有数据ToolStripMenuItem.Text = "导出所有数据";
@@ -205,9 +209,16 @@ namespace 关机小程序
             // 储存表格至excelToolStripMenuItem
             // 
             this.储存表格至excelToolStripMenuItem.Name = "储存表格至excelToolStripMenuItem";
-            this.储存表格至excelToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.储存表格至excelToolStripMenuItem.Text = "输出到Excel文档";
+            this.储存表格至excelToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.储存表格至excelToolStripMenuItem.Text = "生成Excel文档";
             this.储存表格至excelToolStripMenuItem.Click += new System.EventHandler(this.储存表格至excelToolStripMenuItem_Click);
+            // 
+            // 无损导出数据库ToolStripMenuItem
+            // 
+            this.无损导出数据库ToolStripMenuItem.Name = "无损导出数据库ToolStripMenuItem";
+            this.无损导出数据库ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.无损导出数据库ToolStripMenuItem.Text = "无损导出数据库";
+            this.无损导出数据库ToolStripMenuItem.Click += new System.EventHandler(this.生成备份文档ToolStripMenuItem_Click);
             // 
             // 一键填补空处ToolStripMenuItem
             // 
@@ -229,6 +240,13 @@ namespace 关机小程序
             this.关闭此窗口ToolStripMenuItem.Size = new System.Drawing.Size(80, 21);
             this.关闭此窗口ToolStripMenuItem.Text = "关闭此窗口";
             this.关闭此窗口ToolStripMenuItem.Click += new System.EventHandler(this.关闭此窗口ToolStripMenuItem_Click);
+            // 
+            // 无损加载数据库ToolStripMenuItem
+            // 
+            this.无损加载数据库ToolStripMenuItem.Name = "无损加载数据库ToolStripMenuItem";
+            this.无损加载数据库ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.无损加载数据库ToolStripMenuItem.Text = "无损加载数据库";
+            this.无损加载数据库ToolStripMenuItem.Click += new System.EventHandler(this.加载无损备份文档ToolStripMenuItem_Click);
             // 
             // DatabaseManagerForm
             // 
@@ -278,5 +296,7 @@ namespace 关机小程序
         private System.Windows.Forms.ToolStripMenuItem 提交手动修改ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 一键填补空处ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 全面总结汇报ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 无损导出数据库ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 无损加载数据库ToolStripMenuItem;
     }
 }

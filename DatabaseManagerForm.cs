@@ -19,6 +19,7 @@ namespace 关机小程序
         private SqlDataAdapter adapter;
         private DataTable table;
         private readonly static String TableName = "[Table]";
+        private Boolean canReadMdlFile = true;
 
         public DatabaseManagerForm()
         {
@@ -27,12 +28,14 @@ namespace 关机小程序
 
         private void SqlServerResult_Load(object sender, EventArgs e)
         {
-            showDatabase();
+            //showDatabase();
         }
 
         #region 全刷新
         private void showDatabase()
         {
+            canReadMdlFile = false;
+
             table = SqlServerStatement.getStatement().executeQuery("select * from " + TableName);
             dataGridView1.DataSource = table;
         }
@@ -114,10 +117,10 @@ namespace 关机小程序
         }
         #endregion
 
-        private void SqlServerResult_DoubleClick(object sender, EventArgs e)
-        {
-            this.编辑数据库ToolStripMenuItem.Enabled = true;
-        }
+        //private void SqlServerResult_DoubleClick(object sender, EventArgs e)
+        //{
+        //    this.编辑数据库ToolStripMenuItem.Enabled = true;
+        //}
 
         #region 导入与导出
         private void 储存表格至excelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -167,6 +170,42 @@ namespace 关机小程序
 
             return true;
         }
+
+        private void 生成备份文档ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (canReadMdlFile == false)
+            {
+                MessageBox.Show("功能仅限在该窗口内未点击其他任何非导入导出按钮时使用！", "请重启程序后优先使用此功能", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "备份文件 (*.backup)|*.backup|所有文件 (*.*)|*.*";
+            if(fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Util.GZipUtil.Compress(new FileInfo(Properties.Resources.MdfFullFilename), new FileInfo(fileDialog.FileName), ".backup", true);
+                MessageBox.Show("无损备份数据库成功！", "备份成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            
+        }
+
+        private void 加载无损备份文档ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(canReadMdlFile == false)
+            {
+                MessageBox.Show("功能仅限在该窗口内未点击其他任何非导入导出按钮时使用！", "请重启程序后优先使用此功能", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "备份文件 (*.backup)|*.backup|所有文件 (*.*)|*.*";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                GZipUtil.Decompress(new FileInfo(fileDialog.FileName), Properties.Resources.MdfFullFilename+".beta");
+                MessageBox.Show("无损备份文件加载成功！", "加载成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+        }
         #endregion
 
         #region 一键填补
@@ -180,7 +219,7 @@ namespace 关机小程序
         #region 总结汇报
         private void 统计每月上机时间ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new ShowUsingTimeOfEachMonthForm().Show();
+            new AnalyseUsingTimeForm().Show();
         }
         #endregion
 
@@ -189,6 +228,9 @@ namespace 关机小程序
         {
             this.Close();
         }
+
         #endregion
+
+        
     }
 }

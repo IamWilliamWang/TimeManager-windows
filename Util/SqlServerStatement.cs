@@ -19,11 +19,13 @@ namespace 关机小程序.Util
         private SqlServerStatement()
         {
             connection = new SqlConnection(connString);//建立到数据库的连接
-            connection.Open();
         }
 
         public int executeUpdate(string sql)
         {
+            if(connection.State == ConnectionState.Closed)
+                connection.Open();
+
             try
             {
                 SqlCommand cmd = new SqlCommand(sql, connection);
@@ -38,6 +40,9 @@ namespace 关机小程序.Util
 
         public DataTable executeQuery(string sql)
         {
+            if (connection.State == ConnectionState.Closed)
+                connection.Open();
+
             adapter = new SqlDataAdapter(sql, connection);
             SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
             DataTable table = new DataTable();
@@ -47,6 +52,9 @@ namespace 关机小程序.Util
 
         public Boolean updateDatabase(DataTable dataTable)
         {
+            if (connection.State == ConnectionState.Closed)
+                connection.Open();
+
             //创建命令重建对象
             SqlCommandBuilder sqlCommandBuilder = new SqlCommandBuilder(adapter);
 
@@ -61,6 +69,22 @@ namespace 关机小程序.Util
             }
             System.Windows.MessageBox.Show("手动修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             return true;
+        }
+
+        public void openConnection()
+        {
+            if (connection.State == ConnectionState.Open)
+                return;
+
+            this.connection.Open();
+        }
+
+        public void closeConnection()
+        {
+            if (connection.State == ConnectionState.Closed)
+                return;
+
+            this.connection.Close();
         }
 
         public static SqlServerStatement getStatement()
