@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace 关机小程序.Properties {
+namespace 关机助手.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace 关机小程序.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("关机小程序.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("关机助手.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,27 @@ namespace 关机小程序.Properties {
         }
         
         /// <summary>
-        ///   查找类似 F:\Visual Studio 2015\关机小程序\bin\Debug\关机小程序.exe 的本地化字符串。
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] EmptyDB {
+            get {
+                object obj = ResourceManager.GetObject("EmptyDB", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap ErrorMessage {
+            get {
+                object obj = ResourceManager.GetObject("ErrorMessage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 F:\Visual Studio 2015\关机小程序\bin\Debug\关机助手.exe 的本地化字符串。
         /// </summary>
         internal static string ExeDevelopFullFilename {
             get {
@@ -70,7 +90,7 @@ namespace 关机小程序.Properties {
         }
         
         /// <summary>
-        ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
+        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
         /// </summary>
         internal static System.Drawing.Icon icon_main {
             get {
@@ -90,11 +110,39 @@ namespace 关机小程序.Properties {
         }
         
         /// <summary>
-        ///   查找类似 F:\Visual Studio 2015\TimeDatabase.mdf 的本地化字符串。
+        ///   查找类似 TimeDatabase.mdf 的本地化字符串。
         /// </summary>
-        internal static string MdfFullFilename {
+        internal static string MdfFilename {
             get {
-                return ResourceManager.GetString("MdfFullFilename", resourceCulture);
+                return ResourceManager.GetString("MdfFilename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] printer {
+            get {
+                object obj = ResourceManager.GetObject("printer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\Recorder.exe 的本地化字符串。
+        /// </summary>
+        internal static string RecorderFullFilename {
+            get {
+                return ResourceManager.GetString("RecorderFullFilename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\autoshutdown.cmd 的本地化字符串。
+        /// </summary>
+        internal static string RecorderShellFullFilename {
+            get {
+                return ResourceManager.GetString("RecorderShellFullFilename", resourceCulture);
             }
         }
         

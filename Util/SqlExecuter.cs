@@ -1,42 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace 关机小程序.Util
+namespace 关机助手.Util
 {
     class SqlExecuter
     {
-        
+
 
         //public void 记录关机事件()//Doesn't work yet
         //{
         //    记录关机事件("'00:00:00'");
         //}
 
-        public static void 记录关机事件()
+        /// <summary>
+        /// 请使用 "记录开机事件(TableName)" 代替本方法
+        /// </summary>
+        [Obsolete]
+        public static void 记录开机事件()
         {
-            //if (关机倒计时字段.Contains("'") == false)
-            //{
-            //    关机倒计时字段 = "'" + 关机倒计时字段 + "'";
-            //}
-            //DateTime now = DateTime.Now;
-            //String sql = "UPDATE " + SqlServerResult.TableName + " "
-            //            + "SET 关机时间=\'" + DateTime.Now + "\' "
-            //            + "WHERE 序号=" + get最大序号() + " ";
-                
+            String sql = "INSERT INTO[Table](开机时间) " +
+                       "VALUES (GETDATE())";
 
-            SqlServerStatement.getStatement().executeUpdate(updateShutdownTimeSQL());
+            SqlServerConnection.ExecuteUpdate(sql);
         }
 
-        private static string updateShutdownTimeSQL()
+        public static bool 记录开机事件(String TableName)
+        {
+            if (SqlServerConnection.ExecuteUpdate(InsertPowerOnTimeSQL(TableName)) != 0)
+                return true;
+            return false;
+        }
+
+        private static string InsertPowerOnTimeSQL(String TableName)
+        {
+            return "INSERT "
+                    + "INTO " + TableName + "(开机时间) "
+                    + "VALUES (" + "\'" + DateTime.Now + "\')";
+        }
+
+        public static void 记录关机事件()
+        {
+            SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL());
+        }
+
+        public static void 记录关机事件(String 延迟时间)
+        {
+            if (延迟时间[0] != '\'' && 延迟时间[延迟时间.Length - 1] != '\'')
+            {
+                SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL("'"+延迟时间+"'"));
+            }
+            else
+                SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间));
+        }
+
+        private static string UpdateShutdownTimeSQL()
         {
             return "UPDATE [Table] " +
                 "SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间  " +
+                "WHERE 序号 in " +
+                "(SELECT MAX(序号) " +
+                "FROM[Table]) ";
+        }
+
+        private static string UpdateShutdownTimeSQL(String 延迟时间)
+        {
+            return "UPDATE [Table] " +
+                "SET 关机时间 = GETDATE()+" + 延迟时间 +
+                ", 时长 = GETDATE()+" + 延迟时间 + " - 开机时间  " +
                 "WHERE 序号 in " +
                 "(SELECT MAX(序号) " +
                 "FROM[Table]) ";
@@ -49,10 +80,10 @@ namespace 关机小程序.Util
                 return;
             }
 
-            SqlServerStatement.getStatement().executeUpdate(calculateEverydayTimesAndUsedTimesSQL());
+            SqlServerConnection.ExecuteUpdate(CalculateEverydayTimesAndUsedTimesSQL());
         }
      
-        private static string calculateEverydayTimesAndUsedTimesSQL()
+        private static string CalculateEverydayTimesAndUsedTimesSQL()
         {
             return "declare @i int " +
                 "set @i = (SELECT MAX(序号) FROM[Table]) " +
@@ -93,7 +124,7 @@ namespace 关机小程序.Util
                 "    set @i = @i - 1 " +
                 "end ";
         }
-        private int get最大序号()/*为了避免在SQL查询中查找空数据库而产生错误，但会一定程度降低程序效率*/
+        private int 最大序号()/*为了避免在SQL查询中查找空数据库而产生错误，但会一定程度降低程序效率*/
         {
             int 序号 = 0;
             using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.TimeDatabaseConnectionString))
@@ -129,10 +160,10 @@ namespace 关机小程序.Util
         /// Please use SqlServerStatement.getStatement() instead
         /// </summary>
         /// <returns></returns>
-        [Obsolete]
-        public static SqlServerStatement getInstance()
-        {
-            return SqlServerStatement.getStatement();
-        }
+        //[Obsolete]
+        //public static SqlServerConnection GetInstance()
+        //{
+        //    return SqlServerConnection.GetStatement();
+        //}
     }
 }

@@ -10,7 +10,7 @@
 
 #pragma warning disable 1591
 
-namespace 关机小程序.SqlServerDatabase {
+namespace 关机助手.SqlServerDatabase {
     
     
     /// <summary>

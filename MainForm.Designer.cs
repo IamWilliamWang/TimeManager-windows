@@ -1,4 +1,4 @@
-﻿namespace 关机小程序
+﻿namespace 关机助手
 {
     partial class MainForm
     {
@@ -33,11 +33,7 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.开发者模式contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.应用AppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关机ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.现在ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.HalfMinuteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TenMinutesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.自定义ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.数据管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.取消指令ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +58,8 @@
             this.记录关机时间contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.记录开机时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
+            this.connectSqlServerBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.checkSafeBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.menuStrip.SuspendLayout();
             this.开发者模式contextMenuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
@@ -74,7 +72,7 @@
             this.menuStrip.ContextMenuStrip = this.开发者模式contextMenuStrip;
             this.menuStrip.Font = new System.Drawing.Font("幼圆", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.关机ToolStripMenuItem,
+            this.文件ToolStripMenuItem,
             this.数据管理ToolStripMenuItem,
             this.取消指令ToolStripMenuItem,
             this.退出ToolStripMenuItem});
@@ -100,44 +98,12 @@
             this.应用AppToolStripMenuItem.Text = "开发者模式(应用App)";
             this.应用AppToolStripMenuItem.Click += new System.EventHandler(this.应用AppToolStripMenuItem_Click);
             // 
-            // 关机ToolStripMenuItem
+            // 文件ToolStripMenuItem
             // 
-            this.关机ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.现在ToolStripMenuItem,
-            this.HalfMinuteToolStripMenuItem,
-            this.TenMinutesToolStripMenuItem,
-            this.自定义ToolStripMenuItem});
-            this.关机ToolStripMenuItem.Name = "关机ToolStripMenuItem";
-            this.关机ToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.关机ToolStripMenuItem.Text = "关机";
-            // 
-            // 现在ToolStripMenuItem
-            // 
-            this.现在ToolStripMenuItem.Name = "现在ToolStripMenuItem";
-            this.现在ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.现在ToolStripMenuItem.Text = "现在";
-            this.现在ToolStripMenuItem.Click += new System.EventHandler(this.现在ToolStripMenuItem_Click);
-            // 
-            // HalfMinuteToolStripMenuItem
-            // 
-            this.HalfMinuteToolStripMenuItem.Name = "HalfMinuteToolStripMenuItem";
-            this.HalfMinuteToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.HalfMinuteToolStripMenuItem.Text = "半分钟";
-            this.HalfMinuteToolStripMenuItem.Click += new System.EventHandler(this.HalfMinuteToolStripMenuItem_Click);
-            // 
-            // TenMinutesToolStripMenuItem
-            // 
-            this.TenMinutesToolStripMenuItem.Name = "TenMinutesToolStripMenuItem";
-            this.TenMinutesToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.TenMinutesToolStripMenuItem.Text = "十分钟";
-            this.TenMinutesToolStripMenuItem.Click += new System.EventHandler(this.TenMinutesToolStripMenuItem_Click);
-            // 
-            // 自定义ToolStripMenuItem
-            // 
-            this.自定义ToolStripMenuItem.Name = "自定义ToolStripMenuItem";
-            this.自定义ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.自定义ToolStripMenuItem.Text = "自定义";
-            this.自定义ToolStripMenuItem.Click += new System.EventHandler(this.自定义ToolStripMenuItem_Click);
+            this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.文件ToolStripMenuItem.Text = "开机";
+            this.文件ToolStripMenuItem.Click += new System.EventHandler(this.文件ToolStripMenuItem_Click);
             // 
             // 数据管理ToolStripMenuItem
             // 
@@ -179,11 +145,14 @@
             this.comboBoxMode.FormattingEnabled = true;
             this.comboBoxMode.Items.AddRange(new object[] {
             "关机",
-            "重启"});
+            "休眠",
+            "重启",
+            "延缓"});
             this.comboBoxMode.Location = new System.Drawing.Point(13, 63);
             this.comboBoxMode.Name = "comboBoxMode";
             this.comboBoxMode.Size = new System.Drawing.Size(71, 22);
             this.comboBoxMode.TabIndex = 2;
+            this.comboBoxMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxMode_SelectedIndexChanged);
             // 
             // buttonOK
             // 
@@ -366,6 +335,16 @@
             // 
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
             // 
+            // connectSqlServerBackgroundWorker
+            // 
+            this.connectSqlServerBackgroundWorker.WorkerReportsProgress = true;
+            this.connectSqlServerBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.connectSqlServerBackgroundWorker_DoWork);
+            this.connectSqlServerBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.connectSqlServerBackgroundWorker_RunWorkerCompleted);
+            // 
+            // checkSafeBackgroundWorker
+            // 
+            this.checkSafeBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.checkSafeBackgroundWorker_DoWork);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -391,7 +370,9 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Opacity = 0.96D;
-            this.Text = "关机管理 3.1.4";
+            this.Text = "关机助手 3.7.1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
@@ -407,11 +388,6 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem 关机ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 现在ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem HalfMinuteToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem TenMinutesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 自定义ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 取消指令ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 退出ToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBoxTime;
@@ -438,6 +414,9 @@
         private System.Windows.Forms.ToolStripMenuItem 记录开机时间ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 数据管理ToolStripMenuItem;
         private System.Windows.Forms.Timer updateTitleTimer;
+        private System.ComponentModel.BackgroundWorker connectSqlServerBackgroundWorker;
+        private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
+        private System.ComponentModel.BackgroundWorker checkSafeBackgroundWorker;
     }
 }
 

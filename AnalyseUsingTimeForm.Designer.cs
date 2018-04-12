@@ -1,4 +1,4 @@
-﻿namespace 关机小程序
+﻿namespace 关机助手
 {
     partial class AnalyseUsingTimeForm
     {
@@ -31,12 +31,13 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView = new System.Windows.Forms.DataGridView();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.关闭ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关闭本窗口ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关闭程序ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.分析时间分布ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.开机时间分布ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.关机时间分布ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.返回总图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.更换颜色ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.红色ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.蓝色ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,22 +54,29 @@
             this.曲线图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.切换3D效果ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.保存图片ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.关闭ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.结束程序ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // dataGridView
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(757, 28);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(341, 405);
-            this.dataGridView1.TabIndex = 0;
+            this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.Location = new System.Drawing.Point(811, 28);
+            this.dataGridView.Name = "dataGridView";
+            this.dataGridView.RowTemplate.Height = 23;
+            this.dataGridView.Size = new System.Drawing.Size(336, 452);
+            this.dataGridView.TabIndex = 0;
             // 
             // chart1
             // 
+            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             chartArea1.Area3DStyle.Enable3D = true;
             chartArea1.AxisX.Title = "时间（月）";
             chartArea1.AxisX.TitleFont = new System.Drawing.Font("微软雅黑", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -81,51 +89,59 @@
             this.chart1.Location = new System.Drawing.Point(13, 28);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Pie;
             series1.Label = "#VALX #VAL";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(738, 405);
+            this.chart1.Size = new System.Drawing.Size(792, 452);
             this.chart1.TabIndex = 1;
-            this.chart1.Text = "chart1";
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.关闭ToolStripMenuItem,
+            this.分析时间分布ToolStripMenuItem,
             this.更换颜色ToolStripMenuItem,
             this.图形切换ToolStripMenuItem,
             this.切换3D效果ToolStripMenuItem,
-            this.保存图片ToolStripMenuItem});
+            this.保存图片ToolStripMenuItem,
+            this.关闭ToolStripMenuItem,
+            this.结束程序ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1110, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(1159, 25);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // 关闭ToolStripMenuItem
+            // 分析时间分布ToolStripMenuItem
             // 
-            this.关闭ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.关闭本窗口ToolStripMenuItem,
-            this.关闭程序ToolStripMenuItem});
-            this.关闭ToolStripMenuItem.Name = "关闭ToolStripMenuItem";
-            this.关闭ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.关闭ToolStripMenuItem.Text = "关闭";
+            this.分析时间分布ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.开机时间分布ToolStripMenuItem,
+            this.关机时间分布ToolStripMenuItem,
+            this.返回总图ToolStripMenuItem});
+            this.分析时间分布ToolStripMenuItem.Name = "分析时间分布ToolStripMenuItem";
+            this.分析时间分布ToolStripMenuItem.Size = new System.Drawing.Size(92, 21);
+            this.分析时间分布ToolStripMenuItem.Text = "分析时间分布";
             // 
-            // 关闭本窗口ToolStripMenuItem
+            // 开机时间分布ToolStripMenuItem
             // 
-            this.关闭本窗口ToolStripMenuItem.Name = "关闭本窗口ToolStripMenuItem";
-            this.关闭本窗口ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.关闭本窗口ToolStripMenuItem.Text = "关闭本窗口";
-            this.关闭本窗口ToolStripMenuItem.Click += new System.EventHandler(this.关闭本窗口ToolStripMenuItem_Click);
+            this.开机时间分布ToolStripMenuItem.Name = "开机时间分布ToolStripMenuItem";
+            this.开机时间分布ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.开机时间分布ToolStripMenuItem.Text = "开机时间分布";
+            this.开机时间分布ToolStripMenuItem.Click += new System.EventHandler(this.开机时间分布ToolStripMenuItem_Click);
             // 
-            // 关闭程序ToolStripMenuItem
+            // 关机时间分布ToolStripMenuItem
             // 
-            this.关闭程序ToolStripMenuItem.Name = "关闭程序ToolStripMenuItem";
-            this.关闭程序ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.关闭程序ToolStripMenuItem.Text = "关闭程序";
-            this.关闭程序ToolStripMenuItem.Click += new System.EventHandler(this.关闭程序ToolStripMenuItem_Click);
+            this.关机时间分布ToolStripMenuItem.Name = "关机时间分布ToolStripMenuItem";
+            this.关机时间分布ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.关机时间分布ToolStripMenuItem.Text = "关机时间分布";
+            this.关机时间分布ToolStripMenuItem.Click += new System.EventHandler(this.关机时间分布ToolStripMenuItem_Click);
+            // 
+            // 返回总图ToolStripMenuItem
+            // 
+            this.返回总图ToolStripMenuItem.Name = "返回总图ToolStripMenuItem";
+            this.返回总图ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.返回总图ToolStripMenuItem.Text = "返回总图";
+            this.返回总图ToolStripMenuItem.Click += new System.EventHandler(this.返回总图ToolStripMenuItem_Click);
             // 
             // 更换颜色ToolStripMenuItem
             // 
@@ -205,35 +221,35 @@
             // 饼图ToolStripMenuItem
             // 
             this.饼图ToolStripMenuItem.Name = "饼图ToolStripMenuItem";
-            this.饼图ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.饼图ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.饼图ToolStripMenuItem.Text = "饼图";
             this.饼图ToolStripMenuItem.Click += new System.EventHandler(this.饼图ToolStripMenuItem_Click);
             // 
             // 空心饼图ToolStripMenuItem
             // 
             this.空心饼图ToolStripMenuItem.Name = "空心饼图ToolStripMenuItem";
-            this.空心饼图ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.空心饼图ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.空心饼图ToolStripMenuItem.Text = "空心饼图";
             this.空心饼图ToolStripMenuItem.Click += new System.EventHandler(this.空心饼图ToolStripMenuItem_Click);
             // 
             // 柱状图ToolStripMenuItem
             // 
             this.柱状图ToolStripMenuItem.Name = "柱状图ToolStripMenuItem";
-            this.柱状图ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.柱状图ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.柱状图ToolStripMenuItem.Text = "柱状图";
             this.柱状图ToolStripMenuItem.Click += new System.EventHandler(this.柱状图ToolStripMenuItem_Click);
             // 
             // 折线图ToolStripMenuItem
             // 
             this.折线图ToolStripMenuItem.Name = "折线图ToolStripMenuItem";
-            this.折线图ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.折线图ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.折线图ToolStripMenuItem.Text = "折线图";
             this.折线图ToolStripMenuItem.Click += new System.EventHandler(this.折线图ToolStripMenuItem_Click);
             // 
             // 曲线图ToolStripMenuItem
             // 
             this.曲线图ToolStripMenuItem.Name = "曲线图ToolStripMenuItem";
-            this.曲线图ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.曲线图ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.曲线图ToolStripMenuItem.Text = "曲线图";
             this.曲线图ToolStripMenuItem.Click += new System.EventHandler(this.曲线图ToolStripMenuItem_Click);
             // 
@@ -251,21 +267,34 @@
             this.保存图片ToolStripMenuItem.Text = "保存图片";
             this.保存图片ToolStripMenuItem.Click += new System.EventHandler(this.保存图片ToolStripMenuItem_Click);
             // 
+            // 关闭ToolStripMenuItem
+            // 
+            this.关闭ToolStripMenuItem.Name = "关闭ToolStripMenuItem";
+            this.关闭ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.关闭ToolStripMenuItem.Text = "关闭窗口";
+            this.关闭ToolStripMenuItem.Click += new System.EventHandler(this.关闭本窗口ToolStripMenuItem_Click);
+            // 
+            // 结束程序ToolStripMenuItem
+            // 
+            this.结束程序ToolStripMenuItem.Name = "结束程序ToolStripMenuItem";
+            this.结束程序ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.结束程序ToolStripMenuItem.Text = "结束程序";
+            this.结束程序ToolStripMenuItem.Click += new System.EventHandler(this.关闭程序ToolStripMenuItem_Click);
+            // 
             // AnalyseUsingTimeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1110, 445);
+            this.ClientSize = new System.Drawing.Size(1159, 492);
             this.Controls.Add(this.chart1);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximizeBox = false;
             this.Name = "AnalyseUsingTimeForm";
             this.Text = "统计结果显示";
             this.Load += new System.EventHandler(this.ShowUsingTimeOfEachMonth_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -276,7 +305,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 关闭ToolStripMenuItem;
@@ -296,7 +325,11 @@
         private System.Windows.Forms.ToolStripMenuItem 浅蓝色ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 空心饼图ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 保存图片ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 关闭本窗口ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 关闭程序ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem 分析时间分布ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 开机时间分布ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 关机时间分布ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 结束程序ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 返回总图ToolStripMenuItem;
     }
 }
