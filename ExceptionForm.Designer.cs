@@ -28,13 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelInformation = new System.Windows.Forms.Label();
             this.buttonSend = new System.Windows.Forms.Button();
             this.buttonContinue = new System.Windows.Forms.Button();
             this.buttonQuit = new System.Windows.Forms.Button();
+            this.contextMenuStripExit = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.直接退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.修复后退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.contextMenuStripExit.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -42,7 +48,7 @@
             this.pictureBox1.Image = global::关机助手.Properties.Resources.ErrorMessage;
             this.pictureBox1.Location = new System.Drawing.Point(8, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(411, 51);
+            this.pictureBox1.Size = new System.Drawing.Size(49, 51);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -76,6 +82,7 @@
             // 
             // buttonQuit
             // 
+            this.buttonQuit.ContextMenuStrip = this.contextMenuStripExit;
             this.buttonQuit.Location = new System.Drawing.Point(320, 103);
             this.buttonQuit.Name = "buttonQuit";
             this.buttonQuit.Size = new System.Drawing.Size(94, 26);
@@ -83,6 +90,14 @@
             this.buttonQuit.Text = "退出(&Q)";
             this.buttonQuit.UseVisualStyleBackColor = true;
             this.buttonQuit.Click += new System.EventHandler(this.buttonQuit_Click);
+            // 
+            // contextMenuStripExit
+            // 
+            this.contextMenuStripExit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.直接退出ToolStripMenuItem,
+            this.修复后退出ToolStripMenuItem});
+            this.contextMenuStripExit.Name = "contextMenuStripExit";
+            this.contextMenuStripExit.Size = new System.Drawing.Size(153, 70);
             // 
             // textBox1
             // 
@@ -95,12 +110,37 @@
             this.textBox1.TabIndex = 5;
             this.textBox1.WordWrap = false;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(63, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(341, 36);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "应用程序中发生了未经处理的异常。如果点击“继续”，应用程\r\n序将忽略此错误并尝试继续。如果点击“退出”，应用程序将立\r\n即关闭。如果需要向开发者报告这个错误，请点" +
+    "“报告错误”。";
+            // 
+            // 直接退出ToolStripMenuItem
+            // 
+            this.直接退出ToolStripMenuItem.Name = "直接退出ToolStripMenuItem";
+            this.直接退出ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.直接退出ToolStripMenuItem.Text = "直接退出";
+            this.直接退出ToolStripMenuItem.Click += new System.EventHandler(this.直接退出ToolStripMenuItem_Click);
+            // 
+            // 修复后退出ToolStripMenuItem
+            // 
+            this.修复后退出ToolStripMenuItem.Name = "修复后退出ToolStripMenuItem";
+            this.修复后退出ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.修复后退出ToolStripMenuItem.Text = "修复后退出";
+            this.修复后退出ToolStripMenuItem.Click += new System.EventHandler(this.修复后退出ToolStripMenuItem_Click);
+            // 
             // ExceptionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(425, 286);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.buttonQuit);
             this.Controls.Add(this.buttonContinue);
@@ -114,6 +154,7 @@
             this.Text = "Microsoft .NET Framework";
             this.Load += new System.EventHandler(this.ExceptionForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.contextMenuStripExit.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -127,5 +168,9 @@
         private System.Windows.Forms.Button buttonContinue;
         private System.Windows.Forms.Button buttonQuit;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripExit;
+        private System.Windows.Forms.ToolStripMenuItem 直接退出ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 修复后退出ToolStripMenuItem;
     }
 }

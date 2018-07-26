@@ -16,7 +16,7 @@ namespace 关机助手.Util
                 using(FileStream fs = new FileStream(fullFilename, FileMode.Create))
                     fs.Write(fileContent, 0, fileContent.Length);
             }
-            catch (System.UnauthorizedAccessException ex)
+            catch (System.UnauthorizedAccessException)
             {
                 return false;
             }

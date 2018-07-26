@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace 关机助手.Util
 {
@@ -24,9 +25,9 @@ namespace 关机助手.Util
         public static void ShutdownWithMinutes_DelayMode(int countdownMinute)
         {
             if(countdownMinute>=60) // bug needs fix.
-                SqlExecuter.记录关机事件("1:" + (countdownMinute - 60) + ":0");
+                SqlExecuter.记录延迟关机事件("1:" + (countdownMinute - 60) + ":0");
             else
-                SqlExecuter.记录关机事件("0:" + countdownMinute + ":0");
+                SqlExecuter.记录延迟关机事件("0:" + countdownMinute + ":0");
 
             ShutdownUtil.CancelShutdownCommand();
             ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, countdownMinute * 60);
@@ -49,6 +50,12 @@ namespace 关机助手.Util
             bool cancel = false;
             String delayDuration = null;
             String mdfFullname = null;
+
+            if (File.Exists("C:\\Users\\william\\DONOTWRITEDATA"))
+            {
+                File.Delete( "C:\\Users\\william\\DONOTWRITEDATA");
+                return;
+            }
 
             for (int i = 0; i < args.Length; i++)
             {

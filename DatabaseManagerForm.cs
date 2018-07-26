@@ -2,6 +2,7 @@
 using System.Data;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using 关机助手.Util;
 
@@ -12,7 +13,7 @@ namespace 关机助手
         //private SqlDataAdapter adapter;
         //private DataTable table;
         public readonly static String TableName = "[Table]";
-        enum QueryOperate {显示所有数据,显示后五行数据};
+        enum QueryOperate { 显示所有数据, 显示后五行数据 };
         private QueryOperate backgroundQueryOperate = new QueryOperate();
         public static bool? needInitialized { get; set; }
 
@@ -20,25 +21,24 @@ namespace 关机助手
         {
             InitializeComponent();
         }
-        
+
         private void SqlServerResult_Load(object sender, EventArgs e)
         {
             //处理非UI线程异常，激活全局错误弹窗
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             显示后五条ToolStripMenuItem_Click(sender, e);
-
+            
             if (File.Exists(Properties.Resources.RecorderShellFullFilename) == false)
             {
-                if (MessageBox.Show(needInitialized??false ? "是否自动完成初始化工作？" : "检测到开机记录已经失效，是否进行修复？", needInitialized??false ?"欢迎使用本软件":"警告！", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                if (MessageBox.Show(needInitialized ?? false ? "是否自动完成初始化工作？" : "检测到开机记录已经失效，是否进行修复？", needInitialized ?? false ? "欢迎使用本软件" : "警告！", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                     允许开机记录时间ToolStripMenuItem_Click(sender, e);
             }
-                
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            ExceptionForm.ShowDialog((Exception)e.ExceptionObject);
+            ExceptionForm.ShowDialog((Exception) e.ExceptionObject);
         }
 
         #region 全刷新
@@ -47,7 +47,7 @@ namespace 关机助手
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = SqlServerConnection.ExecuteQuery("select * from " + TableName);
             if (dataGridView1.DataSource == null)
-                MessageBox.Show("稍安勿躁，请在程序不忙时重试", "操作失败",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("稍安勿躁，请在程序不忙时重试", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private Boolean CanReadMdfFile()
@@ -60,7 +60,7 @@ namespace 关机助手
             if (AlertBusy())
                 return;
 
-            if (SqlServerConnection.GetConnectionState() == ConnectionState.Closed) 
+            if (SqlServerConnection.GetConnectionState() == ConnectionState.Closed)
             {
                 this.progressBar1.Value = 40;
                 backgroundQueryOperate = QueryOperate.显示所有数据;
@@ -75,45 +75,43 @@ namespace 关机助手
             if (AlertBusy())
                 return;
 
-            if(!SqlServerConnection.ConnectionOpenned())
+            if (!SqlServerConnection.ConnectionOpenned())
             {
-                this.progressBar1.Value = 40;
+                this.progressBar1.Value = 20;
                 backgroundQueryOperate = QueryOperate.显示后五行数据;
                 this.openDBBackgroundWorker.RunWorkerAsync(1);
             }
             else
             {
                 dataGridView1.DataSource = null;
-                
+
                 dataGridView1.DataSource = SqlServerConnection.ExecuteQuery(QueryLastFiveSQL());
                 //if (dataGridView1.DataSource == null)
                 //    MessageBox.Show("稍安勿躁，请在程序不忙时重试", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
+
 
             }
 
         }
 
-        private String QueryLastFiveSQL()
-        {
-            return "select * from " + TableName + " where 序号>((select max(序号) from " + TableName + ")-14)";
-        }
+        private String QueryLastFiveSQL() =>
+            "select * from " + TableName + " where 序号>((select max(序号) from " + TableName + ")-14)";
         #endregion
 
-        #region 开机记录状态
+        #region 插件安装
         private void 允许开机记录时间ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //if(ResourceFileUtil.WriteFileToDisk(Properties.Resources.开机小程序, Properties.Resources.RecorderFullFilename))
             try
             {
-                File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\william\sd.exe" + " -k "+Directory.GetCurrentDirectory()+"\\"+Properties.Resources.MdfFilename,System.Text.Encoding.ASCII);
+                File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\william\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
                 MessageBox.Show("已经安装！", "成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
-            catch(UnauthorizedAccessException)
+            catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("需要管理员权限！请以管理员身份启动本程序", "失败警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+                //MessageBox.Show("需要管理员权限！请以管理员身份启动本程序", "失败警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MainForm.restartWithAdminRight();
             }
         }
 
@@ -125,10 +123,20 @@ namespace 关机助手
                 File.Delete(Properties.Resources.RecorderShellFullFilename);
                 MessageBox.Show("已经卸载", "成功！");
             }
-            catch(Exception e1)
+            catch (Exception e1)
             {
                 ExceptionForm.ShowDialog(e1);
             }
+        }
+        #endregion
+
+        #region 查看日志
+        private void 查看日志ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AlertBusy())
+                return;
+
+            new LogManagerForm().Show();
         }
         #endregion
 
@@ -141,17 +149,53 @@ namespace 关机助手
             if (SqlExecuter.记录开机事件(TableName))
                 MessageBox.Show("插入记录成功!", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        
-        private void 删除所有记录ToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void 插入关机记录ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(SqlExecuter.记录关机事件())
+                MessageBox.Show("添加关机记录成功！");
+        }
+
+        private void 删除所有主表记录ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
 
-            if (MessageBox.Show("此操作不可恢复！是否继续？","警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            TruncateTable(TableName);
+        }
+
+        private void 清除日志数据ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AlertBusy())
                 return;
 
-            if (SqlServerConnection.ExecuteUpdate("delete from " + TableName) != 0) 
-                MessageBox.Show("清空数据库成功", "成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            TruncateTable("[DBLog]");
+        }
+
+        private void 清除注释数据ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AlertBusy())
+                return;
+
+            TruncateTable("[Remark]");
+        }
+
+        private bool TruncateTable(string TableName)
+        {
+            if (MessageBox.Show("此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                return false;
+
+            if (SqlServerConnection.ExecuteUpdate("delete from " + TableName) != 0)
+            {
+                MessageBox.Show("清空数据库" + TableName + "成功", "成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return true;
+            }
+            else
+            {
+            	MessageBox.Show("数据库" + TableName + "是空的！", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            	return false;
+            }
+            
         }
 
         private void 删除指定一条记录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -166,9 +210,9 @@ namespace 关机助手
                     "WHERE 序号 = ";
             try
             {
-                sql+= int.Parse(input);
+                sql += int.Parse(input);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 MessageBox.Show("输入的不是正整数，删除失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -182,7 +226,7 @@ namespace 关机助手
                 else
                     MessageBox.Show("发生未知错误，删除失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 MessageBox.Show("发生未知错误，删除失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -199,23 +243,21 @@ namespace 关机助手
                 MessageBox.Show("删除最后一条记录成功!", "删除成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private string DeleteMaxIDSQL()
-        {
-            return "DELETE " +
-                    "FROM[Table] " +
-                    "WHERE 序号 = ( " +
-                    "SELECT MAX(序号) " +
-                    "FROM[Table])";
-        }
+        private string DeleteMaxIDSQL() =>
+            "DELETE " +
+            "FROM[Table] " +
+            "WHERE 序号 = ( " +
+            "SELECT MAX(序号) " +
+            "FROM[Table])";
 
         private void 提交手动修改ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
 
-            if (SqlServerConnection.UpdateDatabase((DataTable)dataGridView1.DataSource))
+            if (SqlServerConnection.UpdateDatabase((DataTable) dataGridView1.DataSource))
                 System.Windows.MessageBox.Show("手动修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-            
+            this.显示后五条ToolStripMenuItem_Click(sender, e);
         }
 
         private void 执行SQL语句ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -240,22 +282,44 @@ namespace 关机助手
                 if (count == 0)
                     MessageBox.Show("执行失败，没有条目受到影响");
                 else
-                    MessageBox.Show("执行成功，"+ count + "条条目受到影响");
+                    MessageBox.Show("执行成功，" + count + "条条目受到影响");
             }
         }
 
-        private void 查看日志ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 添加编辑注释ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
 
-            new LogManagerForm().Show();
+            new RemarkManagerForm().Show();
         }
+
+        private string updateLastRemarkSql(string remark) =>
+            "UPDATE [Table] " + 
+            "SET remark=\'"+remark+"\' "+
+            "WHERE 序号 = ( " +
+            "SELECT MAX(序号) " +
+            "FROM[Table])";
 
         private void 释放数据库ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SqlServerConnection.ResetConnection();
             MessageBox.Show("释放成功");
+        }
+
+        private void 查看已连接数据库ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SqlServerConnection.ConnectionOpenned() == true)
+                MessageBox.Show("已连接数据库"+SqlServerConnection.GetConnection().Database, "数据库文件名");
+            else if (SqlServerConnection.GetConnectionState() == ConnectionState.Connecting)
+                MessageBox.Show("正在连接数据库，请稍后重试. . .");
+            else
+                MessageBox.Show("未连接数据库");
+        }
+
+        private void 强制性报错ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new Exception("我是报错框。");
         }
         #endregion
 
@@ -276,11 +340,14 @@ namespace 关机助手
             }
             if (!this.DataSetToExcel(true))
                 MessageBox.Show("输出失败！");
+            else
+            	MessageBox.Show("输出完成，正在弹出Excel表格。如有部分内容不正确请手动调整对应的单元格格式。","成功"
+            		, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public bool DataSetToExcel(bool isShowExcle)
         {
-            DataTable dataTable = (DataTable)dataGridView1.DataSource;
+            DataTable dataTable = (DataTable) dataGridView1.DataSource;
             int rowNumber = dataTable.Rows.Count;
             int columnNumber = dataTable.Columns.Count;
             String stringBuffer = "";
@@ -311,8 +378,8 @@ namespace 关机助手
             }
             Clipboard.Clear();
             Clipboard.SetDataObject(stringBuffer);
-            ((Microsoft.Office.Interop.Excel.Range)excel.Cells[1, 1]).Select();
-            ((Microsoft.Office.Interop.Excel.Worksheet)excel.ActiveWorkbook.ActiveSheet).Paste(Missing.Value, Missing.Value);
+            ( (Microsoft.Office.Interop.Excel.Range) excel.Cells[1, 1] ).Select();
+            ( (Microsoft.Office.Interop.Excel.Worksheet) excel.ActiveWorkbook.ActiveSheet ).Paste(Missing.Value, Missing.Value);
             Clipboard.Clear();
 
             return true;
@@ -320,26 +387,43 @@ namespace 关机助手
 
         private void 生成备份文档ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (CanReadMdfFile() == false)
-            {
-                //MessageBox.Show("功能仅限在该窗口内未点击其他任何非导入导出按钮时使用！", "请重启程序后优先使用此功能", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //return;
-                SqlServerConnection.ResetConnection();
-            }
+            //if (true/*CanReadMdfFile() == false*/)
+            //{
+            //MessageBox.Show("功能仅限在该窗口内未点击其他任何非导入导出按钮时使用！", "请重启程序后优先使用此功能", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //return;
+            SqlServerConnection.ResetConnection();
+            //}
 
             SaveFileDialog fileDialog = new SaveFileDialog();
             fileDialog.Filter = "备份文件 (*.backup)|*.backup|所有文件 (*.*)|*.*";
-            if(fileDialog.ShowDialog() == DialogResult.OK)
+            if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 Util.GZipUtil.Compress(new FileInfo(Properties.Resources.MdfFilename), new FileInfo(fileDialog.FileName), ".backup", true);
                 MessageBox.Show("无损备份数据库成功！", "备份成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            
+        }
+
+        private void rar压缩数据库ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SqlServerConnection.ResetConnection();
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "备份文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (WinRARUtil.CompressFile(
+                    new String[] { new FileInfo("TimeDatabase.mdf").FullName,
+                                   new FileInfo("TimeDatabase_log.ldf").FullName
+                                 },
+                    fileDialog.FileName))
+                    MessageBox.Show("无损备份数据库成功！", "备份成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                else
+                    MessageBox.Show("备份失败！该操作需要电脑上装有WinRAR软件。", "失败提示",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
         }
 
         private void 加载无损备份文档ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(CanReadMdfFile() == false)
+            if (CanReadMdfFile() == false)
             {
                 //MessageBox.Show("功能仅限在该窗口内未点击其他任何非导入导出按钮时使用！", "请重启程序后优先使用此功能", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //return;
@@ -374,7 +458,7 @@ namespace 关机助手
             if (AlertBusy())
                 return;
 
-            new AnalyseUsingTimeForm().Show();
+            new AnalysingForm().Show();
         }
         #endregion
 
@@ -397,7 +481,7 @@ namespace 关机助手
                 SqlServerConnection.OpenConnection();
                 this.openDBBackgroundWorker.ReportProgress(100);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ExceptionForm.ShowDialog(ex);
             }
@@ -408,7 +492,7 @@ namespace 关机助手
             this.progressBar1.Value = 100;
             if (backgroundQueryOperate == QueryOperate.显示所有数据)
                 ShowDatabase();
-            else if(backgroundQueryOperate == QueryOperate.显示后五行数据)
+            else if (backgroundQueryOperate == QueryOperate.显示后五行数据)
             {
                 dataGridView1.DataSource = null;
                 dataGridView1.DataSource = SqlServerConnection.ExecuteQuery(QueryLastFiveSQL());
@@ -418,7 +502,7 @@ namespace 关机助手
 
 
         #endregion
-        
+
         private bool AlertBusy()
         {
             if (SqlServerConnection.GetConnectionState() == ConnectionState.Connecting)
@@ -428,7 +512,6 @@ namespace 关机助手
             }
             return false;
         }
-
         
     }
 }

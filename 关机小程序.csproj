@@ -66,6 +66,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Serialization" />
@@ -79,7 +81,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -117,11 +118,17 @@
     <Compile Include="DatabaseManagerForm.Designer.cs">
       <DependentUpon>DatabaseManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AnalyseUsingTimeForm.cs">
+    <Compile Include="AnalysingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AnalyseUsingTimeForm.Designer.cs">
-      <DependentUpon>AnalyseUsingTimeForm.cs</DependentUpon>
+    <Compile Include="AnalysingForm.Designer.cs">
+      <DependentUpon>AnalysingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RemarkManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RemarkManagerForm.Designer.cs">
+      <DependentUpon>RemarkManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\FastModeUtil.cs" />
     <Compile Include="Util\LogUtil.cs" />
@@ -129,6 +136,7 @@
     <Compile Include="Util\ShutdownUtil.cs" />
     <Compile Include="Util\SqlExecuter.cs" />
     <Compile Include="Util\SqlServerConnection.cs" />
+    <Compile Include="Util\SqlUtil.cs" />
     <Compile Include="Util\SystemCommandUtil.cs" />
     <Compile Include="SqlServerDatabase\TimeDatabaseDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -138,6 +146,9 @@
     <Compile Include="Util\GZipUtil.cs" />
     <Compile Include="Util\ConsoleOutputUtil.cs" />
     <Compile Include="Util\TimeUtil.cs" />
+    <Compile Include="Util\UnicodeUtil.cs" />
+    <Compile Include="Util\WinRARUtil.cs" />
+    <Compile Include="Util\ZipUtil.cs" />
     <EmbeddedResource Include="ExceptionForm.resx">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -163,9 +174,13 @@
     <EmbeddedResource Include="DatabaseManagerForm.resx">
       <DependentUpon>DatabaseManagerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AnalyseUsingTimeForm.resx">
-      <DependentUpon>AnalyseUsingTimeForm.cs</DependentUpon>
+    <EmbeddedResource Include="AnalysingForm.resx">
+      <DependentUpon>AnalysingForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="RemarkManagerForm.resx">
+      <DependentUpon>RemarkManagerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

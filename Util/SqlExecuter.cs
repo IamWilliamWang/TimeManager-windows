@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 
@@ -14,15 +15,16 @@ namespace 关机助手.Util
         //}
 
         /// <summary>
-        /// 请使用 "记录开机事件(TableName)" 代替本方法
+        /// 推荐使用 "记录开机事件(TableName)" 代替本方法
         /// </summary>
-        [Obsolete]
+        
         public static void 记录开机事件()
         {
-            String sql = "INSERT INTO[Table](开机时间) " +
-                       "VALUES (GETDATE())";
+            //String sql = "INSERT INTO[Table](开机时间) " +
+            //           "VALUES (GETDATE())";
 
-            SqlServerConnection.ExecuteUpdate(sql);
+            //SqlServerConnection.ExecuteUpdate(sql);
+            记录开机事件("[Table]");
         }
 
         public static bool 记录开机事件(String TableName)
@@ -32,46 +34,40 @@ namespace 关机助手.Util
             return false;
         }
 
-        private static string InsertPowerOnTimeSQL(String TableName)
+        private static string InsertPowerOnTimeSQL(String TableName) =>
+             "INSERT "
+            + "INTO " + TableName + "(开机时间) "
+            + "VALUES (GETDATE())";
+
+        public static bool 记录关机事件()
         {
-            return "INSERT "
-                    + "INTO " + TableName + "(开机时间) "
-                    + "VALUES (" + "\'" + DateTime.Now + "\')";
+            return SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL()) != 0;
         }
 
-        public static void 记录关机事件()
-        {
-            SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL());
-        }
-
-        public static void 记录关机事件(String 延迟时间)
+        public static bool 记录延迟关机事件(String 延迟时间)
         {
             if (延迟时间[0] != '\'' && 延迟时间[延迟时间.Length - 1] != '\'')
             {
-                SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL("'"+延迟时间+"'"));
+                return SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL("'"+延迟时间+"'")) != 0;
             }
             else
-                SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间));
+                return SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间)) != 0;
         }
 
-        private static string UpdateShutdownTimeSQL()
-        {
-            return "UPDATE [Table] " +
-                "SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间  " +
-                "WHERE 序号 in " +
-                "(SELECT MAX(序号) " +
-                "FROM[Table]) ";
-        }
+        private static string UpdateShutdownTimeSQL() =>
+            "UPDATE [Table] " +
+            "SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间  " +
+            "WHERE 序号 in " +
+            "(SELECT MAX(序号) " +
+            "FROM[Table]) ";
 
-        private static string UpdateShutdownTimeSQL(String 延迟时间)
-        {
-            return "UPDATE [Table] " +
-                "SET 关机时间 = GETDATE()+" + 延迟时间 +
-                ", 时长 = GETDATE()+" + 延迟时间 + " - 开机时间  " +
-                "WHERE 序号 in " +
-                "(SELECT MAX(序号) " +
-                "FROM[Table]) ";
-        }
+        private static string UpdateShutdownTimeSQL(String 延迟时间) =>
+            "UPDATE [Table] " +
+            "SET 关机时间 = GETDATE()+" + 延迟时间 +
+            ", 时长 = GETDATE()+" + 延迟时间 + " - 开机时间  " +
+            "WHERE 序号 in " +
+            "(SELECT MAX(序号) " +
+            "FROM[Table]) ";
 
         public static void 记录结算()
         {
@@ -83,48 +79,54 @@ namespace 关机助手.Util
             SqlServerConnection.ExecuteUpdate(CalculateEverydayTimesAndUsedTimesSQL());
         }
      
-        private static string CalculateEverydayTimesAndUsedTimesSQL()
-        {
-            return "declare @i int " +
-                "set @i = (SELECT MAX(序号) FROM[Table]) " +
-                "while @i > 0 " +
-                "begin " +
-                "    UPDATE[Table] " +
-                "    SET 当天使用次数 = ( " +
-                "        SELECT COUNT(*) " +
-                "        FROM[Table] AS FatherTable " +
-                "        WHERE EXISTS( " +
-                "            SELECT * " +
-                "            FROM[Table] " +
-                "            WHERE 序号 = (@i) " +
-                "                AND YEAR([Table].开机时间) = YEAR([FatherTable].开机时间) " +
-                "                AND MONTH([Table].开机时间) = MONTH([FatherTable].开机时间) " +
-                "                AND DAY([Table].开机时间) = DAY([FatherTable].开机时间) " +
-                "            ) " +
-                "        ) " +
-                "    WHERE 序号 = (@i) " +
-                "    set @i = @i - 1 " +
-                "end " +
-                "set @i = (SELECT MAX(序号) FROM[Table]) " +
-                "while @i > 0 " +
-                "begin " +
-                "    UPDATE[Table] " +
-                "    SET 当月使用次数 = ( " +
-                "        SELECT COUNT(*) " +
-                "        FROM[Table] AS FatherTable " +
-                "        WHERE EXISTS( " +
-                "            SELECT * " +
-                "            FROM[Table] " +
-                "            WHERE 序号 = (@i) " +
-                "                AND YEAR([Table].开机时间) = YEAR([FatherTable].开机时间) " +
-                "                AND MONTH([Table].开机时间) = MONTH([FatherTable].开机时间) " +
-                "            ) " +
-                "        ) " +
-                "    WHERE 序号 = (@i) " +
-                "    set @i = @i - 1 " +
-                "end ";
-        }
-        private int 最大序号()/*为了避免在SQL查询中查找空数据库而产生错误，但会一定程度降低程序效率*/
+        private static string CalculateEverydayTimesAndUsedTimesSQL() =>
+            "declare @i int " + //填补当天使用次数
+            "set @i = (SELECT MAX(序号) FROM[Table]) " +
+            "while @i > 0 " +
+            "begin " +
+            "    UPDATE[Table] " +
+            "    SET 当天使用次数 = ( " +
+            "        SELECT COUNT(*) " +
+            "        FROM[Table] AS FatherTable " +
+            "        WHERE EXISTS( " +
+            "            SELECT * " +
+            "            FROM[Table] " +
+            "            WHERE 序号 = (@i) " +
+            "                AND YEAR([Table].开机时间) = YEAR([FatherTable].开机时间) " +
+            "                AND MONTH([Table].开机时间) = MONTH([FatherTable].开机时间) " +
+            "                AND DAY([Table].开机时间) = DAY([FatherTable].开机时间) " +
+            "            ) " +
+            "        ) " +
+            "    WHERE 序号 = (@i) " +
+
+
+            "    UPDATE[Table] " + //填补所有的当月使用次数栏
+            "    SET 当月使用次数 = ( " +
+            "        SELECT COUNT(*) " +
+            "        FROM[Table] AS FatherTable " +
+            "        WHERE EXISTS( " +
+            "            SELECT * " +
+            "            FROM[Table] " +
+            "            WHERE 序号 = (@i) " +
+            "                AND YEAR([Table].开机时间) = YEAR([FatherTable].开机时间) " +
+            "                AND MONTH([Table].开机时间) = MONTH([FatherTable].开机时间) " +
+            "            ) " +
+            "        ) " +
+            "    WHERE 序号 = (@i) " +
+            "    set @i = @i - 1 " +
+            "end " +
+
+
+            "update[Table] " + //手动插入关机时间后运行此代码，将该填写的时长填补完成
+            "set 时长 = 关机时间 - 开机时间 "+
+            "where 关机时间 is not null and 时长 is null";
+
+        /// <summary>
+        /// 请使用GetMaxId()代替
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete]
+        public static int 获取最大序号()/*为了避免在SQL查询中查找空数据库而产生错误，但会一定程度降低程序效率*/
         {
             int 序号 = 0;
             using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.TimeDatabaseConnectionString))
@@ -148,12 +150,19 @@ namespace 关机助手.Util
                         序号 = reader.GetInt32(0);
                     }
                 }
-                catch (System.Data.SqlTypes.SqlNullValueException 空数据库异常)
+                catch (System.Data.SqlTypes.SqlNullValueException) //空数据库异常
                 {
                     序号 = 0;
                 }
             }
             return 序号;
+        }
+
+        public static int GetMaxId()
+        {
+            DataTable table = SqlServerConnection.ExecuteQuery("SELECT MAX(序号) FROM [Table]");
+            int maxId = int.Parse(table.Rows[0][0].ToString());
+            return maxId >= 0 ? maxId : 0;
         }
 
         /// <summary>

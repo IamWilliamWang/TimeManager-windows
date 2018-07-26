@@ -14,7 +14,7 @@ namespace 关机助手.Util
         //{ get { return connString; }
         //}
 
-        public SqlConnection connection{ get; set; }
+        private SqlConnection connection{ get; set; }
 
         private SqlDataAdapter adapter;
 
@@ -38,7 +38,7 @@ namespace 关机助手.Util
             try
             {
                 TimeUtil.Tik();
-                SqlServerConnection.GetInstance().connection.Open();
+                SqlServerConnection.GetConnection().Open();
                 TimeUtil.Tok();
             }
             catch (Exception)
@@ -61,7 +61,7 @@ namespace 关机助手.Util
 
             try
             {
-                SqlServerConnection.GetInstance().connection.Close();
+                SqlServerConnection.GetConnection().Close();
             }
             catch (Exception)
             {
@@ -74,7 +74,7 @@ namespace 关机助手.Util
         /// </summary>
         public static void DisposeConnection()
         {
-            GetInstance().connection.Dispose();
+            GetConnection().Dispose();
         }
 
         /// <summary>
@@ -87,24 +87,24 @@ namespace 关机助手.Util
 
         public static Boolean ConnectionOpenned()
         {
-            return GetInstance().connection.State == ConnectionState.Open;
+            return GetConnection().State == ConnectionState.Open;
         }
 
         public static ConnectionState GetConnectionState()
         {
-            return GetInstance().connection.State;
+            return GetConnection().State;
         }
 
         public static DataTable ExecuteQuery(string selectCommandText)
         {
             try
             {
-                if (GetInstance().connection.State == ConnectionState.Closed)
+                if (GetConnection().State == ConnectionState.Closed)
                     OpenConnection();
-                else if (GetInstance().connection.State == ConnectionState.Connecting)
+                else if (GetConnection().State == ConnectionState.Connecting)
                     return null;
 
-                GetInstance().adapter = new SqlDataAdapter(selectCommandText, GetInstance().connection);
+                GetInstance().adapter = new SqlDataAdapter(selectCommandText, GetConnection());
                 SqlCommandBuilder builder = new SqlCommandBuilder(GetInstance().adapter);
                 DataTable table = new DataTable();
                 GetInstance().adapter.Fill(table);
@@ -119,10 +119,10 @@ namespace 关机助手.Util
         public static int ExecuteUpdate(string commandText)
         {
             try {
-                if (GetInstance().connection.State == ConnectionState.Closed)
+                if (GetConnection().State == ConnectionState.Closed)
                     OpenConnection();
 
-                SqlCommand cmd = new SqlCommand(commandText, GetInstance().connection);
+                SqlCommand cmd = new SqlCommand(commandText, GetConnection());
                 return cmd.ExecuteNonQuery();
             }
             catch (Exception)
@@ -135,7 +135,7 @@ namespace 关机助手.Util
         {
             try
             {
-                if (GetInstance().connection.State == ConnectionState.Closed)
+                if (GetConnection().State == ConnectionState.Closed)
                     OpenConnection();
 
                 //创建命令重建对象

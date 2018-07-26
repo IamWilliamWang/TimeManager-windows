@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace 关机助手
+namespace 关机助手.Util
 {
     class ShutdownUtil
     {

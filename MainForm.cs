@@ -2,20 +2,19 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Threading;
 using System.Windows.Forms;
 using 关机助手.Util;
-using static 关机助手.ShutdownUtil;
+using static 关机助手.Util.ShutdownUtil;
 
 namespace 关机助手
 {
-    public partial class MainForm : Form 
+    public partial class MainForm : Form
     {
         private static Form form = null;
         //public static readonly String version="1.4.0";
 
-        public MainForm() 
+        public MainForm()
         {
             InitializeComponent();
             comboBoxMode.SelectedIndex = 0;
@@ -36,7 +35,7 @@ namespace 关机助手
                     GZipUtil.DecompressBytes(Properties.Resources.EmptyDB),
                     Properties.Resources.MdfFilename);
 
-                MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。","欢迎！",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。", "欢迎！", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DatabaseManagerForm.needInitialized = true;
             }
 
@@ -71,7 +70,7 @@ namespace 关机助手
         {
             for (int i = 0; i <= 60; i += 5)
                 this.comboBoxTime.Items.Add(i);
-            
+
         }
 
         private void AddNowTimeToFormTitle()
@@ -98,16 +97,19 @@ namespace 关机助手
 
         private void comboBoxTime_MouseWheel(object sender, MouseEventArgs e)
         {
-            int nowNumber = int.Parse(comboBoxTime.Text);
+            int nowNumber = -1;
+            try { nowNumber = int.Parse(comboBoxTime.Text); }
+            catch { return; }
+
             if (e.Delta > 0)
-                this.comboBoxTime.Text = (nowNumber + 1).ToString();
+                this.comboBoxTime.Text = ( nowNumber + 1 ).ToString();
             else if (e.Delta < 0)
             {
                 if (nowNumber == 0)
                     nowNumber += 60;
-                this.comboBoxTime.Text = (nowNumber - 1).ToString();
+                this.comboBoxTime.Text = ( nowNumber - 1 ).ToString();
             }
-        }        
+        }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
@@ -116,7 +118,7 @@ namespace 关机助手
                 if (this.记录关机时间checkBox.Checked)
                     SqlExecuter.记录关机事件();
 
-                if (this.comboBoxMode.Text!="休眠" && float.Parse(this.comboBoxTime.Text) < 0)
+                if (this.comboBoxMode.Text != "休眠" && float.Parse(this.comboBoxTime.Text) < 0)
                     return;
 
                 CancelShutdownCommand();
@@ -135,6 +137,7 @@ namespace 关机助手
                             //}
                             break;
                         case "重启":
+                            File.CreateText(@"C:\Users\william\DONOTWRITEDATA").Close();
                             RunShutdownCommand(Mode.重启, float.Parse(this.comboBoxTime.Text) * 60);
                             break;
                         case "休眠":
@@ -146,14 +149,14 @@ namespace 关机助手
                             break;
                     }
                 }
-                catch (FormatException e1)
+                catch (FormatException)
                 {
                     MessageBox.Show("请输入正确的数据！", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.comboBoxTime.Text = "0";
                     return;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ExceptionForm.ShowDialog(ex);
             }
@@ -161,11 +164,13 @@ namespace 关机助手
 
         private void 休眠结束()
         {
+
             new Thread(休眠结束后的工作).Start();
         }
 
         private void 休眠结束后的工作()
         {
+            this.Visible = false;
             Thread.Sleep(10000);
             SqlExecuter.记录开机事件();
             退出ToolStripMenuItem_Click(null, null);
@@ -187,7 +192,8 @@ namespace 关机助手
 
         private void button2OK_Click(object sender, EventArgs e)
         {
-            try {
+            try
+            {
                 if (this.记录关机时间checkBox.Checked)
                     SqlExecuter.记录关机事件();
 
@@ -201,9 +207,9 @@ namespace 关机助手
                 }
                 ShutdownUtil.CancelShutdownCommand();
                 ShutdownUtil.RunShutdownCommand(Mode.关机, restTime_seconds);
-                MessageBox.Show("将在" + (nextDay ? "明日" : "今日") + this.dateTimePicker1.Value.ToLongTimeString() + "关机", "离关机还剩" + restTime_seconds + "秒", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("将在" + ( nextDay ? "明日" : "今日" ) + this.dateTimePicker1.Value.ToLongTimeString() + "关机", "离关机还剩" + restTime_seconds + "秒", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ExceptionForm.ShowDialog(ex);
             }
@@ -241,7 +247,7 @@ namespace 关机助手
             }
             catch
             {
-                MessageBox.Show("输入错误！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("输入错误！", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -290,53 +296,58 @@ namespace 关机助手
         {
 
             float? minutes = null;
-            try {
+            try
+            {
                 minutes = float.Parse(this.comboBoxTime.Text);
             }
             catch
             {
-                MessageBox.Show("请输入正确的数据！","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("请输入正确的数据！", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (minutes == 0)
             {
-                MessageBox.Show("选择0分钟是危险行为！已阻止","错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("选择0分钟是危险行为！已阻止", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             try
             {
-                
+
                 File.AppendAllText
                     (Properties.Resources.RecorderShellFullFilename,
                     " -d " + minutes,
                     System.Text.Encoding.ASCII);
             }
-            catch
+            catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("失败！请使用管理员权限重启本程序","失败警示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("失败！请使用管理员权限重启本程序","失败警示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                restartWithAdminRight();
+
                 return;
             }
-            MessageBox.Show("注册成功！开机"+minutes+"分钟后自动关机","成功提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("注册成功！开机" + minutes + "分钟后自动关机", "成功提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void 销毁关机事件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-        	try
-        	{
-            	File.WriteAllText(Properties.Resources.RecorderShellFullFilename, "\"C:\\Users\\william\\sd.exe\" -k", System.Text.Encoding.ASCII);
-			}
-            catch
+            try
             {
-                MessageBox.Show("失败！请使用管理员权限重启本程序","失败警示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                File.WriteAllText(Properties.Resources.RecorderShellFullFilename, "\"C:\\Users\\william\\sd.exe\" -k", System.Text.Encoding.ASCII);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                //MessageBox.Show("失败！请使用管理员权限重启本程序","失败警示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                restartWithAdminRight();
                 return;
             }
-            MessageBox.Show("销毁成功！","成功提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("销毁成功！", "成功提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)
         {
             float opacity = 100;
-            try {
+            try
+            {
                 opacity = float.Parse(this.toolStripComboBox透明度.Text);
             }
             catch
@@ -367,8 +378,8 @@ namespace 关机助手
         private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Thread(RunDevProc).Start();
-            
-            MessageBox.Show("尝试完成","", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+            MessageBox.Show("尝试完成", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             Environment.Exit(0);
         }
 
@@ -378,26 +389,78 @@ namespace 关机助手
             //Process.Start("cmd.exe", CopyExeFileCommand());
             //SystemCommandUtil.ExcuteCommand(@"F:\Visual Studio 2015\关机小程序\Resources\update_exefile.cmd.lnk");
             File.Copy(Properties.Resources.ExeDevelopFullFilename, "C:\\Users\\william\\Desktop\\关机助手0.exe");
-            
+
         }
 
-        private string CopyExeFileCommand()
-        {
-            return "/c taskkill /f /im 关机助手.exe\r\n"
-                + "copy /Y \"" + Properties.Resources.ExeDevelopFullFilename + "\" \"C:\\Users\\william\\Desktop\\关机助手(0).exe\"\r\n"
-                + "del \"C:\\Users\\william\\Desktop\\关机助手.exe\"\r\n"
-                + "rename \"C:\\Users\\william\\Desktop\\关机助手(0).exe\" 关机助手.exe";
-        }
-        
+        private string CopyExeFileCommand() =>
+            "/c taskkill /f /im 关机助手.exe\r\n"
+            + "copy /Y \"" + Properties.Resources.ExeDevelopFullFilename + "\" \"C:\\Users\\william\\Desktop\\关机助手(0).exe\"\r\n"
+            + "del \"C:\\Users\\william\\Desktop\\关机助手.exe\"\r\n"
+            + "rename \"C:\\Users\\william\\Desktop\\关机助手(0).exe\" 关机助手.exe";
+
+
         private void 帮助ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Hide();
             new HelpForm().Show();
         }
 
+        bool sizeStrenthed = false;
+        private void 更多ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (sizeStrenthed == false)
+            {
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 9);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 5);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 4);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 3);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 3);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 3);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 3);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 3);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 2);
+                Thread.Sleep(25);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 1);
+                this.退出ToolStripMenuItem.Text = "精简功能";
+            }
+            else
+            {
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 9);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 5);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 4);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 3);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 3);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 3);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 3);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 3);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 2);
+                Thread.Sleep(50);
+                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 1);
+                this.退出ToolStripMenuItem.Text = "拓展功能";
+            }
+            sizeStrenthed = !sizeStrenthed;
+        }
+
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.updateTitleTimer.Enabled = false;
+            SqlServerConnection.CloseConnection();
             Application.Exit();
         }
 
@@ -437,35 +500,35 @@ namespace 关机助手
         }
 
 
-        private string contentTime;
-        private void updateTitleBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            String nowTime = "";
-            Thread updateDataTimeThread = new Thread(new ThreadStart(() =>
-            {
-                for (int i = 1; i <= 100; i++)
-                {
-                    nowTime = DateTime.Now.ToLongTimeString();
-                    contentTime = nowTime;
+        //private string contentTime;
+        //private void updateTitleBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        //{
+        //    String nowTime = "";
+        //    Thread updateDataTimeThread = new Thread(new ThreadStart(() =>
+        //    {
+        //        for (int i = 1; i <= 100; i++)
+        //        {
+        //            nowTime = DateTime.Now.ToLongTimeString();
+        //            contentTime = nowTime;
 
-                    //this.updateTitleBackgroundWorker.ReportProgress(i);
-                    Thread.Sleep(1000);
-                }
-            }));
+        //            //this.updateTitleBackgroundWorker.ReportProgress(i);
+        //            Thread.Sleep(1000);
+        //        }
+        //    }));
 
-            updateDataTimeThread.IsBackground = true;
-            updateDataTimeThread.Start();
-        }
+        //    updateDataTimeThread.IsBackground = true;
+        //    updateDataTimeThread.Start();
+        //}
 
-        private void updateTitleBackgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
-        {
-            this.Text = this.Text.Substring(0, this.Text.LastIndexOf(' ')) + " " + contentTime;
-        }
+        //private void updateTitleBackgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        //{
+        //    this.Text = this.Text.Substring(0, this.Text.LastIndexOf(' ')) + " " + contentTime;
+        //}
 
         private void updateTitleTimer_Tick(object sender, EventArgs e)
         {
             this.Text = this.Text.Substring(0, this.Text.LastIndexOf(' ')) + " " + DateTime.Now.ToLongTimeString();
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
         }
 
         private void connectSqlServerBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -476,7 +539,7 @@ namespace 关机助手
                 SqlServerConnection.OpenConnection();
                 TimeUtil.Tok(writeErrorLog: true);
             }
-            catch(Exception e1)
+            catch (Exception e1)
             {
                 ExceptionForm.ShowDialog(e1);
             }
@@ -501,7 +564,7 @@ namespace 关机助手
                 MessageBox.Show("后台已经启动本程序，不能重复启动！", "警告");
                 Application.Exit();
             }
-            
+
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -520,14 +583,15 @@ namespace 关机助手
             //    ExceptionForm.ShowDialog(e2);
             //}
             //this.文件ToolStripMenuItem.Enabled = false;
-            if(SqlExecuter.记录开机事件(DatabaseManagerForm.TableName))
-            {
-                MessageBox.Show("插入记录成功!", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            //if (SqlExecuter.记录开机事件(DatabaseManagerForm.TableName))
+            //{
+            //    MessageBox.Show("插入记录成功!", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //}
+            //SqlServerConnection.ResetConnection();
         }
         private void comboBoxMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(this.comboBoxMode.Text == "休眠")
+            if (this.comboBoxMode.Text == "休眠")
             {
                 this.comboBoxTime.Text = "立即";
                 this.comboBoxTime.Enabled = false;
@@ -537,6 +601,66 @@ namespace 关机助手
                 this.comboBoxTime.Text = "0";
                 this.comboBoxTime.Enabled = true;
             }
+        }
+
+        public static void restartWithAdminRight()
+        {
+            if (MessageBox.Show("请使用管理员权限重启本程序再进行此操作，是否程序允许获取权限？", "操作失败", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
+            else
+            {
+                ProcessStartInfo proc = new ProcessStartInfo();
+                proc.UseShellExecute = true;
+                proc.WorkingDirectory = Environment.CurrentDirectory;
+                proc.FileName = Application.ExecutablePath;
+                proc.Verb = "runas";
+
+                try
+                {
+                    Process.Start(proc);
+                }
+                catch
+                {
+                    // The user refused the elevation.
+                    // Do nothing and return directly ...
+                    MessageBox.Show("获得权限失败", "用户未允许授权", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                Application.Exit();
+            }
+        }
+
+        private void MainForm_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        private void MainForm_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            if (files.Length != 1)
+                return;
+            string filename = files[0];
+            SqlServerConnection.OpenConnection(filename);
+            MessageBox.Show("重定向数据库文件成功。","使用新的数据库");
+        }
+
+        private void 插入开机时间ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SqlExecuter.记录开机事件("[Table]"))
+                MessageBox.Show("插入记录成功!", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void 插入关机时间ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SqlExecuter.记录关机事件())
+                MessageBox.Show("添加关机记录成功！");
         }
     }
 }

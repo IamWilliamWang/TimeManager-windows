@@ -34,6 +34,8 @@
             this.开发者模式contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.应用AppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.插入开机时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.插入关机时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.数据管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.取消指令ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,8 +57,6 @@
             this.确定button2 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
-            this.记录关机时间contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.记录开机时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
             this.connectSqlServerBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.checkSafeBackgroundWorker = new System.ComponentModel.BackgroundWorker();
@@ -64,13 +64,12 @@
             this.开发者模式contextMenuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
-            this.记录关机时间contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
             // 
             this.menuStrip.ContextMenuStrip = this.开发者模式contextMenuStrip;
-            this.menuStrip.Font = new System.Drawing.Font("幼圆", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.menuStrip.Font = new System.Drawing.Font("幼圆", 11F);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
             this.数据管理ToolStripMenuItem,
@@ -78,8 +77,8 @@
             this.退出ToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Padding = new System.Windows.Forms.Padding(6, 3, 0, 3);
-            this.menuStrip.Size = new System.Drawing.Size(302, 26);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.menuStrip.Size = new System.Drawing.Size(302, 25);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -100,31 +99,48 @@
             // 
             // 文件ToolStripMenuItem
             // 
+            this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.插入开机时间ToolStripMenuItem,
+            this.插入关机时间ToolStripMenuItem});
             this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
-            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.文件ToolStripMenuItem.Text = "开机";
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(51, 19);
+            this.文件ToolStripMenuItem.Text = "插入";
             this.文件ToolStripMenuItem.Click += new System.EventHandler(this.文件ToolStripMenuItem_Click);
+            // 
+            // 插入开机时间ToolStripMenuItem
+            // 
+            this.插入开机时间ToolStripMenuItem.Name = "插入开机时间ToolStripMenuItem";
+            this.插入开机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.插入开机时间ToolStripMenuItem.Text = "插入开机时间";
+            this.插入开机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入开机时间ToolStripMenuItem_Click);
+            // 
+            // 插入关机时间ToolStripMenuItem
+            // 
+            this.插入关机时间ToolStripMenuItem.Name = "插入关机时间ToolStripMenuItem";
+            this.插入关机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.插入关机时间ToolStripMenuItem.Text = "插入关机时间";
+            this.插入关机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入关机时间ToolStripMenuItem_Click);
             // 
             // 数据管理ToolStripMenuItem
             // 
             this.数据管理ToolStripMenuItem.Name = "数据管理ToolStripMenuItem";
-            this.数据管理ToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
+            this.数据管理ToolStripMenuItem.Size = new System.Drawing.Size(83, 19);
             this.数据管理ToolStripMenuItem.Text = "数据管理";
             this.数据管理ToolStripMenuItem.Click += new System.EventHandler(this.管理主窗口ToolStripMenuItem_Click);
             // 
             // 取消指令ToolStripMenuItem
             // 
             this.取消指令ToolStripMenuItem.Name = "取消指令ToolStripMenuItem";
-            this.取消指令ToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
+            this.取消指令ToolStripMenuItem.Size = new System.Drawing.Size(83, 19);
             this.取消指令ToolStripMenuItem.Text = "取消关机";
             this.取消指令ToolStripMenuItem.Click += new System.EventHandler(this.取消指令ToolStripMenuItem_Click);
             // 
             // 退出ToolStripMenuItem
             // 
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.退出ToolStripMenuItem.Text = "退程序";
-            this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(83, 19);
+            this.退出ToolStripMenuItem.Text = "拓展功能";
+            this.退出ToolStripMenuItem.Click += new System.EventHandler(this.更多ToolStripMenuItem_Click);
             // 
             // comboBoxTime
             // 
@@ -144,8 +160,8 @@
             this.comboBoxMode.Font = new System.Drawing.Font("Tahoma", 9F);
             this.comboBoxMode.FormattingEnabled = true;
             this.comboBoxMode.Items.AddRange(new object[] {
-            "关机",
             "休眠",
+            "关机",
             "重启",
             "延缓"});
             this.comboBoxMode.Location = new System.Drawing.Point(13, 63);
@@ -200,9 +216,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 39);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.Size = new System.Drawing.Size(65, 12);
             this.label1.TabIndex = 4;
-            this.label1.Text = "选择：";
+            this.label1.Text = "模式选择：";
             // 
             // label2
             // 
@@ -211,7 +227,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(113, 12);
             this.label2.TabIndex = 5;
-            this.label2.Text = "关机倒计时(分钟)：";
+            this.label2.Text = "设置倒计时(分钟)：";
             // 
             // 主界面contextMenuStrip
             // 
@@ -221,7 +237,7 @@
             this.帮助ToolStripMenuItem,
             this.退出ToolStripMenuItem1});
             this.主界面contextMenuStrip.Name = "contextMenuStripMainForm";
-            this.主界面contextMenuStrip.Size = new System.Drawing.Size(182, 99);
+            this.主界面contextMenuStrip.Size = new System.Drawing.Size(182, 121);
             // 
             // toolStripComboBox透明度
             // 
@@ -309,7 +325,6 @@
             this.记录关机时间checkBox.AutoSize = true;
             this.记录关机时间checkBox.Checked = true;
             this.记录关机时间checkBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.记录关机时间checkBox.ContextMenuStrip = this.记录关机时间contextMenuStrip;
             this.记录关机时间checkBox.Location = new System.Drawing.Point(207, 39);
             this.记录关机时间checkBox.Name = "记录关机时间checkBox";
             this.记录关机时间checkBox.Size = new System.Drawing.Size(96, 16);
@@ -317,22 +332,9 @@
             this.记录关机时间checkBox.Text = "记录关机时间";
             this.记录关机时间checkBox.UseVisualStyleBackColor = true;
             // 
-            // 记录关机时间contextMenuStrip
-            // 
-            this.记录关机时间contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.记录开机时间ToolStripMenuItem});
-            this.记录关机时间contextMenuStrip.Name = "关机记录contextMenuStrip1";
-            this.记录关机时间contextMenuStrip.Size = new System.Drawing.Size(137, 26);
-            // 
-            // 记录开机时间ToolStripMenuItem
-            // 
-            this.记录开机时间ToolStripMenuItem.Name = "记录开机时间ToolStripMenuItem";
-            this.记录开机时间ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.记录开机时间ToolStripMenuItem.Text = "管理主窗口";
-            this.记录开机时间ToolStripMenuItem.Click += new System.EventHandler(this.管理主窗口ToolStripMenuItem_Click);
-            // 
             // updateTitleTimer
             // 
+            this.updateTitleTimer.Interval = 77;
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
             // 
             // connectSqlServerBackgroundWorker
@@ -347,10 +349,11 @@
             // 
             // MainForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(302, 134);
+            this.ClientSize = new System.Drawing.Size(302, 97);
             this.ContextMenuStrip = this.主界面contextMenuStrip;
             this.Controls.Add(this.记录关机时间checkBox);
             this.Controls.Add(this.label3);
@@ -370,16 +373,17 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Opacity = 0.96D;
-            this.Text = "关机助手 3.7.1";
+            this.Text = "关机助手 3.10";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
             this.DoubleClick += new System.EventHandler(this.Form1_DoubleClick);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.开发者模式contextMenuStrip.ResumeLayout(false);
             this.确认按钮contextMenuStrip.ResumeLayout(false);
             this.主界面contextMenuStrip.ResumeLayout(false);
-            this.记录关机时间contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -410,13 +414,13 @@
         private System.Windows.Forms.ToolStripMenuItem 应用AppToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
         private System.Windows.Forms.CheckBox 记录关机时间checkBox;
-        private System.Windows.Forms.ContextMenuStrip 记录关机时间contextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem 记录开机时间ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 数据管理ToolStripMenuItem;
         private System.Windows.Forms.Timer updateTitleTimer;
         private System.ComponentModel.BackgroundWorker connectSqlServerBackgroundWorker;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
         private System.ComponentModel.BackgroundWorker checkSafeBackgroundWorker;
+        private System.Windows.Forms.ToolStripMenuItem 插入开机时间ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 插入关机时间ToolStripMenuItem;
     }
 }
 

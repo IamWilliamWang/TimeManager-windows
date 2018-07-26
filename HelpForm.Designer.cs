@@ -80,9 +80,9 @@
             this.label1.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.Location = new System.Drawing.Point(149, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 93);
+            this.label1.Size = new System.Drawing.Size(181, 93);
             this.label1.TabIndex = 3;
-            this.label1.Text = "关机助手:\r\n窗体版 v3.7.1\r\n终端版 v1.4";
+            this.label1.Text = "关机助手:\r\n窗体版 v3.10.4\r\n终端版 v1.4";
             // 
             // textBoxUpdateLogCommandVersion
             // 
