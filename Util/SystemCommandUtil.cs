@@ -9,17 +9,19 @@ namespace 关机助手.Util
          * @parms command需要执行的dos指令
          * @returns 执行过程中显示的字符串
          */
-        public static String ExcuteCommand(String command)
+        public static String ExcuteCommand(String command, bool adminAuthorized=false)
         {
             Process process = new Process();
 
-            process.StartInfo.FileName = "cmd";
+            process.StartInfo.FileName = "cmd.exe";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardInput = true;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
-            
+            if (adminAuthorized == true)
+                process.StartInfo.Verb = "runas";
+
             try
             {
                 process.Start();

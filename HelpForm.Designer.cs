@@ -1,4 +1,6 @@
-﻿namespace 关机助手
+﻿using System;
+
+namespace 关机助手
 {
     partial class HelpForm
     {
@@ -32,8 +34,9 @@
             this.button返回 = new System.Windows.Forms.Button();
             this.textBoxUpdateLog = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelVersions = new System.Windows.Forms.Label();
             this.textBoxUpdateLogCommandVersion = new System.Windows.Forms.TextBox();
+            this.labelCopyright = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -60,7 +63,7 @@
             this.textBoxUpdateLog.Name = "textBoxUpdateLog";
             this.textBoxUpdateLog.ReadOnly = true;
             this.textBoxUpdateLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxUpdateLog.Size = new System.Drawing.Size(473, 152);
+            this.textBoxUpdateLog.Size = new System.Drawing.Size(473, 190);
             this.textBoxUpdateLog.TabIndex = 1;
             this.textBoxUpdateLog.Text = resources.GetString("textBoxUpdateLog.Text");
             // 
@@ -74,15 +77,15 @@
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             // 
-            // label1
+            // labelVersions
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(149, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(181, 93);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "关机助手:\r\n窗体版 v3.10.4\r\n终端版 v1.4";
+            this.labelVersions.AutoSize = true;
+            this.labelVersions.Font = new System.Drawing.Font("微软雅黑", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.labelVersions.Location = new System.Drawing.Point(149, 9);
+            this.labelVersions.Name = "labelVersions";
+            this.labelVersions.Size = new System.Drawing.Size(217, 93);
+            this.labelVersions.TabIndex = 3;
+            this.labelVersions.Text = "关机助手:\r\n窗体版 v{Version}\r\n终端版 v1.6.1";
             // 
             // textBoxUpdateLogCommandVersion
             // 
@@ -91,29 +94,42 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxUpdateLogCommandVersion.BackColor = System.Drawing.SystemColors.Control;
             this.textBoxUpdateLogCommandVersion.Font = new System.Drawing.Font("幼圆", 10.5F);
-            this.textBoxUpdateLogCommandVersion.Location = new System.Drawing.Point(0, 283);
+            this.textBoxUpdateLogCommandVersion.Location = new System.Drawing.Point(0, 323);
             this.textBoxUpdateLogCommandVersion.Multiline = true;
             this.textBoxUpdateLogCommandVersion.Name = "textBoxUpdateLogCommandVersion";
             this.textBoxUpdateLogCommandVersion.ReadOnly = true;
             this.textBoxUpdateLogCommandVersion.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxUpdateLogCommandVersion.Size = new System.Drawing.Size(473, 76);
+            this.textBoxUpdateLogCommandVersion.Size = new System.Drawing.Size(473, 78);
             this.textBoxUpdateLogCommandVersion.TabIndex = 2;
-            this.textBoxUpdateLogCommandVersion.Text = "当前版本：1.4\r\n1.0.0:可以进行快捷关机与快捷取消\r\n1.1.0:可以自定义输出以及添加了按分计时的关机选项\r\n1.2.0:增添真正关机时间记录并关机的选" +
-    "项\r\n1.3.0:支持开机记录\r\n1.3.1:解决了提示框显示过快问题\r\n1.4.0:支持指定数据库文件功能";
+            this.textBoxUpdateLogCommandVersion.Text = resources.GetString("textBoxUpdateLogCommandVersion.Text");
+            // 
+            // labelCopyright
+            // 
+            this.labelCopyright.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelCopyright.AutoSize = true;
+            this.labelCopyright.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.labelCopyright.Location = new System.Drawing.Point(26, 404);
+            this.labelCopyright.Name = "labelCopyright";
+            this.labelCopyright.Size = new System.Drawing.Size(424, 20);
+            this.labelCopyright.TabIndex = 4;
+            this.labelCopyright.Text = "©2016-{Year} William Technology Co.,Ltd. All Rights Reserved.";
             // 
             // HelpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 371);
+            this.ClientSize = new System.Drawing.Size(473, 427);
+            this.Controls.Add(this.labelCopyright);
             this.Controls.Add(this.textBoxUpdateLogCommandVersion);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelVersions);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.textBoxUpdateLog);
             this.Controls.Add(this.button返回);
             this.Name = "HelpForm";
             this.Text = "关于 关机助手";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormHelp_FormClosing);
+            this.Load += new System.EventHandler(this.HelpForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -125,7 +141,8 @@
         private System.Windows.Forms.Button button返回;
         private System.Windows.Forms.TextBox textBoxUpdateLog;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelVersions;
         private System.Windows.Forms.TextBox textBoxUpdateLogCommandVersion;
+        private System.Windows.Forms.Label labelCopyright;
     }
 }

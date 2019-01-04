@@ -7,6 +7,7 @@ namespace 关机助手
 {
     public partial class LogManagerForm : Form
     {
+        SqlConnectionAgency database = new SqlConnectionAgency();
         public LogManagerForm()
         {
             InitializeComponent();
@@ -25,7 +26,7 @@ namespace 关机助手
         
         private void FillTextBox()
         {
-            DataTable analyseData = Util.SqlServerConnection.ExecuteQuery(AverageDurationSQL());
+            DataTable analyseData = database.ExecuteQuery(AverageDurationSQL());
             foreach (DataRow row in analyseData.Rows)
             {
                 textBox1.Text = "数据库平均登录时间为: ";
@@ -77,9 +78,18 @@ WHERE EventType = 'Log in.'";
 
         private void 提交修改ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (SqlServerConnection.UpdateDatabase((DataTable) dataGridView1.DataSource))
+            if (database.UpdateDatabase((DataTable) dataGridView1.DataSource))
                 System.Windows.MessageBox.Show("手动修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
 
+       
+        private void dataGridView1_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
+        {
+            //显示在HeaderCell上
+            if (e.Row.Cells[0].Value != null)
+            {
+                e.Row.HeaderCell.Value = (e.Row.Index + 1).ToString();
+            }
+        }
     }
 }

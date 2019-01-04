@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace 关机助手.Util
 {
     public class ConsoleOutputUtil
     {
         private static bool consoleOpenned = false;
-        private static String printerFullFilename = @"E:\关机助手(终端版).exe";
+        private static String printerFullFilename = "关机助手(终端版).exe";
 
         /// <summary>
         /// 开始向控制台输出
@@ -46,15 +47,15 @@ namespace 关机助手.Util
         /// <param name="strings">要输出的字符串数组</param>
         public static void WriteLines(String[] strings)
         {
-            bool needToInitPrinter = !consoleOpenned;
-            if (needToInitPrinter)
+            if (consoleOpenned == false)
                 OpenWrite();
 
             Process process = new Process();
-            process.StartInfo.FileName = printerFullFilename;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardInput = true;
-            process.StartInfo.CreateNoWindow = false;
+            process.StartInfo.FileName = Directory.GetCurrentDirectory()+"\\"+ printerFullFilename;
+            //process.StartInfo.UseShellExecute = false;
+            //process.StartInfo.RedirectStandardInput = true;
+            //process.StartInfo.CreateNoWindow = false;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
             process.StartInfo.Arguments = ConcatStr(strings);
             try
             {
@@ -65,9 +66,7 @@ namespace 关机助手.Util
                 System.Windows.Forms.MessageBox.Show(exception.ToString(), "错误信息", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
             process.WaitForExit();
-            
-            if (needToInitPrinter)
-                CloseWrite();
+            CloseWrite();
         }
 
         /// <summary>

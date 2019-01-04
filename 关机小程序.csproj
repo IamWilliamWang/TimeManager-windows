@@ -66,6 +66,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Program Files\System.Data.SQLite\2015\bin\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
@@ -91,6 +95,12 @@
     </Compile>
     <Compile Include="ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HibernateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HibernateForm.Designer.cs">
+      <DependentUpon>HibernateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="LogManagerForm.cs">
       <SubType>Form</SubType>
@@ -130,11 +140,14 @@
     <Compile Include="RemarkManagerForm.Designer.cs">
       <DependentUpon>RemarkManagerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\EncryptUtil.cs" />
     <Compile Include="Util\FastModeUtil.cs" />
     <Compile Include="Util\LogUtil.cs" />
     <Compile Include="Util\BinaryWriterUtil.cs" />
     <Compile Include="Util\ShutdownUtil.cs" />
+    <Compile Include="Util\SqlConnectionAgency.cs" />
     <Compile Include="Util\SqlExecuter.cs" />
+    <Compile Include="Util\SqliteConnection.cs" />
     <Compile Include="Util\SqlServerConnection.cs" />
     <Compile Include="Util\SqlUtil.cs" />
     <Compile Include="Util\SystemCommandUtil.cs" />
@@ -151,6 +164,9 @@
     <Compile Include="Util\ZipUtil.cs" />
     <EmbeddedResource Include="ExceptionForm.resx">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HibernateForm.resx">
+      <DependentUpon>HibernateForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LogManagerForm.resx">
       <DependentUpon>LogManagerForm.cs</DependentUpon>
@@ -262,7 +278,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

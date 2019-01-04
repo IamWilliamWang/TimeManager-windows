@@ -24,7 +24,7 @@ namespace 关机助手.Util
         {
             _stopWatch.Stop();
             TimeSpan timeSpan = _stopWatch.Elapsed;
-            return SqlServerConnection.ExecuteUpdate(WriteDBLogSQL(timeSpan)) != 0;
+            return new SqlConnectionAgency().ExecuteUpdate(WriteDBLogSQL(timeSpan)) != 0;
         }
 
         /// <summary>

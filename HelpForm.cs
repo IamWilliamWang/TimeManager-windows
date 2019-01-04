@@ -21,5 +21,12 @@ namespace 关机助手
         {
             MainForm.GetMainForm().Show();
         }
+
+        private void HelpForm_Load(object sender, EventArgs e)
+        {
+            labelVersions.Text = labelVersions.Text.Replace("{Version}", ProgramLauncher.Version(2));
+            this.textBoxUpdateLog.Text = this.textBoxUpdateLog.Text.Replace("{Version}", ProgramLauncher.Version(2));
+            this.labelCopyright.Text = this.labelCopyright.Text.Replace("{Year}", DateTime.Now.Year.ToString());
+        }
     }
 }

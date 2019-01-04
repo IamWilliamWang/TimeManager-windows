@@ -38,11 +38,8 @@ namespace 关机助手.Util
                 case Mode.取消:
                     command += "-a";
                     break;
-                case Mode.休眠:
-                    command = "rundll32.exe powrprof.dll SetSuspendState";
-                    break;
                 default:
-                    MessageBox.Show("Error!");
+                    RunSuspendCommand(mode);
                     return;
             }
             SystemCommandUtil.ExcuteCommand(command);
@@ -50,12 +47,19 @@ namespace 关机助手.Util
 
         public static void RunSuspendCommand(Mode mode)
         {
-            if(mode == Mode.休眠)
+            if (mode == Mode.休眠)
             {
-                SystemCommandUtil.ExcuteCommand("rundll32.exe powrprof.dll SetSuspendState");
+                //command = "rundll32.exe powrprof.dll SetSuspendState";
+                Application.SetSuspendState(PowerState.Hibernate, true, false);
             }
+            else if (mode == Mode.睡眠)
+            {
+                Application.SetSuspendState(PowerState.Suspend, false, false);
+            }
+            else
+                throw new ArgumentException("函数调用错误，请确认参数的正确性。");
         }
 
-        public enum Mode { 取消, 关机, 重启, 休眠 };
+        public enum Mode { 取消, 关机, 重启, 休眠, 睡眠 };
     }
 }

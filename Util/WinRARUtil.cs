@@ -11,13 +11,18 @@ namespace 关机助手.Util
 {
     class WinRARUtil
     {
-        private static Exception latestException = null; //最后异常记录
+        private static Exception mException = null; //最后异常记录
 
         /// <summary>
         /// 从注册表当中获取WinRAR.exe具体文件的FileInfo形式
         /// </summary>
         /// <returns></returns>
-        private static FileInfo GetWinRarExe()
+        private static FileInfo GetWinRarFile()
+        {
+            return new FileInfo(GetWinRarPath());
+        }
+
+        private static string GetWinRarPath()
         {
             string winrarExeFullfilename = string.Empty;
 
@@ -28,9 +33,9 @@ namespace 关机助手.Util
                 winrarExeFullfilename = registryKey.GetValue("").ToString();
             }
             registryKey.Close();
-
-            return new FileInfo(winrarExeFullfilename);
+            return winrarExeFullfilename;
         }
+
         /// <summary>
         /// 调用WinRAR压缩文件
         /// </summary>
@@ -48,7 +53,7 @@ namespace 关机助手.Util
                 }
                 targetFullFilename = "\"" + targetFullFilename + "\"";
                 ProcessStartInfo startInfo = new ProcessStartInfo();
-                FileInfo winrarExe = GetWinRarExe();
+                FileInfo winrarExe = GetWinRarFile();
                 startInfo.FileName = winrarExe.Name;
                 startInfo.WorkingDirectory = winrarExe.DirectoryName;
                 startInfo.Arguments = "a -ep -m5 ";
@@ -70,7 +75,7 @@ namespace 关机助手.Util
             }
             catch(Exception e)
             {
-                latestException = e;
+                mException = e;
                 return false;
             }
         }
@@ -80,17 +85,19 @@ namespace 关机助手.Util
         /// </summary>
         /// <param name="sourceFullFilename">要进行解压的含路径的单个压缩包文件名</param>
         /// <returns></returns>
-        public static bool DecompressFile(string sourceFullFilename)
+        public static bool DecompressFile(string sourceFullFilename, string targetFolder=null)
         {
             sourceFullFilename = "\"" + sourceFullFilename + "\"";
             try
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo();
-                FileInfo winrarExe = GetWinRarExe();
-                startInfo.FileName = winrarExe.Name;
-                startInfo.WorkingDirectory = winrarExe.DirectoryName;
-
-                startInfo.Arguments = "e " + sourceFullFilename + " " + sourceFullFilename.Remove(sourceFullFilename.LastIndexOf('\\'));
+                FileInfo unrarExe = new FileInfo(GetWinRarPath().Replace("WinRAR.exe","UnRAR.exe"));
+                startInfo.FileName = unrarExe.Name;
+                startInfo.WorkingDirectory = unrarExe.DirectoryName;
+                if(targetFolder==null)
+                    startInfo.Arguments = "e -o+" + sourceFullFilename + " \"" + sourceFullFilename.Remove(sourceFullFilename.LastIndexOf('\\'))+"\"";
+                else
+                    startInfo.Arguments = "e -o+" + sourceFullFilename + " \"" + targetFolder+"\"";
                 Process decompressProcess = new Process();
                 decompressProcess.StartInfo = startInfo;
                 if (!decompressProcess.Start())
@@ -99,7 +106,7 @@ namespace 关机助手.Util
             }
             catch (Exception e)
             {
-                latestException = e;
+                mException = e;
                 return false;
             }
         }
@@ -110,7 +117,7 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static Exception LatestException()
         {
-            return latestException;
+            return mException;
         }
     }
 }

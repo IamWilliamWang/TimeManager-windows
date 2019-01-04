@@ -46,6 +46,7 @@ namespace 关机助手
                 }
             }
             this.dataGridViewRemarks.DataSource = result;
+            this.dataGridViewRemarks.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace 关机助手
             string formatedContent = Text2Hex(this.textBoxContent.Text);
 
             //if (Util.SqlServerConnection.UpdateDatabase((DataTable) this.dataGridViewRemarks.DataSource))
-            if (SqlUtil.Update("[Remark]", "Remark", "'" + formatedContent + "'", "id = " + this.textBoxId.Text)) 
+            if (SqlUtil.Update("[Remark]", "Remark", "'" + formatedContent + "'", "id = " + this.textBoxId.Text)) //这里的update有时候不行，未知bug
             {
                 System.Windows.MessageBox.Show("修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 this.RemarkManagerForm_Load(sender, e);
@@ -115,7 +116,7 @@ namespace 关机助手
 
             string formatedContent = Text2Hex(this.textBoxContent.Text);
 
-            if (SqlUtil.Insert("[Remark]", this.textBoxId.Text + ", '" + formatedContent + "', getdate())", "(Id,Remark,RemarkTime)")) 
+            if (SqlUtil.Insert("[Remark]", this.textBoxId.Text + ", '" + formatedContent + "', getdate()", "Id,Remark,RemarkTime")) 
             {
                 System.Windows.MessageBox.Show("已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 this.RemarkManagerForm_Load(sender, e);
@@ -136,6 +137,15 @@ namespace 关机助手
                     formatedContent += ch;
             }
             return formatedContent;
+        }
+
+        private void dataGridViewRemarks_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
+        {
+            //显示在HeaderCell上
+            if (e.Row.Cells[0].Value != null)
+            {
+                e.Row.HeaderCell.Value = (e.Row.Index + 1).ToString();
+            }
         }
     }
 }

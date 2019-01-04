@@ -12,6 +12,7 @@ namespace 关机助手
     public partial class AnalysingForm : Form
     {
         DataTable resultTable { get; set; }
+        SqlConnectionAgency sqlite = new SqlConnectionAgency();
 
         public AnalysingForm()
         {
@@ -35,6 +36,10 @@ namespace 关机助手
         {
             this.QueryAndCalculate();
             DataTable resultTable = this.resultTable;
+            foreach(DataRow row in resultTable.Rows)
+            {
+                row[2] = row[2].ToString().Replace("days", "天");
+            }
             this.dataGridView.DataSource = resultTable;
         }
 
@@ -42,14 +47,14 @@ namespace 关机助手
         {
             try
             {
-                SqlServerConnection.ExecuteUpdate(DeleteTempVarsSQL());
+                sqlite.ExecuteUpdate(DeleteTempVarsSQL());
             }
             catch (Exception)
             {
 
             }
-            SqlServerConnection.ExecuteUpdate(CreateSqlFunctionSQL());
-            resultTable = SqlServerConnection.ExecuteQuery(CountSumDateTimeOfEachMonthSQL());
+            sqlite.ExecuteUpdate(CreateSqlFunctionSQL());
+            resultTable = sqlite.ExecuteQuery(CountSumDateTimeOfEachMonthSQL());
         }
 
         private string CreateSqlFunctionSQL() =>
@@ -134,7 +139,7 @@ namespace 关机助手
 
         private double Transfer2Hour(String original)
         {
-            String[] dayHourMinSec = original.Replace(" ", "").Replace("days", ":").Split(':');
+            String[] dayHourMinSec = original.Replace(" ", "").Replace("天", ":").Split(':');
             if (dayHourMinSec.Count() != 4)
                 return 0;
 
@@ -283,7 +288,7 @@ namespace 关机助手
                 return;
 
             string sql = "select datename(hour, " + keyWord + "时间) from[Table]";
-            DataTable queryResult = SqlServerConnection.ExecuteQuery(sql);
+            DataTable queryResult = sqlite.ExecuteQuery(sql);
             foreach (DataRow row in queryResult.Rows)
             {
                 if (row[0].ToString() == "")

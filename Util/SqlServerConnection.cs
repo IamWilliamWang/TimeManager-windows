@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace 关机助手.Util
@@ -8,8 +10,13 @@ namespace 关机助手.Util
     class SqlServerConnection
     {
         private static readonly String connString = Properties.Settings.Default.TimeDatabaseConnectionString;
-        private static SqlServerConnection myStatement = new SqlServerConnection();
+        //U4u-biL-cRb-MFd
+        public static string DbFullName { get { return GetConnection().Database; } }
+        public static SqlServerConnection Instance { get; } = new SqlServerConnection();
 
+        public static ConnectionState ConnectionState { get { return GetConnection().State; } }
+
+        public static char SplitCharacterInCache { get { return MiniDB.splitChar; } }
         //public static string connString
         //{ get { return connString; }
         //}
@@ -50,7 +57,7 @@ namespace 关机助手.Util
 
         public static void OpenConnection(String dbFullFilename)
         {
-            GetInstance().connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="+dbFullFilename+";Integrated Security=True;Connect Timeout=30");
+            Instance.connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="+dbFullFilename+";Integrated Security=True;Connect Timeout=30");
             OpenConnection();
         }
 
@@ -82,6 +89,7 @@ namespace 关机助手.Util
         /// </summary>
         public static void ResetConnection()
         {
+            if(GetConnection().State != ConnectionState.Closed)
             SystemCommandUtil.ExcuteCommand("taskkill /fi \"imagename eq sqlservr.exe\" /f");
         }
 
@@ -89,12 +97,7 @@ namespace 关机助手.Util
         {
             return GetConnection().State == ConnectionState.Open;
         }
-
-        public static ConnectionState GetConnectionState()
-        {
-            return GetConnection().State;
-        }
-
+       
         public static DataTable ExecuteQuery(string selectCommandText)
         {
             try
@@ -104,10 +107,10 @@ namespace 关机助手.Util
                 else if (GetConnection().State == ConnectionState.Connecting)
                     return null;
 
-                GetInstance().adapter = new SqlDataAdapter(selectCommandText, GetConnection());
-                SqlCommandBuilder builder = new SqlCommandBuilder(GetInstance().adapter);
+                Instance.adapter = new SqlDataAdapter(selectCommandText, GetConnection());
+                SqlCommandBuilder builder = new SqlCommandBuilder(Instance.adapter);
                 DataTable table = new DataTable();
-                GetInstance().adapter.Fill(table);
+                Instance.adapter.Fill(table);
                 return table;
             }
             catch(Exception)
@@ -131,6 +134,22 @@ namespace 关机助手.Util
             }
         }
 
+        public static void ExecuteQuery_delay(string selectCommandText)
+        {
+            throw new NotImplementedException();
+
+        }
+
+        public static void ExecuteUpdate_delay(string commandText)
+        {   
+            SqlServerConnection.MiniDB.Insert(commandText);
+        }
+
+        public static int ClearCache()
+        {
+            return MiniDB.CleanDbAndExecuteTasks();
+        }
+
         public static Boolean UpdateDatabase(DataTable dataTable)
         {
             try
@@ -139,10 +158,10 @@ namespace 关机助手.Util
                     OpenConnection();
 
                 //创建命令重建对象
-                SqlCommandBuilder sqlCommandBuilder = new SqlCommandBuilder(GetInstance().adapter);
+                SqlCommandBuilder sqlCommandBuilder = new SqlCommandBuilder(Instance.adapter);
                 try
                 {
-                    if (GetInstance().adapter.Update(dataTable) == 0)
+                    if (Instance.adapter.Update(dataTable) == 0)
                         return false;
                 }
                 catch (System.InvalidOperationException)
@@ -159,16 +178,97 @@ namespace 关机助手.Util
             }
         }
 
-        public static SqlConnection GetConnection()
+        /// <summary>
+        /// 不用事务直接执行sql脚本(beta)
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private static int ExecuteSqlWithGo(String sql) 
         {
-            return GetInstance().connection;
+            int effectedRows = 0;
+            
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = SqlServerConnection.GetConnection();
+            try
+            {
+                //注： 此处以 换行_后面带0到多个空格_再后面是go 来分割字符串
+                String[] sqlArr = Regex.Split(sql.Trim(), "\r\n\\s*go", RegexOptions.IgnoreCase);
+                foreach (string strsql in sqlArr)
+                {
+                    if (strsql.Trim().Length > 1 && strsql.Trim() != "\r\n")
+                    {
+                        cmd.CommandText = strsql;
+                        int r = cmd.ExecuteNonQuery();
+                        if(r > 0)
+                            effectedRows += r;
+                    }
+                }
+            }
+            catch (System.Data.SqlClient.SqlException E)
+            {
+                throw new Exception(E.Message);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+            return effectedRows;
         }
 
-        private static SqlServerConnection GetInstance()
+        /// <summary>
+        /// 使用事务直接执行sql脚本(beta)
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private static int ExecuteSqlWithGoUseTran(String sql)
         {
-            return myStatement;
+            int effectedRows = 0;
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = GetConnection();
+            SqlTransaction tx = GetConnection().BeginTransaction();
+            cmd.Transaction = tx;
+            try
+            {
+                //注： 此处以 换行_后面带0到多个空格_再后面是go 来分割字符串
+                String[] sqlArr = Regex.Split(sql.Trim(), "\r\n\\s*go", RegexOptions.IgnoreCase);
+                foreach (string strsql in sqlArr)
+                {
+                    if (strsql.Trim().Length > 1 && strsql.Trim() != "\r\n")
+                    {
+                        cmd.CommandText = strsql;
+                        int r = cmd.ExecuteNonQuery();
+                        if (r > 0) 
+                            effectedRows += r;
+                    }
+                }
+                tx.Commit();
+            }
+            catch (System.Data.SqlClient.SqlException E)
+            {
+                tx.Rollback();
+                throw new Exception(E.Message);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+            return effectedRows;
         }
 
+        /// <summary>
+        /// 在程序执行中禁止使用该类的所有函数
+        /// </summary>
+        public static void Prohibit()
+        {
+            CloseConnection();
+            Instance.connection = null;
+        }
+
+        private static SqlConnection GetConnection()
+        {
+            return Instance.connection;
+        }
 
         private static class Error
         {
@@ -192,6 +292,48 @@ namespace 关机助手.Util
 
                 }
             }
+        }
+
+        private class MiniDB
+        {
+            public static string DbFilename { get; set; } = "TimeDatabase.cache";
+            public const char splitChar = '鋝';
+
+            public static void Insert(string str)
+            {
+                str = str.Replace("GETDATE()", "'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+"'");
+                using (FileStream stream = new FileStream(DbFilename, FileMode.Append))
+                    using (StreamWriter streamWriter = new StreamWriter(stream))
+                        streamWriter.Write(str + splitChar);
+               
+                File.SetAttributes(DbFilename, FileAttributes.Hidden);
+            }
+
+            public static string[] GetAllItems()
+            {
+                if (File.Exists(DbFilename) == false)
+                    return null;
+                return File.ReadAllText(DbFilename).Split(new []{ splitChar }, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            public static int CleanDbAndExecuteTasks()
+            {
+                int effectedRows = 0;
+                string[] commands = GetAllItems();
+                if (commands == null)
+                    return -1;
+
+                foreach(string str in commands)
+                {
+                    int tmp = SqlServerConnection.ExecuteUpdate(str);
+                    effectedRows += tmp > 0 ? tmp : 0;
+                }
+                File.Delete(DbFilename);
+                return effectedRows;
+            }
+
+            //public delegate void CacheRowsExecutedEventHandler(object sender, EventArgs e);
+            //public event CacheRowsExecutedEventHandler CacheRowsExecutedEvent;
         }
     }
 }

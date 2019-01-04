@@ -12,6 +12,8 @@ namespace 关机助手
     public partial class ExceptionForm : Form
     {
         Exception mException = null;
+        Util.SqlConnectionAgency database = new Util.SqlConnectionAgency();
+
         public ExceptionForm(Exception exception)
         {
             InitializeComponent();
@@ -143,15 +145,15 @@ namespace 关机助手
 
         private void buttonQuit_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("您是否愿意本程序进行尝试性修复？点击是进行修复并重启本程序，点击否则直接退出程序。", "尝试性修复", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+            if (MessageBox.Show("您是否愿意本程序进行尝试性修复？点击是进行修复后退出，点击否则直接退出程序。", "尝试性修复", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
             {
-            	Application.Exit();
-            	return;
+                Environment.Exit(-1);
+                return;
             }
 
-            Util.SqlServerConnection.DisposeConnection();
-            Util.SqlServerConnection.ResetConnection();
-            Application.Restart();
+            database.DisposeConnection();
+            database.ResetConnection();
+            Environment.Exit(-1);
         }
 
         public static void Show(Exception exception)
@@ -173,14 +175,26 @@ namespace 关机助手
 
         private void 直接退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Environment.Exit(0);
         }
 
         private void 修复后退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Util.SqlServerConnection.DisposeConnection();
-            Util.SqlServerConnection.ResetConnection();
-            Application.Exit();
+            database.DisposeConnection();
+            database.ResetConnection();
+            Environment.Exit(0);
+        }
+
+        private void 直接重启ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
+
+        private void 修复后重启ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            database.DisposeConnection();
+            database.ResetConnection();
+            Application.Restart();
         }
     }
 }

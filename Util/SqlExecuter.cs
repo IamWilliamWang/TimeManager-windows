@@ -7,7 +7,7 @@ namespace 关机助手.Util
 {
     class SqlExecuter
     {
-
+        static SqlConnectionAgency dbAgency = new SqlConnectionAgency();
 
         //public void 记录关机事件()//Doesn't work yet
         //{
@@ -23,43 +23,76 @@ namespace 关机助手.Util
             //String sql = "INSERT INTO[Table](开机时间) " +
             //           "VALUES (GETDATE())";
 
-            //SqlServerConnection.ExecuteUpdate(sql);
+            //sqlite.ExecuteUpdate(sql);
             记录开机事件("[Table]");
         }
 
         public static bool 记录开机事件(String TableName)
         {
-            if (SqlServerConnection.ExecuteUpdate(InsertPowerOnTimeSQL(TableName)) != 0)
+            if (!SqlServerConnection.ConnectionOpenned())
+            {
+                dbAgency.ExecuteUpdate_delay(InsertPowerOnTimeSQL(TableName));
                 return true;
-            return false;
+            }
+            else
+                return dbAgency.ExecuteUpdate(InsertPowerOnTimeSQL(TableName)) != 0;
         }
 
-        private static string InsertPowerOnTimeSQL(String TableName) =>
-             "INSERT "
+        private static string InsertPowerOnTimeSQL(String TableName)
+        {
+            if(SqlConnectionAgency.DBType == SqlConnectionAgency.DatabaseType.MSSqlServer)
+                return "INSERT "
             + "INTO " + TableName + "(开机时间) "
             + "VALUES (GETDATE())";
+            else return
+                "INSERT "
+           + "INTO " + TableName + "(开机时间) "
+           + "VALUES (\'"+DateTime.Now.ToString("s")+"\')";
+        }
+            
 
         public static bool 记录关机事件()
         {
-            return SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL()) != 0;
+            if (!SqlServerConnection.ConnectionOpenned())
+            {
+                dbAgency.ExecuteUpdate_delay(UpdateShutdownTimeSQL());
+                return true;
+            }
+            else
+                return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL()) != 0;
+            
         }
 
         public static bool 记录延迟关机事件(String 延迟时间)
         {
             if (延迟时间[0] != '\'' && 延迟时间[延迟时间.Length - 1] != '\'')
             {
-                return SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL("'"+延迟时间+"'")) != 0;
+                return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL("'"+延迟时间+"'")) != 0;
             }
             else
-                return SqlServerConnection.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间)) != 0;
+                return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间)) != 0;
         }
 
-        private static string UpdateShutdownTimeSQL() =>
-            "UPDATE [Table] " +
+        private static string UpdateShutdownTimeSQL()
+        {
+            return UpdateShutdownTimeSQL(SqlConnectionAgency.DBType);
+        }
+
+        private static string UpdateShutdownTimeSQL(SqlConnectionAgency.DatabaseType databaseType)
+        {
+            if(databaseType == SqlConnectionAgency.DatabaseType.SqLite)
+                return "UPDATE [Table] " +
+            "SET 关机时间 = \'"+DateTime.Now.ToString("s")+"\', 时长 = \'" + DateTime.Now.ToString("s") + "\' - 开机时间  " +
+            "WHERE 序号 in " +
+            "(SELECT MAX(序号) " +
+            "FROM[Table]) ";
+            else return "UPDATE [Table] " +
             "SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间  " +
             "WHERE 序号 in " +
             "(SELECT MAX(序号) " +
             "FROM[Table]) ";
+        }
+            
 
         private static string UpdateShutdownTimeSQL(String 延迟时间) =>
             "UPDATE [Table] " +
@@ -76,7 +109,7 @@ namespace 关机助手.Util
                 return;
             }
 
-            SqlServerConnection.ExecuteUpdate(CalculateEverydayTimesAndUsedTimesSQL());
+            dbAgency.ExecuteUpdate(CalculateEverydayTimesAndUsedTimesSQL());
         }
      
         private static string CalculateEverydayTimesAndUsedTimesSQL() =>
@@ -160,7 +193,7 @@ namespace 关机助手.Util
 
         public static int GetMaxId()
         {
-            DataTable table = SqlServerConnection.ExecuteQuery("SELECT MAX(序号) FROM [Table]");
+            DataTable table = dbAgency.ExecuteQuery("SELECT MAX(序号) FROM [Table]");
             int maxId = int.Parse(table.Rows[0][0].ToString());
             return maxId >= 0 ? maxId : 0;
         }
@@ -170,9 +203,9 @@ namespace 关机助手.Util
         /// </summary>
         /// <returns></returns>
         //[Obsolete]
-        //public static SqlServerConnection GetInstance()
+        //public static sqlite GetInstance()
         //{
-        //    return SqlServerConnection.GetStatement();
+        //    return sqlite.GetStatement();
         //}
     }
 }
