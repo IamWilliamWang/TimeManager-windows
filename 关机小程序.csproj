@@ -159,7 +159,7 @@
     <Compile Include="Util\GZipUtil.cs" />
     <Compile Include="Util\ConsoleOutputUtil.cs" />
     <Compile Include="Util\TimeUtil.cs" />
-    <Compile Include="Util\UnicodeUtil.cs" />
+    <Compile Include="Util\UnicodeSaverUtil.cs" />
     <Compile Include="Util\WinRARUtil.cs" />
     <Compile Include="Util\ZipUtil.cs" />
     <EmbeddedResource Include="ExceptionForm.resx">

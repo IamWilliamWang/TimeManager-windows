@@ -106,7 +106,7 @@ namespace 关机助手.Util
                             }
                             string insertSql = "INSERT INTO [Table](开机时间) VALUES ('GETDATE()')".Replace("GETDATE()",
                             DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                            File.AppendAllText(mdfFullname.Replace(".mdf", ".cache"), insertSql + SqlServerConnection.SplitCharacterInCache);
+                            File.AppendAllText(mdfFullname.Replace(".mdf", ".cache"), insertSql + SqlServerConnection.CacheSpliter);
                             File.SetAttributes(mdfFullname.Replace(".mdf", ".cache"), FileAttributes.Hidden);
                             return;
                         case "/x":

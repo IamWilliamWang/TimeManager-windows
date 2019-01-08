@@ -17,7 +17,7 @@ namespace 关机助手.Util
         /// <summary>
         /// 推荐使用 "记录开机事件(TableName)" 代替本方法
         /// </summary>
-        
+
         public static void 记录开机事件()
         {
             //String sql = "INSERT INTO[Table](开机时间) " +
@@ -40,16 +40,16 @@ namespace 关机助手.Util
 
         private static string InsertPowerOnTimeSQL(String TableName)
         {
-            if(SqlConnectionAgency.DBType == SqlConnectionAgency.DatabaseType.MSSqlServer)
+            if (SqlConnectionAgency.DBType == SqlConnectionAgency.DatabaseType.MSSqlServer)
                 return "INSERT "
             + "INTO " + TableName + "(开机时间) "
             + "VALUES (GETDATE())";
             else return
                 "INSERT "
            + "INTO " + TableName + "(开机时间) "
-           + "VALUES (\'"+DateTime.Now.ToString("s")+"\')";
+           + "VALUES (\'" + DateTime.Now.ToString("s") + "\')";
         }
-            
+
 
         public static bool 记录关机事件()
         {
@@ -60,14 +60,14 @@ namespace 关机助手.Util
             }
             else
                 return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL()) != 0;
-            
+
         }
 
         public static bool 记录延迟关机事件(String 延迟时间)
         {
             if (延迟时间[0] != '\'' && 延迟时间[延迟时间.Length - 1] != '\'')
             {
-                return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL("'"+延迟时间+"'")) != 0;
+                return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL("'" + 延迟时间 + "'")) != 0;
             }
             else
                 return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间)) != 0;
@@ -80,9 +80,9 @@ namespace 关机助手.Util
 
         private static string UpdateShutdownTimeSQL(SqlConnectionAgency.DatabaseType databaseType)
         {
-            if(databaseType == SqlConnectionAgency.DatabaseType.SqLite)
+            if (databaseType == SqlConnectionAgency.DatabaseType.SqLite)
                 return "UPDATE [Table] " +
-            "SET 关机时间 = \'"+DateTime.Now.ToString("s")+"\', 时长 = \'" + DateTime.Now.ToString("s") + "\' - 开机时间  " +
+            "SET 关机时间 = \'" + DateTime.Now.ToString("s") + "\', 时长 = \'" + DateTime.Now.ToString("s") + "\' - 开机时间  " +
             "WHERE 序号 in " +
             "(SELECT MAX(序号) " +
             "FROM[Table]) ";
@@ -92,7 +92,7 @@ namespace 关机助手.Util
             "(SELECT MAX(序号) " +
             "FROM[Table]) ";
         }
-            
+
 
         private static string UpdateShutdownTimeSQL(String 延迟时间) =>
             "UPDATE [Table] " +
@@ -111,7 +111,7 @@ namespace 关机助手.Util
 
             dbAgency.ExecuteUpdate(CalculateEverydayTimesAndUsedTimesSQL());
         }
-     
+
         private static string CalculateEverydayTimesAndUsedTimesSQL() =>
             "declare @i int " + //填补当天使用次数
             "set @i = (SELECT MAX(序号) FROM[Table]) " +
@@ -151,7 +151,7 @@ namespace 关机助手.Util
 
 
             "update[Table] " + //手动插入关机时间后运行此代码，将该填写的时长填补完成
-            "set 时长 = 关机时间 - 开机时间 "+
+            "set 时长 = 关机时间 - 开机时间 " +
             "where 关机时间 is not null and 时长 is null";
 
         /// <summary>

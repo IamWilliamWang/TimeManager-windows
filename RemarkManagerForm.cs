@@ -30,7 +30,7 @@ namespace 关机助手
                 for(int columnIndex=0;columnIndex<r.ItemArray.Count();columnIndex++)
                 {
                     string itemString = r.ItemArray[columnIndex].ToString();
-                    if (UnicodeUtil.IsChineseString(itemString))
+                    if (UnicodeSaverUtil.IsChineseString(itemString))
                     {
                         string transformResult = Hex2ChiEngString(itemString);
                         r[columnIndex] = transformResult;
@@ -80,7 +80,7 @@ namespace 关机助手
                     if (chiEndIndex == 0)
                         throw new Exception("中文Hex格式错误");
                     string chinCharacterHex = itemString.Substring(chiStartIndex, chiEndIndex - chiStartIndex).Replace("&#x","").Replace(";","");
-                    strResult.Append(UnicodeUtil.GetChsFromHex(chinCharacterHex));
+                    strResult.Append(UnicodeSaverUtil.GetChsFromHex(chinCharacterHex));
                     finishedPointer = chiEndIndex;
                 }
             }
@@ -129,9 +129,9 @@ namespace 关机助手
             string formatedContent = ""; //只对oldContent中的中文部分进行utf8编码，其他部分不予处理
             foreach (char ch in oldContent.ToCharArray())
             {
-                if (Util.UnicodeUtil.IsChineseChar(ch))
+                if (Util.UnicodeSaverUtil.IsChineseChar(ch))
                 {
-                    formatedContent += Util.UnicodeUtil.GetHexFromChs(ch);
+                    formatedContent += Util.UnicodeSaverUtil.GetHexFromChs(ch);
                 }
                 else
                     formatedContent += ch;

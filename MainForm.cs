@@ -691,12 +691,24 @@ namespace 关机助手
 
         private void 离线使用ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DialogResult.Yes == MessageBox.Show("在数据库无法正常使用情况下，推荐使用此项功能。虽然可以保证软件的绝对稳定，但是会损失本系统绝大部分的功能。是否继续？", "离线使用警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+            if (((ToolStripMenuItem)sender).Text.IndexOf("启动安全模式") != -1)
             {
-                databaseOffline = true;
-                this.文件ToolStripMenuItem.Enabled = false;
-                this.记录关机时间checkBox.Checked = false;
-                this.记录关机时间checkBox.Enabled = false;
+                if (DialogResult.Yes == MessageBox.Show("在数据库无法正常使用情况下，推荐使用此项功能。虽然可以保证软件的绝对稳定，但是会损失本系统绝大部分的功能。是否继续？", "离线使用警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                {
+                    databaseOffline = true;
+                    this.文件ToolStripMenuItem.Enabled = false;
+                    this.记录关机时间checkBox.Checked = false;
+                    this.记录关机时间checkBox.Enabled = false;
+                }
+                ((ToolStripMenuItem)sender).Text = "关闭安全模式";
+            }
+            else
+            {
+                databaseOffline = false;
+                this.文件ToolStripMenuItem.Enabled = true;
+                this.记录关机时间checkBox.Checked = true;
+                this.记录关机时间checkBox.Enabled = true;
+                ((ToolStripMenuItem)sender).Text = "启动安全模式";
             }
         }
         public static bool databaseOffline { get; set; } = false;

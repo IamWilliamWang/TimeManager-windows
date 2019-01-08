@@ -12,7 +12,7 @@ namespace 关机助手.Util
     /// 这个类诞生的原因：由于不能解决将排序规则由默认的SQL_Latin1_General_CP1_CI_AS
     /// 修改为Chinese_PRC_CI_AS的问题，所以数据库文件只存ASCII文本，所以需要一个类将
     /// 字符转换成对应的ASCII字段储存进数据库
-    public class UnicodeUtil
+    public class UnicodeSaverUtil
     {
         private readonly static string codingType = "utf-8";
         /// <summary>

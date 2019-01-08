@@ -16,12 +16,14 @@ namespace 关机助手.Util
 
         public static ConnectionState ConnectionState { get { return GetConnection().State; } }
 
-        public static char SplitCharacterInCache { get { return MiniDB.splitChar; } }
+        public static char CacheSpliter { get { return MiniDB.splitChar; } }
+        public static String CacheFilename = "TimeDatabase.cache";
+        public static string[] CacheAllLines { get { return File.ReadAllText(CacheFilename).Split(CacheSpliter); } }
         //public static string connString
         //{ get { return connString; }
         //}
 
-        private SqlConnection connection{ get; set; }
+        private SqlConnection connection { get; set; }
 
         private SqlDataAdapter adapter;
 
@@ -35,7 +37,7 @@ namespace 关机助手.Util
 
         public static void OpenConnection()
         {
-            
+
             if (ConnectionOpenned())
                 return;
             if (GetConnection().State == ConnectionState.Connecting)
@@ -52,12 +54,12 @@ namespace 关机助手.Util
             {
                 throw;
             }
-            
+
         }
 
         public static void OpenConnection(String dbFullFilename)
         {
-            Instance.connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="+dbFullFilename+";Integrated Security=True;Connect Timeout=30");
+            Instance.connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + dbFullFilename + ";Integrated Security=True;Connect Timeout=30");
             OpenConnection();
         }
 
@@ -89,15 +91,15 @@ namespace 关机助手.Util
         /// </summary>
         public static void ResetConnection()
         {
-            if(GetConnection().State != ConnectionState.Closed)
-            SystemCommandUtil.ExcuteCommand("taskkill /fi \"imagename eq sqlservr.exe\" /f");
+            if (GetConnection().State != ConnectionState.Closed)
+                SystemCommandUtil.ExcuteCommand("taskkill /fi \"imagename eq sqlservr.exe\" /f");
         }
 
         public static Boolean ConnectionOpenned()
         {
             return GetConnection().State == ConnectionState.Open;
         }
-       
+
         public static DataTable ExecuteQuery(string selectCommandText)
         {
             try
@@ -113,7 +115,7 @@ namespace 关机助手.Util
                 Instance.adapter.Fill(table);
                 return table;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -121,7 +123,8 @@ namespace 关机助手.Util
 
         public static int ExecuteUpdate(string commandText)
         {
-            try {
+            try
+            {
                 if (GetConnection().State == ConnectionState.Closed)
                     OpenConnection();
 
@@ -141,7 +144,7 @@ namespace 关机助手.Util
         }
 
         public static void ExecuteUpdate_delay(string commandText)
-        {   
+        {
             SqlServerConnection.MiniDB.Insert(commandText);
         }
 
@@ -172,7 +175,7 @@ namespace 关机助手.Util
 
                 return true;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -183,10 +186,10 @@ namespace 关机助手.Util
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        private static int ExecuteSqlWithGo(String sql) 
+        private static int ExecuteSqlWithGo(String sql)
         {
             int effectedRows = 0;
-            
+
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = SqlServerConnection.GetConnection();
             try
@@ -199,7 +202,7 @@ namespace 关机助手.Util
                     {
                         cmd.CommandText = strsql;
                         int r = cmd.ExecuteNonQuery();
-                        if(r > 0)
+                        if (r > 0)
                             effectedRows += r;
                     }
                 }
@@ -238,7 +241,7 @@ namespace 关机助手.Util
                     {
                         cmd.CommandText = strsql;
                         int r = cmd.ExecuteNonQuery();
-                        if (r > 0) 
+                        if (r > 0)
                             effectedRows += r;
                     }
                 }
@@ -274,16 +277,16 @@ namespace 关机助手.Util
         {
             public static void SqlExceptionOccur(System.Data.SqlClient.SqlException sqlExp)
             {
-                if(sqlExp.ErrorCode == 50)
+                if (sqlExp.ErrorCode == 50)
                 {
                     LogUtil.Log("发生了 Local Database Runtime 错误。在 LocalDB 实例启动期间出错: 无法启动 SQL Server 进程。", sqlExp);
                     MessageBox.Show("无法启动数据库实例，详情请看日志文件。", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    
+
                 }
-                else if(sqlExp.ToString().Contains("执行超时已过期"))
+                else if (sqlExp.ToString().Contains("执行超时已过期"))
                 {
-                	LogUtil.Log("服务器响应超时。完成操作之前已超时或服务器未响应", sqlExp);
-                	MessageBox.Show("服务器响应超时，详情请看日志文件。", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    LogUtil.Log("服务器响应超时。完成操作之前已超时或服务器未响应", sqlExp);
+                    MessageBox.Show("服务器响应超时，详情请看日志文件。", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -301,11 +304,11 @@ namespace 关机助手.Util
 
             public static void Insert(string str)
             {
-                str = str.Replace("GETDATE()", "'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+"'");
+                str = str.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'");
                 using (FileStream stream = new FileStream(DbFilename, FileMode.Append))
-                    using (StreamWriter streamWriter = new StreamWriter(stream))
-                        streamWriter.Write(str + splitChar);
-               
+                using (StreamWriter streamWriter = new StreamWriter(stream))
+                    streamWriter.Write(str + splitChar);
+
                 File.SetAttributes(DbFilename, FileAttributes.Hidden);
             }
 
@@ -313,7 +316,7 @@ namespace 关机助手.Util
             {
                 if (File.Exists(DbFilename) == false)
                     return null;
-                return File.ReadAllText(DbFilename).Split(new []{ splitChar }, StringSplitOptions.RemoveEmptyEntries);
+                return File.ReadAllText(DbFilename).Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries);
             }
 
             public static int CleanDbAndExecuteTasks()
@@ -323,7 +326,7 @@ namespace 关机助手.Util
                 if (commands == null)
                     return -1;
 
-                foreach(string str in commands)
+                foreach (string str in commands)
                 {
                     int tmp = SqlServerConnection.ExecuteUpdate(str);
                     effectedRows += tmp > 0 ? tmp : 0;

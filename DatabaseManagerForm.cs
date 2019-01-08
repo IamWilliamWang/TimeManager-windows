@@ -28,7 +28,7 @@ namespace 关机助手
         {
             //处理非UI线程异常，激活全局错误弹窗
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            
+
             if (MainForm.databaseOffline)
             {
                 this.查询所有记录ToolStripMenuItem.Enabled = false;
@@ -59,7 +59,7 @@ namespace 关机助手
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            ExceptionForm.ShowDialog((Exception) e.ExceptionObject);
+            ExceptionForm.ShowDialog((Exception)e.ExceptionObject);
         }
 
         #region 全刷新
@@ -129,7 +129,7 @@ namespace 关机助手
             //if(ResourceFileUtil.WriteFileToDisk(Properties.Resources.开机小程序, Properties.Resources.RecorderFullFilename))
             try
             {
-                File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\"+ProgramLauncher.SystemUserName+@"\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
+                File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\" + ProgramLauncher.SystemUserName + @"\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
                 MessageBox.Show("已经安装！", "成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
@@ -222,10 +222,10 @@ namespace 关机助手
             }
             else
             {
-            	MessageBox.Show("数据库" + TableName + "是空的！", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            	return false;
+                MessageBox.Show("数据库" + TableName + "是空的！", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
-            
+
         }
 
         private void 删除指定一条记录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -291,7 +291,7 @@ namespace 关机助手
             if (AlertBusy())
                 return;
 
-            if (dbAgency.UpdateDatabase((DataTable) dataGridView1.DataSource))
+            if (dbAgency.UpdateDatabase((DataTable)dataGridView1.DataSource))
                 System.Windows.MessageBox.Show("手动修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             this.显示后五条ToolStripMenuItem_Click(sender, e);
         }
@@ -331,8 +331,8 @@ namespace 关机助手
         }
 
         private string updateLastRemarkSql(string remark) =>
-            "UPDATE [Table] " + 
-            "SET remark=\'"+remark+"\' "+
+            "UPDATE [Table] " +
+            "SET remark=\'" + remark + "\' " +
             "WHERE 序号 = ( " +
             "SELECT MAX(序号) " +
             "FROM[Table])";
@@ -346,7 +346,7 @@ namespace 关机助手
         private void 查看已连接数据库ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (dbAgency.ConnectionOpenned() == true)
-                MessageBox.Show("已连接数据库"+SqliteConnection.DbFullName, "数据库文件名");
+                MessageBox.Show("已连接数据库" + SqliteConnection.DbFullName, "数据库文件名");
             else if (dbAgency.ConnectionState == ConnectionState.Connecting)
                 MessageBox.Show("正在连接数据库，请稍后重试. . .");
             else
@@ -377,13 +377,13 @@ namespace 关机助手
             if (!this.DataSetToExcel(true))
                 MessageBox.Show("输出失败！");
             else
-            	MessageBox.Show("输出完成，正在弹出Excel表格。如有部分内容不正确请手动调整对应的单元格格式。","成功"
-            		, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("输出完成，正在弹出Excel表格。如有部分内容不正确请手动调整对应的单元格格式。", "成功"
+                    , MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public bool DataSetToExcel(bool isShowExcle)
         {
-            DataTable dataTable = (DataTable) dataGridView1.DataSource;
+            DataTable dataTable = (DataTable)dataGridView1.DataSource;
             int rowNumber = dataTable.Rows.Count;
             int columnNumber = dataTable.Columns.Count;
             String stringBuffer = "";
@@ -414,8 +414,8 @@ namespace 关机助手
             }
             Clipboard.Clear();
             Clipboard.SetDataObject(stringBuffer);
-            ( (Microsoft.Office.Interop.Excel.Range) excel.Cells[1, 1] ).Select();
-            ( (Microsoft.Office.Interop.Excel.Worksheet) excel.ActiveWorkbook.ActiveSheet ).Paste(Missing.Value, Missing.Value);
+            ((Microsoft.Office.Interop.Excel.Range)excel.Cells[1, 1]).Select();
+            ((Microsoft.Office.Interop.Excel.Worksheet)excel.ActiveWorkbook.ActiveSheet).Paste(Missing.Value, Missing.Value);
             Clipboard.Clear();
 
             return true;
@@ -493,7 +493,7 @@ namespace 关机助手
             {
                 if (WinRARUtil.DecompressFile(fileDialog.FileName, Directory.GetCurrentDirectory()))
                 {
-                    if(EncryptUtil.DecryptFile(fileDialog.FileName))
+                    if (EncryptUtil.DecryptFile(fileDialog.FileName))
                         MessageBox.Show("无损还原数据库成功！", "还原成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     else
                         MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -625,6 +625,12 @@ namespace 关机助手
 
         private void 运行SQL脚本ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (AlertBusy())
+                return;
+
+            if (MessageBox.Show("确定要使用该操作吗？使用该操作可能会导致不可逆的错误发生，您必须自己确信SQL语句完全正确，程序不会提供错误提醒。如果您是管理人员，且知道此举的后果，请点击确认。如果是正常用户请点击取消！", "严重使用警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+                return;
+
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Sql文件|*.sql";
             fileDialog.Title = "请输入脚本带完整路径文件名";
@@ -633,7 +639,7 @@ namespace 关机助手
                 return;
             string filename = fileDialog.FileName.Trim().Replace("\"", "");
 
-            int count = dbAgency.ExecuteUpdate(File.ReadAllText(filename).Replace("go"," "));
+            int count = dbAgency.ExecuteUpdate(File.ReadAllText(filename).Replace("go", " "));
             if (count == 0)
                 MessageBox.Show("执行失败，没有条目受到影响");
             else
@@ -670,13 +676,22 @@ namespace 关机助手
 
         private void 浏览缓存文件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists("TimeDatabase.cache") == false)
+            if (File.Exists(SqlServerConnection.CacheFilename) == false)
             {
-                MessageBox.Show("当前没有缓存，无需查看。", "完成");
+                MessageBox.Show("当前没有缓存，无需查看。", "完成", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            MessageBox.Show(File.ReadAllText("TimeDatabase.cache"), "查看缓存文件");
+            MessageBox.Show(File.ReadAllText(SqlServerConnection.CacheFilename).Replace(SqlServerConnection.CacheSpliter, '\n'), "查看缓存文件");
         }
-        
+
+        private void 编辑缓存文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(SqlServerConnection.CacheFilename) == false)
+            {
+                MessageBox.Show("当前没有缓存，无法编辑。", "失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Util.SystemCommandUtil.ExcuteCommand("notepad \"" + new FileInfo("TimeDatabase.cache").FullName + "\"");
+        }
     }
 }

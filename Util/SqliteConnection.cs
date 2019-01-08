@@ -21,7 +21,7 @@ namespace 关机助手.Util
 
         public void OpenConnection()
         {
-            if(!ConnectionOpenned())
+            if (!ConnectionOpenned())
                 connection.Open();
         }
 
@@ -73,7 +73,7 @@ namespace 关机助手.Util
         {
             throw new NotImplementedException();
         }
-        
+
 
 
         /// <summary>
