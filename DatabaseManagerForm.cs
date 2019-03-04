@@ -15,7 +15,7 @@ namespace 关机助手
         private SqlConnectionAgency dbAgency = new SqlConnectionAgency();
 
         public readonly static String TableName = "[Table]";
-        enum QueryOperate { 显示所有数据, 显示后五行数据 };
+        enum QueryOperate { 显示所有数据, 显示后五行数据, 精准查找 };
         private QueryOperate backgroundQueryOperate = new QueryOperate();
         public static bool? needInitialized { get; set; }
 
@@ -39,13 +39,14 @@ namespace 关机助手
                 this.修改数据ToolStripMenuItem.Enabled = false;
                 this.执行SQL语句ToolStripMenuItem.Enabled = false;
                 this.储存表格至excelToolStripMenuItem.Enabled = false;
-                this.高级功能ToolStripMenuItem.Enabled = false;
+                this.日志管理ToolStripMenuItem.Enabled = false;
+                this.全面总结汇报ToolStripMenuItem.Enabled = false;
+                this.注释管理ToolStripMenuItem.Enabled = false;
                 this.终端功能使用ToolStripMenuItem.Enabled = false;
                 this.运行SQL脚本ToolStripMenuItem.Enabled = false;
                 return;
             }
             this.progressBar1.Value = 10;
-            this.statusLabel.Text = "正在清除缓存并完成同步操作";
             this.clearCacheBackgroundWorker.RunWorkerAsync();
 
             //显示后五条ToolStripMenuItem_Click(sender, e);
@@ -67,8 +68,11 @@ namespace 关机助手
         {
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = dbAgency.ExecuteQuery("select * from " + TableName);
-            if (dataGridView1.DataSource == null)
-                MessageBox.Show("稍安勿躁，请在程序不忙时重试", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //if (dataGridView1.DataSource == null)
+            //    MessageBox.Show("稍安勿躁，请在程序不忙时重试", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.dataGridView1.RowHeadersWidth = 53;
+            this.Width += 7;
+            this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
         }
 
         private Boolean CanReadMdfFile()
@@ -113,7 +117,7 @@ namespace 关机助手
                 dataGridView1.DataSource = dbAgency.ExecuteQuery(QueryLastFiveSQL());
                 //if (dataGridView1.DataSource == null)
                 //    MessageBox.Show("稍安勿躁，请在程序不忙时重试", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
 
             }
 
@@ -170,10 +174,20 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
+            if (CacheExist()) 
+            {
+                MessageBox.Show("检测到缓存清理功能故障，无法继续进行添加操作。请暂时不要改变数据库内数据并与程序员联系！", "严重警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (SqlExecuter.记录开机事件(TableName))
                 MessageBox.Show("插入记录成功!", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.显示后五条ToolStripMenuItem_Click(null, null);
+        }
+
+        private bool CacheExist()
+        {
+            return File.Exists("TimeDatabase.cache");
         }
 
         private void 插入关机记录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -560,6 +574,12 @@ namespace 关机助手
                 dataGridView1.DataSource = null;
                 dataGridView1.DataSource = dbAgency.ExecuteQuery(QueryLastFiveSQL());
             }
+            else
+            {
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = dbAgency.ExecuteQuery(QueryCustomSQL);
+            }
+            this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
             this.progressBar1.Value = 100;
             this.statusLabel.Text = "完成";
         }
@@ -664,6 +684,7 @@ namespace 关机助手
 
         private void clearCacheBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            this.statusLabel.Text = "正在清除缓存并完成同步操作";
             SqlServerConnection.ClearCache();
         }
 
@@ -674,24 +695,85 @@ namespace 关机助手
             显示后五条ToolStripMenuItem_Click(sender, e);
         }
 
-        private void 浏览缓存文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        //private void 浏览缓存文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    if (File.Exists(SqlServerConnection.CacheFilename) == false)
+        //    {
+        //        MessageBox.Show("当前没有缓存，无需查看。", "完成", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        return;
+        //    }
+        //    MessageBox.Show(File.ReadAllText(SqlServerConnection.CacheFilename).Replace(SqlServerConnection.CacheSpliter, '\n'), "查看缓存文件");
+        //}
+
+        //private void 编辑缓存文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    if (File.Exists(SqlServerConnection.CacheFilename) == false)
+        //    {
+        //        MessageBox.Show("当前没有缓存，无法编辑。", "失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        return;
+        //    }
+        //    Util.SystemCommandUtil.ExcuteCommand("notepad \"" + new FileInfo("TimeDatabase.cache").FullName + "\"");
+        //}
+
+        private void 缓存管理器ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(SqlServerConnection.CacheFilename) == false)
-            {
-                MessageBox.Show("当前没有缓存，无需查看。", "完成", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            MessageBox.Show(File.ReadAllText(SqlServerConnection.CacheFilename).Replace(SqlServerConnection.CacheSpliter, '\n'), "查看缓存文件");
+            new CacheManagerForm().ShowDialog();
         }
 
-        private void 编辑缓存文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        private string QueryCustomSQL { get; set; }
+
+        private bool GetCustomSQLString()
         {
-            if (File.Exists(SqlServerConnection.CacheFilename) == false)
+            String input = Microsoft.VisualBasic.Interaction.InputBox("请输入要查询的日期，如“2018年1月1日”。支持年、年月、年月日","精准查找");
+            if (input == "")
+                return false;
+            String[] condition = input.Split(new char[] { '年', '月', '日' }, StringSplitOptions.RemoveEmptyEntries);
+            if (condition.Length == 1)
             {
-                MessageBox.Show("当前没有缓存，无法编辑。", "失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*", "YEAR(开机时间)=" + condition[0]);
+                return true;
+            }
+            else if (condition.Length == 2)
+            {
+                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*"
+                    , "YEAR(开机时间)=" + condition[0] + " and " +
+                    "MONTH(开机时间)=" + condition[1]);
+                return true;
+            }
+            else if (condition.Length == 3)
+            {
+                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*"
+                    , "YEAR(开机时间)=" + condition[0] + " and " +
+                    "MONTH(开机时间)=" + condition[1] + " and " +
+                    "DAY(开机时间)=" + condition[2]);
+                return true;
+            }
+            return false;
+        }
+
+        private void 精准查找显示ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AlertBusy())
+                return;
+            if (GetCustomSQLString() == false)
+            {
+                this.全刷新ToolStripMenuItem_Click(sender, e);
                 return;
             }
-            Util.SystemCommandUtil.ExcuteCommand("notepad \"" + new FileInfo("TimeDatabase.cache").FullName + "\"");
+            if (!dbAgency.ConnectionOpenned())
+            {
+                this.progressBar1.Value = 40;
+                this.statusLabel.Text = "正在加载数据";
+                backgroundQueryOperate = QueryOperate.精准查找;
+                this.headerWidthSizeNeedChanged = true;
+                this.openDBBackgroundWorker.RunWorkerAsync(null);
+            }
+            else
+            {
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = dbAgency.ExecuteQuery(QueryCustomSQL);
+                this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+            }
         }
     }
 }

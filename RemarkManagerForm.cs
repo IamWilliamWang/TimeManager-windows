@@ -20,21 +20,26 @@ namespace 关机助手
 
         private void RemarkManagerForm_Load(object sender, EventArgs e)
         {
-            this.dataGridViewDatas.DataSource = SqlUtil.Select("[Table]", "序号,开机时间,关机时间");
-            DataTable result = SqlUtil.Select("[Remark],[Table]", 
-                "Id 序号,Remark 注释,开机时间 对应开机时间,RemarkTime 注释创建时间", 
+            this.RefreshDatas();
+            this.RefreshRemarks();
+        }
+
+        private void RefreshRemarks()
+        {
+            DataTable result = SqlUtil.Select("[Remark],[Table]",
+                "Id 序号,Remark 注释,开机时间 对应开机时间,RemarkTime 注释创建时间",
                 "[Table].序号 = [Remark].Id");
-            for (int rowIndex = 0; rowIndex < result.Rows.Count; rowIndex++) 
+            for (int rowIndex = 0; rowIndex < result.Rows.Count; rowIndex++)
             {
                 DataRow r = result.Rows[rowIndex];
-                for(int columnIndex=0;columnIndex<r.ItemArray.Count();columnIndex++)
+                for (int columnIndex = 0; columnIndex < r.ItemArray.Count(); columnIndex++)
                 {
                     string itemString = r.ItemArray[columnIndex].ToString();
                     if (UnicodeSaverUtil.IsChineseString(itemString))
                     {
                         string transformResult = Hex2ChiEngString(itemString);
                         r[columnIndex] = transformResult;
-                    }                    
+                    }
                     //char[] itemChars = itemString.ToCharArray();
                     //StringBuilder newString = new StringBuilder();
                     //for(int chIndex=0;chIndex< itemString.Length;chIndex++)
@@ -45,8 +50,15 @@ namespace 关机助手
 
                 }
             }
+            this.tabControl1.SelectedIndex = 0;
             this.dataGridViewRemarks.DataSource = result;
             this.dataGridViewRemarks.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+        }
+
+        private void RefreshDatas()
+        {
+            this.dataGridViewDatas.DataSource = SqlUtil.Select("[Table]", "序号,开机时间,关机时间");
+            this.dataGridViewDatas.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
 
         /// <summary>
@@ -89,19 +101,24 @@ namespace 关机助手
 
         private void button提交_Click(object sender, EventArgs e)
         {
-            string formatedContent = Text2Hex(this.textBoxContent.Text);
+            if (AlertEmpty())
+                return;
 
+            string formatedContent = Text2Hex(this.textBoxContent.Text);
             //if (Util.SqlServerConnection.UpdateDatabase((DataTable) this.dataGridViewRemarks.DataSource))
             if (SqlUtil.Update("[Remark]", "Remark", "'" + formatedContent + "'", "id = " + this.textBoxId.Text)) //这里的update有时候不行，未知bug
             {
                 System.Windows.MessageBox.Show("修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-                this.RemarkManagerForm_Load(sender, e);
+                this.RefreshRemarks();
                 //this.dataGridViewRemarks.DataSource = Util.SqlServerConnection.ExecuteQuery("select Id 序号,Remark 注释,RemarkTime 注释创建时间 from [Remark]");
             }
         }
 
         private void button提交添加_Click(object sender, EventArgs e)
         {
+            if (AlertEmpty())
+                return;
+
             try {
                 if (Util.SqlExecuter.GetMaxId() < int.Parse(this.textBoxId.Text))
                 {
@@ -119,7 +136,7 @@ namespace 关机助手
             if (SqlUtil.Insert("[Remark]", this.textBoxId.Text + ", '" + formatedContent + "', getdate()", "Id,Remark,RemarkTime")) 
             {
                 System.Windows.MessageBox.Show("已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-                this.RemarkManagerForm_Load(sender, e);
+                this.RefreshRemarks();
                 //this.dataGridViewRemarks.DataSource = Util.SqlServerConnection.ExecuteQuery("select Id 序号,Remark 注释,RemarkTime 注释创建时间 from [Remark]");
             }
         }
@@ -141,11 +158,26 @@ namespace 关机助手
 
         private void dataGridViewRemarks_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
         {
-            //显示在HeaderCell上
+            //刷新界面后要把索引数字显示在HeaderCell（最左边那一列）上
             if (e.Row.Cells[0].Value != null)
             {
                 e.Row.HeaderCell.Value = (e.Row.Index + 1).ToString();
             }
+        }
+
+        private bool AlertEmpty()
+        {
+            if (this.textBoxContent.Text == "" || this.textBoxId.Text == "") 
+            {
+                MessageBox.Show("请先在上方输入内容！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return true;
+            }
+            return false;
+        }
+
+        private void RemarkManagerForm_Resize(object sender, EventArgs e)
+        {
+            this.RefreshRemarks();
         }
     }
 }

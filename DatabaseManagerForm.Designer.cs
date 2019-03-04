@@ -31,7 +31,7 @@ namespace 关机助手
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.timeDatabaseDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timeDatabaseDataSet = new 关机助手.SqlServerDatabase.TimeDatabaseDataSet();
             this.timeDatabaseDataSetBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
@@ -40,6 +40,7 @@ namespace 关机助手
             this.查询所有记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.全部显示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.显示后五条ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.精准查找显示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.插入一条开机记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.编辑数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.一键填补空处ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,8 +65,6 @@ namespace 关机助手
             this.强制性报错ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.终端功能使用ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.激活禁止系统休眠ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.浏览缓存文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.编辑缓存文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.开机记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.允许开机记录时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.禁止开机记录时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +80,7 @@ namespace 关机助手
             this.日志管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.全面总结汇报ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.注释管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存管理器ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDBBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
@@ -125,8 +125,8 @@ namespace 关机助手
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView1.RowHeadersWidth = 46;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.Size = new System.Drawing.Size(662, 372);
             this.dataGridView1.TabIndex = 0;
@@ -152,7 +152,8 @@ namespace 关机助手
             // 
             this.查询所有记录ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.全部显示ToolStripMenuItem,
-            this.显示后五条ToolStripMenuItem1});
+            this.显示后五条ToolStripMenuItem1,
+            this.精准查找显示ToolStripMenuItem});
             this.查询所有记录ToolStripMenuItem.Name = "查询所有记录ToolStripMenuItem";
             this.查询所有记录ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.查询所有记录ToolStripMenuItem.Text = "数据显示";
@@ -170,6 +171,13 @@ namespace 关机助手
             this.显示后五条ToolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
             this.显示后五条ToolStripMenuItem1.Text = "显示后15条数据";
             this.显示后五条ToolStripMenuItem1.Click += new System.EventHandler(this.显示后五条ToolStripMenuItem_Click);
+            // 
+            // 精准查找显示ToolStripMenuItem
+            // 
+            this.精准查找显示ToolStripMenuItem.Name = "精准查找显示ToolStripMenuItem";
+            this.精准查找显示ToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.精准查找显示ToolStripMenuItem.Text = "精准查找显示";
+            this.精准查找显示ToolStripMenuItem.Click += new System.EventHandler(this.精准查找显示ToolStripMenuItem_Click);
             // 
             // 插入一条开机记录ToolStripMenuItem
             // 
@@ -193,7 +201,7 @@ namespace 关机助手
             // 一键填补空处ToolStripMenuItem
             // 
             this.一键填补空处ToolStripMenuItem.Name = "一键填补空处ToolStripMenuItem";
-            this.一键填补空处ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.一键填补空处ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.一键填补空处ToolStripMenuItem.Text = "一键填补空处";
             this.一键填补空处ToolStripMenuItem.Click += new System.EventHandler(this.开始统计结算ToolStripMenuItem_Click);
             // 
@@ -203,7 +211,7 @@ namespace 关机助手
             this.插入开机记录ToolStripMenuItem,
             this.插入关机记录ToolStripMenuItem});
             this.添加数据ToolStripMenuItem.Name = "添加数据ToolStripMenuItem";
-            this.添加数据ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.添加数据ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.添加数据ToolStripMenuItem.Text = "添加数据";
             // 
             // 插入开机记录ToolStripMenuItem
@@ -227,7 +235,7 @@ namespace 关机助手
             this.删除指定一条记录ToolStripMenuItem,
             this.删除最后一条记录ToolStripMenuItem});
             this.删除数据ToolStripMenuItem.Name = "删除数据ToolStripMenuItem";
-            this.删除数据ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.删除数据ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.删除数据ToolStripMenuItem.Text = "删除数据";
             // 
             // 删除所有记录ToolStripMenuItem
@@ -237,7 +245,7 @@ namespace 关机助手
             this.清除日志数据ToolStripMenuItem,
             this.清除注释数据ToolStripMenuItem});
             this.删除所有记录ToolStripMenuItem.Name = "删除所有记录ToolStripMenuItem";
-            this.删除所有记录ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.删除所有记录ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.删除所有记录ToolStripMenuItem.Text = "删除所有记录";
             // 
             // 清除主表数据ToolStripMenuItem
@@ -264,14 +272,14 @@ namespace 关机助手
             // 删除指定一条记录ToolStripMenuItem
             // 
             this.删除指定一条记录ToolStripMenuItem.Name = "删除指定一条记录ToolStripMenuItem";
-            this.删除指定一条记录ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.删除指定一条记录ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.删除指定一条记录ToolStripMenuItem.Text = "删除指定一条记录";
             this.删除指定一条记录ToolStripMenuItem.Click += new System.EventHandler(this.删除指定一条记录ToolStripMenuItem_Click);
             // 
             // 删除最后一条记录ToolStripMenuItem
             // 
             this.删除最后一条记录ToolStripMenuItem.Name = "删除最后一条记录ToolStripMenuItem";
-            this.删除最后一条记录ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.删除最后一条记录ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.删除最后一条记录ToolStripMenuItem.Text = "删除最后一条记录";
             this.删除最后一条记录ToolStripMenuItem.Click += new System.EventHandler(this.删除最后一条记录ToolStripMenuItem_Click);
             // 
@@ -281,7 +289,7 @@ namespace 关机助手
             this.提交手动修改ToolStripMenuItem,
             this.直接修改下方数据ToolStripMenuItem});
             this.修改数据ToolStripMenuItem.Name = "修改数据ToolStripMenuItem";
-            this.修改数据ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.修改数据ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.修改数据ToolStripMenuItem.Text = "修改数据";
             // 
             // 提交手动修改ToolStripMenuItem
@@ -307,11 +315,9 @@ namespace 关机助手
             this.查看已连接数据库ToolStripMenuItem,
             this.强制性报错ToolStripMenuItem,
             this.终端功能使用ToolStripMenuItem,
-            this.激活禁止系统休眠ToolStripMenuItem,
-            this.浏览缓存文件ToolStripMenuItem,
-            this.编辑缓存文件ToolStripMenuItem});
+            this.激活禁止系统休眠ToolStripMenuItem});
             this.管理员选项ToolStripMenuItem.Name = "管理员选项ToolStripMenuItem";
-            this.管理员选项ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.管理员选项ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.管理员选项ToolStripMenuItem.Text = "高级选项";
             // 
             // 执行SQL语句ToolStripMenuItem
@@ -362,20 +368,6 @@ namespace 关机助手
             this.激活禁止系统休眠ToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.激活禁止系统休眠ToolStripMenuItem.Text = "激活/停用系统休眠";
             this.激活禁止系统休眠ToolStripMenuItem.Click += new System.EventHandler(this.激活禁止系统休眠ToolStripMenuItem_Click);
-            // 
-            // 浏览缓存文件ToolStripMenuItem
-            // 
-            this.浏览缓存文件ToolStripMenuItem.Name = "浏览缓存文件ToolStripMenuItem";
-            this.浏览缓存文件ToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.浏览缓存文件ToolStripMenuItem.Text = "浏览缓存文件";
-            this.浏览缓存文件ToolStripMenuItem.Click += new System.EventHandler(this.浏览缓存文件ToolStripMenuItem_Click);
-            // 
-            // 编辑缓存文件ToolStripMenuItem
-            // 
-            this.编辑缓存文件ToolStripMenuItem.Name = "编辑缓存文件ToolStripMenuItem";
-            this.编辑缓存文件ToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.编辑缓存文件ToolStripMenuItem.Text = "编辑缓存文件";
-            this.编辑缓存文件ToolStripMenuItem.Click += new System.EventHandler(this.编辑缓存文件ToolStripMenuItem_Click);
             // 
             // 开机记录ToolStripMenuItem
             // 
@@ -468,7 +460,8 @@ namespace 关机助手
             this.高级功能ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.日志管理ToolStripMenuItem,
             this.全面总结汇报ToolStripMenuItem,
-            this.注释管理ToolStripMenuItem});
+            this.注释管理ToolStripMenuItem,
+            this.缓存管理器ToolStripMenuItem});
             this.高级功能ToolStripMenuItem.Name = "高级功能ToolStripMenuItem";
             this.高级功能ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.高级功能ToolStripMenuItem.Text = "高级功能";
@@ -476,23 +469,30 @@ namespace 关机助手
             // 日志管理ToolStripMenuItem
             // 
             this.日志管理ToolStripMenuItem.Name = "日志管理ToolStripMenuItem";
-            this.日志管理ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.日志管理ToolStripMenuItem.Text = "日志管理器";
+            this.日志管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.日志管理ToolStripMenuItem.Text = "日志管理";
             this.日志管理ToolStripMenuItem.Click += new System.EventHandler(this.查看日志ToolStripMenuItem_Click);
             // 
             // 全面总结汇报ToolStripMenuItem
             // 
             this.全面总结汇报ToolStripMenuItem.Name = "全面总结汇报ToolStripMenuItem";
-            this.全面总结汇报ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.全面总结汇报ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.全面总结汇报ToolStripMenuItem.Text = "数据可视化";
             this.全面总结汇报ToolStripMenuItem.Click += new System.EventHandler(this.统计每月上机时间ToolStripMenuItem_Click);
             // 
             // 注释管理ToolStripMenuItem
             // 
             this.注释管理ToolStripMenuItem.Name = "注释管理ToolStripMenuItem";
-            this.注释管理ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.注释管理ToolStripMenuItem.Text = "注释管理器";
+            this.注释管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.注释管理ToolStripMenuItem.Text = "注释管理";
             this.注释管理ToolStripMenuItem.Click += new System.EventHandler(this.添加编辑注释ToolStripMenuItem_Click);
+            // 
+            // 缓存管理器ToolStripMenuItem
+            // 
+            this.缓存管理器ToolStripMenuItem.Name = "缓存管理器ToolStripMenuItem";
+            this.缓存管理器ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存管理器ToolStripMenuItem.Text = "缓存管理";
+            this.缓存管理器ToolStripMenuItem.Click += new System.EventHandler(this.缓存管理器ToolStripMenuItem_Click);
             // 
             // 关ToolStripMenuItem
             // 
@@ -577,7 +577,6 @@ namespace 关机助手
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DatabaseManagerForm";
             this.Text = "开关机时间记录 管理主窗口";
@@ -654,7 +653,7 @@ namespace 关机助手
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTime;
-        private System.Windows.Forms.ToolStripMenuItem 浏览缓存文件ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 编辑缓存文件ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 精准查找显示ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 缓存管理器ToolStripMenuItem;
     }
 }

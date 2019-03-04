@@ -62,7 +62,7 @@ namespace 关机助手
 
         private bool? checkHibernateState()
         {
-            string detackRestult = Util.SystemCommandUtil.ExcuteCommand("powercfg -a");
+            string detackRestult = Util.SystemCommandUtil.ExecuteCommand("powercfg -a");
             int index1 = detackRestult.IndexOf("快速启动");
             int index2 = detackRestult.IndexOf("此系统上没有以下睡眠状态");
             if (index1 == -1 || index2 == -1)
@@ -76,7 +76,7 @@ namespace 关机助手
         private void button启用_Click(object sender, EventArgs e)
         {
             bool oldState = this.state;
-            if (SystemCommandUtil.ExcuteCommand("powercfg /HIBERNATE on").IndexOf("无法执行操作") == -1)
+            if (SystemCommandUtil.ExecuteCommand("powercfg /HIBERNATE on").IndexOf("无法执行操作") == -1)
             {
                 if(this.checkHibernateState() == oldState)
                 {
@@ -99,7 +99,7 @@ namespace 关机助手
         private void button禁用_Click(object sender, EventArgs e)
         {
             var oldState = this.state;
-            if (SystemCommandUtil.ExcuteCommand("powercfg /HIBERNATE off").IndexOf("无法执行操作") == -1)
+            if (SystemCommandUtil.ExecuteCommand("powercfg /HIBERNATE off").IndexOf("无法执行操作") == -1)
             {
                 if (this.checkHibernateState() == oldState)
                 {

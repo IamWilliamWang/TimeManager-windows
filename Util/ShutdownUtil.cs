@@ -42,7 +42,7 @@ namespace 关机助手.Util
                     RunSuspendCommand(mode);
                     return;
             }
-            SystemCommandUtil.ExcuteCommand(command);
+            SystemCommandUtil.ExecuteCommand(command);
         }
 
         public static void RunSuspendCommand(Mode mode)

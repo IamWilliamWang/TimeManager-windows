@@ -57,7 +57,7 @@ namespace 关机助手
             this.textBoxUpdateLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxUpdateLog.Font = new System.Drawing.Font("幼圆", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBoxUpdateLog.Font = new System.Drawing.Font("黑体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.textBoxUpdateLog.Location = new System.Drawing.Point(0, 125);
             this.textBoxUpdateLog.Multiline = true;
             this.textBoxUpdateLog.Name = "textBoxUpdateLog";
@@ -93,7 +93,7 @@ namespace 关机助手
             this.textBoxUpdateLogCommandVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxUpdateLogCommandVersion.BackColor = System.Drawing.SystemColors.Control;
-            this.textBoxUpdateLogCommandVersion.Font = new System.Drawing.Font("幼圆", 10.5F);
+            this.textBoxUpdateLogCommandVersion.Font = new System.Drawing.Font("黑体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.textBoxUpdateLogCommandVersion.Location = new System.Drawing.Point(0, 323);
             this.textBoxUpdateLogCommandVersion.Multiline = true;
             this.textBoxUpdateLogCommandVersion.Name = "textBoxUpdateLogCommandVersion";

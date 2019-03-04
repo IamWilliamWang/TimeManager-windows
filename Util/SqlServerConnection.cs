@@ -15,10 +15,7 @@ namespace 关机助手.Util
         public static SqlServerConnection Instance { get; } = new SqlServerConnection();
 
         public static ConnectionState ConnectionState { get { return GetConnection().State; } }
-
-        public static char CacheSpliter { get { return MiniDB.splitChar; } }
-        public static String CacheFilename = "TimeDatabase.cache";
-        public static string[] CacheAllLines { get { return File.ReadAllText(CacheFilename).Split(CacheSpliter); } }
+        
         //public static string connString
         //{ get { return connString; }
         //}
@@ -92,7 +89,7 @@ namespace 关机助手.Util
         public static void ResetConnection()
         {
             if (GetConnection().State != ConnectionState.Closed)
-                SystemCommandUtil.ExcuteCommand("taskkill /fi \"imagename eq sqlservr.exe\" /f");
+                SystemCommandUtil.ExecuteCommand("taskkill /fi \"imagename eq sqlservr.exe\" /f");
         }
 
         public static Boolean ConnectionOpenned()
@@ -143,14 +140,14 @@ namespace 关机助手.Util
 
         }
 
-        public static void ExecuteUpdate_delay(string commandText)
+        public static void ExecuteUpdateUsingCache(string commandText)
         {
-            SqlServerConnection.MiniDB.Insert(commandText);
+            CacheUtil.Insert(commandText);
         }
 
         public static int ClearCache()
         {
-            return MiniDB.CleanDbAndExecuteTasks();
+            return CacheUtil.CleanDbAndExecuteTasks();
         }
 
         public static Boolean UpdateDatabase(DataTable dataTable)
@@ -262,7 +259,7 @@ namespace 关机助手.Util
         /// <summary>
         /// 在程序执行中禁止使用该类的所有函数
         /// </summary>
-        public static void Prohibit()
+        public static void Disable()
         {
             CloseConnection();
             Instance.connection = null;
@@ -295,48 +292,6 @@ namespace 关机助手.Util
 
                 }
             }
-        }
-
-        private class MiniDB
-        {
-            public static string DbFilename { get; set; } = "TimeDatabase.cache";
-            public const char splitChar = '鋝';
-
-            public static void Insert(string str)
-            {
-                str = str.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'");
-                using (FileStream stream = new FileStream(DbFilename, FileMode.Append))
-                using (StreamWriter streamWriter = new StreamWriter(stream))
-                    streamWriter.Write(str + splitChar);
-
-                File.SetAttributes(DbFilename, FileAttributes.Hidden);
-            }
-
-            public static string[] GetAllItems()
-            {
-                if (File.Exists(DbFilename) == false)
-                    return null;
-                return File.ReadAllText(DbFilename).Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries);
-            }
-
-            public static int CleanDbAndExecuteTasks()
-            {
-                int effectedRows = 0;
-                string[] commands = GetAllItems();
-                if (commands == null)
-                    return -1;
-
-                foreach (string str in commands)
-                {
-                    int tmp = SqlServerConnection.ExecuteUpdate(str);
-                    effectedRows += tmp > 0 ? tmp : 0;
-                }
-                File.Delete(DbFilename);
-                return effectedRows;
-            }
-
-            //public delegate void CacheRowsExecutedEventHandler(object sender, EventArgs e);
-            //public event CacheRowsExecutedEventHandler CacheRowsExecutedEvent;
         }
     }
 }

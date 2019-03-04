@@ -9,16 +9,16 @@ namespace 关机助手
     static class ProgramLauncher
     {
         public static string SystemUserName { get { return Environment.UserName; } }
-        public static string Version(int strDotCount)
+        public static string Version(int 版本号保留几个点)
         {
-            if (strDotCount < 0 || strDotCount > 3)
+            if (版本号保留几个点 < 0 || 版本号保留几个点 > 3)
                 throw new ArgumentException("参数输入不正确");
 
             string original = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            if (strDotCount == 3)
+            if (版本号保留几个点 == 3)
                 return original;
             int len = 0;
-            for(int i = 0; i <= strDotCount; i++)
+            for(int i = 0; i <= 版本号保留几个点; i++)
             {
                 len = original.IndexOf('.', len+1);
             }

@@ -90,6 +90,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CacheManagerForm.Designer.cs">
+      <DependentUpon>CacheManagerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExceptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +146,7 @@
     <Compile Include="RemarkManagerForm.Designer.cs">
       <DependentUpon>RemarkManagerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\CacheUtil.cs" />
     <Compile Include="Util\EncryptUtil.cs" />
     <Compile Include="Util\FastModeUtil.cs" />
     <Compile Include="Util\LogUtil.cs" />
@@ -162,6 +169,9 @@
     <Compile Include="Util\UnicodeSaverUtil.cs" />
     <Compile Include="Util\WinRARUtil.cs" />
     <Compile Include="Util\ZipUtil.cs" />
+    <EmbeddedResource Include="CacheManagerForm.resx">
+      <DependentUpon>CacheManagerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ExceptionForm.resx">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -277,9 +287,6 @@
       <DependentUpon>TimeDatabase.mdf</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

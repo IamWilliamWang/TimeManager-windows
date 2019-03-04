@@ -9,7 +9,7 @@ namespace 关机助手.Util
          * @parms command需要执行的dos指令
          * @returns 执行过程中显示的字符串
          */
-        public static String ExcuteCommand(String command, bool adminAuthorized=false)
+        public static String ExecuteCommand(String command, bool adminAuthorized=false)
         {
             Process process = new Process();
 

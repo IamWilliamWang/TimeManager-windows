@@ -58,43 +58,31 @@ namespace 关机助手
         }
 
         private string CreateSqlFunctionSQL() =>
-            "Create function SecToDateTime(@sec int) /*将second转换成 天,时:分:秒*/\n" +
-            "Returns varchar(50) /*返回类型为varchar*/\n" +
-            "As\n" +
-            "Begin\n" +
-            "   Declare @day int\n" +
-            "   Declare @hour int\n" +
-            "   Declare @min int\n" +
-            "   Declare @dt varchar(50)\n" +
-            "   set @day = 0\n" +
-            "   set @hour = 0\n" +
-            "   set @min = 0\n" +
-            "   while @sec >= 60\n" +
-            "   begin\n" +
-            "      set @sec = @sec - 60\n" +
-            "      set @min = @min + 1\n" +
-            "   end\n" +
-            "\n" +
-            "   while @min >= 60\n" +
-            "   begin\n" +
-            "      set @min = @min - 60\n" +
-            "      set @hour = @hour + 1\n" +
-            "   end\n" +
-            "               \n " +
-            "   while @hour >= 24\n" +
-            "   begin\n" +
-            "      set @hour = @hour - 24\n" +
-            "      set @day = @day + 1\n" +
-            "   end\n" +
-            "               \n " +
-            "   set @dt = convert(varchar(50), @day) + ' days ' + convert(varchar(50), @hour) + ':' + convert(varchar(50), @min) + ':' + convert(varchar(50), @sec)\n" +
-            "Return @dt\n" +
-            "End\n";
+            "Create function SecToDateTime(@total int) " +
+            "Returns varchar(50) " +
+            "As " +
+            "Begin " +
+            "   Declare @day int " +
+            "   Declare @hour int " +
+            "   Declare @min int " +
+            "   Declare @sec int " +
+            "   Declare @dt varchar(50) " +
+            "   set @sec = @total % 60 " +
+            "   set @total = floor(@total / 60) " +
+            "   set @min = @total % 60 " +
+            "   set @total = floor(@total / 60) " +
+            "   set @hour = @total % 24 " +
+            "   set @total = floor(@total / 24) " +
+            "   set @day = @total " +
+            " " +
+            "   set @dt = convert(varchar(50), @day) + ' days ' + convert(varchar(50), @hour) + ':' + convert(varchar(50), @min) + ':' + convert(varchar(50), @sec) " +
+            "Return @dt " +
+            "End ";
 
         private string DeleteTempVarsSQL() =>
-            "drop function SecToDateTime " +
+            "drop function SecToDateTime ";
             //"select * from 每月累计时长表 " +
-            "drop table 每月累计时长表";
+            //"drop table 每月累计时长表";
 
         private string CountSumDateTimeOfEachMonthSQL() =>
             "/*创建该函数对象*/\n" +
@@ -102,13 +90,8 @@ namespace 关机助手
             "               \n " +
             "select YEAR(开机时间) 年份, MONTH(开机时间) 月份, dbo.SecToDateTime(sum(datediff(second, '00:00:00', 时长))) 当月累计时长 /*into 每月累计时长表*/\n" +
             "from[Table]\n" +
-            "group by  MONTH(开机时间),YEAR(开机时间);\n" +
-            "/*where YEAR(开机时间) == parentTable.YEAR(开机时间) and MONTH(开机时间) == parentTable.MONTH(开机时间)\n" +
-            "            \n" +
-            "update [Table]\n" +
-            "set 当月时长累计=每月累计时长表.当月累计时长\n" +
-            "where [Table].开机时间=每月累计时长表.年 and [Table].开机时间=每月累计时长表.月\n" +
-            "*/ ";
+            "group by YEAR(开机时间),MONTH(开机时间)" +
+            "order by YEAR(开机时间),MONTH(开机时间);\n";
         #endregion
 
         #region Chart初始化

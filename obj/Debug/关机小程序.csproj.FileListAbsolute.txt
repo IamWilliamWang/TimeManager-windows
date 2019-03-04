@@ -21,3 +21,5 @@ F:\Visual Studio 2015\关机小程序\bin\Debug\System.Data.SQLite.dll.config
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.csproj.CopyComplete
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机助手.exe
 F:\Visual Studio 2015\关机小程序\obj\Debug\关机助手.pdb
+F:\Visual Studio 2015\关机小程序\obj\Debug\关机助手.CacheManagerForm.resources
+F:\Visual Studio 2015\关机小程序\obj\Debug\关机小程序.csprojAssemblyReference.cache

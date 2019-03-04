@@ -26,8 +26,8 @@ namespace 关机助手
             Process[] processes = Process.GetProcessesByName("关机助手"); //检测后台是否运行同一程序
             if (processes.Length > 1)
             {
-                MessageBox.Show("后台已经启动本程序，不能重复启动！", "警告");
-                Environment.Exit(0);
+                MessageBox.Show("检测到后台已经启动本程序，强烈建议只开启一个本程序，否则可能会导致意外后果。（如果正在获取管理员权限，请忽略本信息）", "警告");
+                //Environment.Exit(0);
             }
             
             if (!File.Exists(Properties.Resources.MdfFilename)) //检测数据库文件是否存在
@@ -40,7 +40,7 @@ namespace 关机助手
                 DatabaseManagerForm.needInitialized = true;
             }
 
-            this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version(1)); //保存version字段
+            this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version(2)); //保存version字段
             //this.connectSqlServerBackgroundWorker.RunWorkerAsync();
             SaveMainForm();
 
@@ -76,7 +76,7 @@ namespace 关机助手
 
         private void AddNowTimeToFormTitle()
         {
-            this.Text += " " + DateTime.Now.ToLongTimeString();
+            this.Text += " " + DateTime.Now.ToString("HH:mm:ss");
 
         }
 
@@ -119,6 +119,9 @@ namespace 关机助手
                 if (this.记录关机时间checkBox.Checked)
                     SqlExecuter.记录关机事件();
 
+                if (float.Parse(this.comboBoxTime.Text) < 0)
+                    return;
+
                 if (this.comboBoxMode.Text == "休眠" || this.comboBoxMode.Text == "睡眠") 
                 {
                     this.Hide();
@@ -132,11 +135,6 @@ namespace 关机助手
                         this.Show();
                         return;
                     }
-                }
-                else
-                {
-                    if (float.Parse(this.comboBoxTime.Text) < 0)
-                        return;
                 }
 
                 CancelShutdownCommand();
@@ -491,7 +489,6 @@ namespace 关机助手
 
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            this.开发者模式contextMenuStrip.Items[0].Enabled = true;
             this.应用AppToolStripMenuItem_Click(new object(), new EventArgs());
         }
 
@@ -520,6 +517,8 @@ namespace 关机助手
 
         private void 管理主窗口ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!MainForm.databaseOffline)
+                this.离线使用ToolStripMenuItem.Enabled = false;
             Form manager = new DatabaseManagerForm();
             manager.ShowDialog();
         }
@@ -552,7 +551,7 @@ namespace 关机助手
 
         private void updateTitleTimer_Tick(object sender, EventArgs e)
         {
-            this.Text = this.Text.Substring(0, this.Text.LastIndexOf(' ')) + " " + DateTime.Now.ToLongTimeString();
+            this.Text = this.Text.Substring(0, this.Text.IndexOf(' ',5)) + " " + DateTime.Now.ToString("HH:mm:ss");
             //Thread.Sleep(1000);
         }
 
@@ -664,6 +663,11 @@ namespace 关机助手
             if (files.Length != 1)
                 return;
             string filename = files[0];
+            if(filename.Contains(".mdf") == false)
+            {
+                MessageBox.Show("外链失败，请拖拽mdf文件。", "外链数据库", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             database.OpenConnection(filename);
             MessageBox.Show("外链数据库文件成功。","已使用新的数据库");
         }
@@ -696,7 +700,6 @@ namespace 关机助手
                 if (DialogResult.Yes == MessageBox.Show("在数据库无法正常使用情况下，推荐使用此项功能。虽然可以保证软件的绝对稳定，但是会损失本系统绝大部分的功能。是否继续？", "离线使用警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
                 {
                     databaseOffline = true;
-                    this.文件ToolStripMenuItem.Enabled = false;
                     this.记录关机时间checkBox.Checked = false;
                     this.记录关机时间checkBox.Enabled = false;
                 }
@@ -705,7 +708,6 @@ namespace 关机助手
             else
             {
                 databaseOffline = false;
-                this.文件ToolStripMenuItem.Enabled = true;
                 this.记录关机时间checkBox.Checked = true;
                 this.记录关机时间checkBox.Enabled = true;
                 ((ToolStripMenuItem)sender).Text = "启动安全模式";

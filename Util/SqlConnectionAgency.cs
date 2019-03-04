@@ -156,7 +156,7 @@ namespace 关机助手.Util
             }
         }
 
-        public void ExecuteQuery_delay(string selectCommandText)
+        public void ExecuteQueryUsingCache(string selectCommandText)
         {
             switch (dbType)
             {
@@ -181,12 +181,12 @@ namespace 关机助手.Util
             }
         }
 
-        public void ExecuteUpdate_delay(string commandText)
+        public void ExecuteUpdateUsingCache(string commandText)
         {
             switch(dbType)
             {
                 case DatabaseType.MSSqlServer:
-                    SqlServerConnection.ExecuteUpdate_delay(commandText);
+                    SqlServerConnection.ExecuteUpdateUsingCache(commandText);
                     break;
                 case DatabaseType.SqLite:
                     throw new NotImplementedException();

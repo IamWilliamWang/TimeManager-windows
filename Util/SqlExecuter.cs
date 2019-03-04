@@ -31,7 +31,7 @@ namespace 关机助手.Util
         {
             if (!SqlServerConnection.ConnectionOpenned())
             {
-                dbAgency.ExecuteUpdate_delay(InsertPowerOnTimeSQL(TableName));
+                dbAgency.ExecuteUpdateUsingCache(InsertPowerOnTimeSQL(TableName));
                 return true;
             }
             else
@@ -55,7 +55,7 @@ namespace 关机助手.Util
         {
             if (!SqlServerConnection.ConnectionOpenned())
             {
-                dbAgency.ExecuteUpdate_delay(UpdateShutdownTimeSQL());
+                dbAgency.ExecuteUpdateUsingCache(UpdateShutdownTimeSQL());
                 return true;
             }
             else

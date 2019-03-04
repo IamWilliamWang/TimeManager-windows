@@ -97,7 +97,7 @@ namespace 关机助手
             result.AppendLine("    CLR运行版本:"+ass.ImageRuntimeVersion.Replace("v",""));
             result.AppendLine("    程序集语言:" + FormatCulture(split[2].Trim().Replace("Culture=", "")));
             result.AppendLine("    公钥标记:" + split[3].Trim().Replace("PublicKeyToken=", ""));
-            result.Append("    基本代码:"+ass.CodeBase);
+            result.Append("    动态库位置:"+ass.CodeBase);
             return result.ToString();
         }
 

@@ -32,7 +32,7 @@ namespace 关机助手.Util
             }
             catch
             {
-                SystemCommandUtil.ExcuteCommand("del \"" + fullFilename + "\"");
+                SystemCommandUtil.ExecuteCommand("del \"" + fullFilename + "\"");
             }
             return true;
         }

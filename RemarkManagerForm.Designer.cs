@@ -55,6 +55,9 @@
             // 
             // dataGridViewDatas
             // 
+            this.dataGridViewDatas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewDatas.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -89,7 +92,6 @@
             this.dataGridViewDatas.RowTemplate.Height = 23;
             this.dataGridViewDatas.Size = new System.Drawing.Size(513, 320);
             this.dataGridViewDatas.TabIndex = 0;
-            this.dataGridViewDatas.RowStateChanged += new System.Windows.Forms.DataGridViewRowStateChangedEventHandler(this.dataGridViewRemarks_RowStateChanged);
             // 
             // dataGridViewRemarks
             // 
@@ -234,8 +236,9 @@
             this.Controls.Add(this.textBoxId);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "RemarkManagerForm";
-            this.Text = "注释管理器";
+            this.Text = "注释管理";
             this.Load += new System.EventHandler(this.RemarkManagerForm_Load);
+            this.Resize += new System.EventHandler(this.RemarkManagerForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDatas)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRemarks)).EndInit();
             this.tabControl1.ResumeLayout(false);
