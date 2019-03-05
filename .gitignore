@@ -46,5 +46,21 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Developer manual added
+# VS文件
 .vs
+
+# 生成文件
+obj/
+
+# 备份文件
+backups/
+oldVersion/
+*.rar
+*.backup
+
+# 脚本文件
+script/
+
+# 数据库文件
+*.mdf
+*.ldf
