@@ -12,14 +12,14 @@ namespace 关机助手
 
         private void button返回_Click(object sender, EventArgs e)
         {
-            MainForm.GetMainForm().Show();
+            MainForm.Appear();
             this.Close();
 
         }
 
         private void FormHelp_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MainForm.GetMainForm().Show();
+            MainForm.Appear();
         }
 
         private void HelpForm_Load(object sender, EventArgs e)

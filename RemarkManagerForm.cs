@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using 关机助手.Util;
 
@@ -13,6 +9,7 @@ namespace 关机助手
 {
     public partial class RemarkManagerForm : Form
     {
+        #region 窗体加载事件
         public RemarkManagerForm()
         {
             InitializeComponent();
@@ -22,6 +19,63 @@ namespace 关机助手
         {
             this.RefreshDatas();
             this.RefreshRemarks();
+        }
+        #endregion
+
+        #region RemarkManager帮助函数
+        /// <summary>
+        /// 如果TextBox有空的，则提示报错，返回True。否则直接返回False
+        /// </summary>
+        /// <returns></returns>
+        private bool AlertEmpty()
+        {
+            if (this.textBoxContent.Text == "" || this.textBoxId.Text == "")
+            {
+                MessageBox.Show("请先在上方输入内容！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+        #region 数据表加载
+        /// <summary>
+        /// 将英文与hex混合字串转换成正常字串
+        /// </summary>
+        /// <param name="itemString"></param>
+        /// <returns></returns>
+        private string Hex2ChiEngString(string itemString)
+        {
+            int finishedPointer = 0;
+            int chiStartIndex, chiEndIndex;
+            StringBuilder strResult = new StringBuilder();
+            while (finishedPointer < itemString.Length)
+            {
+                chiStartIndex = itemString.IndexOf("&#x", finishedPointer);
+                if (chiStartIndex == -1)
+                    chiStartIndex = itemString.Length;
+                if (chiStartIndex != finishedPointer) //有不用处理的英文字母直接而放入
+                {
+                    strResult.Append(itemString.Substring(finishedPointer, chiStartIndex - finishedPointer));
+                    finishedPointer = chiStartIndex;
+                }
+                if (finishedPointer < itemString.Length)
+                {
+                    chiEndIndex = itemString.IndexOf(";", chiStartIndex) + 1;
+                    while (true)
+                    {
+                        if (itemString.IndexOf("&#x", chiEndIndex) != chiEndIndex)
+                            break;
+                        chiEndIndex = itemString.IndexOf(";", chiEndIndex) + 1;
+                    }
+                    if (chiEndIndex == 0)
+                        throw new Exception("中文Hex格式错误");
+                    string chinCharacterHex = itemString.Substring(chiStartIndex, chiEndIndex - chiStartIndex).Replace("&#x", "").Replace(";", "");
+                    strResult.Append(UnicodeSaverUtil.GetChsFromHex(chinCharacterHex));
+                    finishedPointer = chiEndIndex;
+                }
+            }
+            return strResult.ToString();
         }
 
         private void RefreshRemarks()
@@ -40,14 +94,6 @@ namespace 关机助手
                         string transformResult = Hex2ChiEngString(itemString);
                         r[columnIndex] = transformResult;
                     }
-                    //char[] itemChars = itemString.ToCharArray();
-                    //StringBuilder newString = new StringBuilder();
-                    //for(int chIndex=0;chIndex< itemString.Length;chIndex++)
-                    //{
-                    //    if (Util.UnicodeUtil.IsUniChs(itemChars[chIndex]))
-                    //        newString.Append(Util.UnicodeUtil.GetChsFromHex())
-                    //}
-
                 }
             }
             this.tabControl1.SelectedIndex = 0;
@@ -60,43 +106,22 @@ namespace 关机助手
             this.dataGridViewDatas.DataSource = SqlUtil.Select("[Table]", "序号,开机时间,关机时间");
             this.dataGridViewDatas.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
+        #endregion
 
-        /// <summary>
-        /// 将英文与hex混合字串转换成正常字串
-        /// </summary>
-        /// <param name="itemString"></param>
-        /// <returns></returns>
-        private string Hex2ChiEngString(string itemString)
+        #region 点击事件
+        private string Text2Hex(string oldContent)
         {
-            int finishedPointer = 0;
-            int chiStartIndex, chiEndIndex;
-            StringBuilder strResult = new StringBuilder();
-            while(finishedPointer < itemString.Length)
+            string formatedContent = ""; //只对oldContent中的中文部分进行utf8编码，其他部分不予处理
+            foreach (char ch in oldContent.ToCharArray())
             {
-                chiStartIndex = itemString.IndexOf("&#x", finishedPointer);
-                if (chiStartIndex == -1)
-                    chiStartIndex = itemString.Length;
-                if(chiStartIndex!=finishedPointer) //有不用处理的英文字母直接而放入
+                if (Util.UnicodeSaverUtil.IsChineseChar(ch))
                 {
-                    strResult.Append(itemString.Substring(finishedPointer,chiStartIndex-finishedPointer));
-                    finishedPointer = chiStartIndex;
+                    formatedContent += Util.UnicodeSaverUtil.GetHexFromChs(ch);
                 }
-                if (finishedPointer < itemString.Length) {
-                    chiEndIndex = itemString.IndexOf(";", chiStartIndex) + 1;
-                    while (true)
-                    {
-                        if (itemString.IndexOf("&#x", chiEndIndex) != chiEndIndex)
-                            break;
-                        chiEndIndex = itemString.IndexOf(";", chiEndIndex) + 1;
-                    }
-                    if (chiEndIndex == 0)
-                        throw new Exception("中文Hex格式错误");
-                    string chinCharacterHex = itemString.Substring(chiStartIndex, chiEndIndex - chiStartIndex).Replace("&#x","").Replace(";","");
-                    strResult.Append(UnicodeSaverUtil.GetChsFromHex(chinCharacterHex));
-                    finishedPointer = chiEndIndex;
-                }
+                else
+                    formatedContent += ch;
             }
-            return strResult.ToString();
+            return formatedContent;
         }
 
         private void button提交_Click(object sender, EventArgs e)
@@ -105,12 +130,10 @@ namespace 关机助手
                 return;
 
             string formatedContent = Text2Hex(this.textBoxContent.Text);
-            //if (Util.SqlServerConnection.UpdateDatabase((DataTable) this.dataGridViewRemarks.DataSource))
             if (SqlUtil.Update("[Remark]", "Remark", "'" + formatedContent + "'", "id = " + this.textBoxId.Text)) //这里的update有时候不行，未知bug
             {
                 System.Windows.MessageBox.Show("修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 this.RefreshRemarks();
-                //this.dataGridViewRemarks.DataSource = Util.SqlServerConnection.ExecuteQuery("select Id 序号,Remark 注释,RemarkTime 注释创建时间 from [Remark]");
             }
         }
 
@@ -140,22 +163,16 @@ namespace 关机助手
                 //this.dataGridViewRemarks.DataSource = Util.SqlServerConnection.ExecuteQuery("select Id 序号,Remark 注释,RemarkTime 注释创建时间 from [Remark]");
             }
         }
+        #endregion
 
-        private string Text2Hex(string oldContent)
+        #region 窗体大小改变事件
+        private void RemarkManagerForm_Resize(object sender, EventArgs e)
         {
-            string formatedContent = ""; //只对oldContent中的中文部分进行utf8编码，其他部分不予处理
-            foreach (char ch in oldContent.ToCharArray())
-            {
-                if (Util.UnicodeSaverUtil.IsChineseChar(ch))
-                {
-                    formatedContent += Util.UnicodeSaverUtil.GetHexFromChs(ch);
-                }
-                else
-                    formatedContent += ch;
-            }
-            return formatedContent;
+            this.RefreshRemarks();
         }
+        #endregion
 
+        #region HeaderCell修改事件
         private void dataGridViewRemarks_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
         {
             //刷新界面后要把索引数字显示在HeaderCell（最左边那一列）上
@@ -164,20 +181,7 @@ namespace 关机助手
                 e.Row.HeaderCell.Value = (e.Row.Index + 1).ToString();
             }
         }
-
-        private bool AlertEmpty()
-        {
-            if (this.textBoxContent.Text == "" || this.textBoxId.Text == "") 
-            {
-                MessageBox.Show("请先在上方输入内容！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return true;
-            }
-            return false;
-        }
-
-        private void RemarkManagerForm_Resize(object sender, EventArgs e)
-        {
-            this.RefreshRemarks();
-        }
+        #endregion
+        
     }
 }

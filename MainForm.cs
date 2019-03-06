@@ -11,7 +11,7 @@ namespace 关机助手
 {
     public partial class MainForm : Form
     {
-        private static Form form = null;
+        private static Form mForm = null;
         // SqlServer连接代理
         private SqlConnectionAgency database = new SqlConnectionAgency();
         
@@ -74,7 +74,7 @@ namespace 关机助手
 
         private void SaveMainForm()
         {
-            form = this;
+            mForm = this;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -182,7 +182,7 @@ namespace 关机助手
         /****************************/
 
         #region 菜单栏
-        bool 拓展功能ButtonClicked { get; set; } = false;
+            #region 插入
         private void 插入开机时间ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SqlExecuter.记录开机事件("[Table]"))
@@ -194,21 +194,24 @@ namespace 关机助手
             if (SqlExecuter.记录关机事件())
                 MessageBox.Show("添加关机记录成功！");
         }
-
+        #endregion
+            #region 数据管理
         private void 数据管理ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!MainForm.databaseOffline)
                 this.安全模式ToolStripMenuItem.Enabled = false;
-            Form manager = new DatabaseManagerForm();
-            manager.ShowDialog();
+            new DatabaseManagerForm().ShowDialog();
         }
-
+        #endregion
+            #region 取消关机
         private void 取消关机ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CancelShutdownCommand();
             return;
         }
-
+        #endregion
+            #region 拓展功能
+        bool 拓展功能ButtonClicked { get; set; } = false;
         private void 拓展功能ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (拓展功能ButtonClicked == false)
@@ -261,6 +264,7 @@ namespace 关机助手
             }
             拓展功能ButtonClicked = !拓展功能ButtonClicked;
         }
+        #endregion
         #endregion
 
         #region 确定键
@@ -547,9 +551,13 @@ namespace 关机助手
         #endregion
         
         #region 外部类调用模块
-        public static void restartWithAdminRight(bool mute = false)
+        /// <summary>
+        /// 以管理管身份重新启动本程序
+        /// </summary>
+        /// <param name="muteMessage">禁止弹出提示</param>
+        public static void restartWithAdminRight(bool muteMessage = false)
         {
-            if (!mute && MessageBox.Show("请使用管理员权限重启本程序再进行此操作，是否程序允许获取权限？", "操作失败", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (!muteMessage && MessageBox.Show("请使用管理员权限重启本程序再进行此操作，是否程序允许获取权限？", "操作失败", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
             {
                 return;
             }
@@ -578,14 +586,22 @@ namespace 关机助手
             }
         }
 
+        // 是否脱离数据库连接（安全模式是否打开）
         public static bool databaseOffline { get; set; } = false;
 
         public bool 重复开启软件检查 { get; set; } = true;
 
-        public static Form GetMainForm()
+        /// <summary>
+        /// 重新显示主窗口
+        /// </summary>
+        public static void Appear()
         {
-            return form;
+            if (mForm == null)
+                new MainForm().Show();
+            else
+                mForm.Show();
         }
         #endregion
+        
     }
 }
