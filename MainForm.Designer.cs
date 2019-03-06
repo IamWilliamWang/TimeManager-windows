@@ -31,12 +31,12 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.插入ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.插入开机时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.插入关机时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.数据管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.取消指令ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.拓展功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBoxTime = new System.Windows.Forms.ComboBox();
             this.comboBoxMode = new System.Windows.Forms.ComboBox();
             this.buttonOK = new System.Windows.Forms.Button();
@@ -47,10 +47,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.主界面contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.离线使用ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.安全模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.升级日志ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.源头管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.释放数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.切断数据库连接ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.外链数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.获得管理员权限ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.禁止一次开机记时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +63,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
-            this.connectSqlServerBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.menuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
@@ -73,10 +72,10 @@
             // 
             this.menuStrip.Font = new System.Drawing.Font("幼圆", 11F);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.文件ToolStripMenuItem,
+            this.插入ToolStripMenuItem,
             this.数据管理ToolStripMenuItem,
             this.取消指令ToolStripMenuItem,
-            this.退出ToolStripMenuItem});
+            this.拓展功能ToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
@@ -84,15 +83,14 @@
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
-            // 文件ToolStripMenuItem
+            // 插入ToolStripMenuItem
             // 
-            this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.插入ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.插入开机时间ToolStripMenuItem,
             this.插入关机时间ToolStripMenuItem});
-            this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
-            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(51, 19);
-            this.文件ToolStripMenuItem.Text = "插入";
-            this.文件ToolStripMenuItem.Click += new System.EventHandler(this.文件ToolStripMenuItem_Click);
+            this.插入ToolStripMenuItem.Name = "插入ToolStripMenuItem";
+            this.插入ToolStripMenuItem.Size = new System.Drawing.Size(51, 19);
+            this.插入ToolStripMenuItem.Text = "插入";
             // 
             // 插入开机时间ToolStripMenuItem
             // 
@@ -113,21 +111,21 @@
             this.数据管理ToolStripMenuItem.Name = "数据管理ToolStripMenuItem";
             this.数据管理ToolStripMenuItem.Size = new System.Drawing.Size(83, 19);
             this.数据管理ToolStripMenuItem.Text = "数据管理";
-            this.数据管理ToolStripMenuItem.Click += new System.EventHandler(this.管理主窗口ToolStripMenuItem_Click);
+            this.数据管理ToolStripMenuItem.Click += new System.EventHandler(this.数据管理ToolStripMenuItem_Click);
             // 
             // 取消指令ToolStripMenuItem
             // 
             this.取消指令ToolStripMenuItem.Name = "取消指令ToolStripMenuItem";
             this.取消指令ToolStripMenuItem.Size = new System.Drawing.Size(83, 19);
             this.取消指令ToolStripMenuItem.Text = "取消关机";
-            this.取消指令ToolStripMenuItem.Click += new System.EventHandler(this.取消指令ToolStripMenuItem_Click);
+            this.取消指令ToolStripMenuItem.Click += new System.EventHandler(this.取消关机ToolStripMenuItem_Click);
             // 
-            // 退出ToolStripMenuItem
+            // 拓展功能ToolStripMenuItem
             // 
-            this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(83, 19);
-            this.退出ToolStripMenuItem.Text = "拓展功能";
-            this.退出ToolStripMenuItem.Click += new System.EventHandler(this.更多ToolStripMenuItem_Click);
+            this.拓展功能ToolStripMenuItem.Name = "拓展功能ToolStripMenuItem";
+            this.拓展功能ToolStripMenuItem.Size = new System.Drawing.Size(83, 19);
+            this.拓展功能ToolStripMenuItem.Text = "拓展功能";
+            this.拓展功能ToolStripMenuItem.Click += new System.EventHandler(this.拓展功能ToolStripMenuItem_Click);
             // 
             // comboBoxTime
             // 
@@ -167,7 +165,7 @@
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "确定";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.button确定_Click);
             // 
             // 确认按钮contextMenuStrip
             // 
@@ -221,8 +219,8 @@
             // 主界面contextMenuStrip
             // 
             this.主界面contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.离线使用ToolStripMenuItem,
-            this.帮助ToolStripMenuItem,
+            this.安全模式ToolStripMenuItem,
+            this.升级日志ToolStripMenuItem,
             this.源头管理ToolStripMenuItem,
             this.获得管理员权限ToolStripMenuItem,
             this.禁止一次开机记时间ToolStripMenuItem,
@@ -232,35 +230,35 @@
             this.主界面contextMenuStrip.Size = new System.Drawing.Size(180, 158);
             this.主界面contextMenuStrip.Tag = "主页面右击界面";
             // 
-            // 离线使用ToolStripMenuItem
+            // 安全模式ToolStripMenuItem
             // 
-            this.离线使用ToolStripMenuItem.Name = "离线使用ToolStripMenuItem";
-            this.离线使用ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.离线使用ToolStripMenuItem.Text = "启动安全模式";
-            this.离线使用ToolStripMenuItem.Click += new System.EventHandler(this.离线使用ToolStripMenuItem_Click);
+            this.安全模式ToolStripMenuItem.Name = "安全模式ToolStripMenuItem";
+            this.安全模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.安全模式ToolStripMenuItem.Text = "启动安全模式";
+            this.安全模式ToolStripMenuItem.Click += new System.EventHandler(this.安全模式ToolStripMenuItem_Click);
             // 
-            // 帮助ToolStripMenuItem
+            // 升级日志ToolStripMenuItem
             // 
-            this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
-            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.帮助ToolStripMenuItem.Text = "关于&&升级日志";
-            this.帮助ToolStripMenuItem.Click += new System.EventHandler(this.帮助ToolStripMenuItem_Click);
+            this.升级日志ToolStripMenuItem.Name = "升级日志ToolStripMenuItem";
+            this.升级日志ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.升级日志ToolStripMenuItem.Text = "关于&&升级日志";
+            this.升级日志ToolStripMenuItem.Click += new System.EventHandler(this.升级日志ToolStripMenuItem_Click);
             // 
             // 源头管理ToolStripMenuItem
             // 
             this.源头管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.释放数据库ToolStripMenuItem,
+            this.切断数据库连接ToolStripMenuItem,
             this.外链数据库ToolStripMenuItem});
             this.源头管理ToolStripMenuItem.Name = "源头管理ToolStripMenuItem";
             this.源头管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.源头管理ToolStripMenuItem.Text = "源头管理";
             // 
-            // 释放数据库ToolStripMenuItem
+            // 切断数据库连接ToolStripMenuItem
             // 
-            this.释放数据库ToolStripMenuItem.Name = "释放数据库ToolStripMenuItem";
-            this.释放数据库ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.释放数据库ToolStripMenuItem.Text = "切断数据库连接";
-            this.释放数据库ToolStripMenuItem.Click += new System.EventHandler(this.释放数据库ToolStripMenuItem_Click);
+            this.切断数据库连接ToolStripMenuItem.Name = "切断数据库连接ToolStripMenuItem";
+            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.切断数据库连接ToolStripMenuItem.Text = "切断数据库连接";
+            this.切断数据库连接ToolStripMenuItem.Click += new System.EventHandler(this.切断数据库连接ToolStripMenuItem_Click);
             // 
             // 外链数据库ToolStripMenuItem
             // 
@@ -274,6 +272,7 @@
             this.获得管理员权限ToolStripMenuItem.Name = "获得管理员权限ToolStripMenuItem";
             this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.获得管理员权限ToolStripMenuItem.Text = "获得管理员权限";
+            this.获得管理员权限ToolStripMenuItem.Click += new System.EventHandler(this.获得管理员权限ToolStripMenuItem_Click);
             // 
             // 禁止一次开机记时间ToolStripMenuItem
             // 
@@ -325,7 +324,7 @@
             this.隐匿ToolStripMenuItem.Name = "隐匿ToolStripMenuItem";
             this.隐匿ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.隐匿ToolStripMenuItem.Text = "任务栏隐匿";
-            this.隐匿ToolStripMenuItem.Click += new System.EventHandler(this.显现ToolStripMenuItem_Click);
+            this.隐匿ToolStripMenuItem.Click += new System.EventHandler(this.任务栏隐匿ToolStripMenuItem_Click);
             // 
             // 退出ToolStripMenuItem1
             // 
@@ -354,7 +353,7 @@
             this.确定button2.TabIndex = 7;
             this.确定button2.Text = "确定";
             this.确定button2.UseVisualStyleBackColor = true;
-            this.确定button2.Click += new System.EventHandler(this.button2OK_Click);
+            this.确定button2.Click += new System.EventHandler(this.button确认2_Click);
             // 
             // label3
             // 
@@ -381,12 +380,6 @@
             // 
             this.updateTitleTimer.Interval = 77;
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
-            // 
-            // connectSqlServerBackgroundWorker
-            // 
-            this.connectSqlServerBackgroundWorker.WorkerReportsProgress = true;
-            this.connectSqlServerBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.connectSqlServerBackgroundWorker_DoWork);
-            this.connectSqlServerBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.connectSqlServerBackgroundWorker_RunWorkerCompleted);
             // 
             // MainForm
             // 
@@ -433,7 +426,7 @@
 
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem 取消指令ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 退出ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 拓展功能ToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBoxTime;
         private System.Windows.Forms.ComboBox comboBoxMode;
         private System.Windows.Forms.Button buttonOK;
@@ -448,18 +441,17 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Button 确定button2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 升级日志ToolStripMenuItem;
         private System.Windows.Forms.CheckBox 记录关机时间checkBox;
         private System.Windows.Forms.ToolStripMenuItem 数据管理ToolStripMenuItem;
         private System.Windows.Forms.Timer updateTitleTimer;
-        private System.ComponentModel.BackgroundWorker connectSqlServerBackgroundWorker;
-        private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 插入ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 插入开机时间ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 插入关机时间ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 离线使用ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 安全模式ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 禁止一次开机记时间ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 源头管理ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 释放数据库ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 切断数据库连接ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 外链数据库ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 获得管理员权限ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 附加功能ToolStripMenuItem;
