@@ -102,10 +102,10 @@
     <Compile Include="ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="HibernateForm.cs">
+    <Compile Include="Util\HibernateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HibernateForm.Designer.cs">
+    <Compile Include="Util\HibernateForm.Designer.cs">
       <DependentUpon>HibernateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="LogManagerForm.cs">
@@ -149,6 +149,9 @@
     <Compile Include="Util\CacheUtil.cs" />
     <Compile Include="Util\EncryptUtil.cs" />
     <Compile Include="Util\FastModeUtil.cs" />
+    <Compile Include="Util\Interaction.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Util\LogUtil.cs" />
     <Compile Include="Util\BinaryWriterUtil.cs" />
     <Compile Include="Util\ShutdownUtil.cs" />
@@ -175,7 +178,7 @@
     <EmbeddedResource Include="ExceptionForm.resx">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HibernateForm.resx">
+    <EmbeddedResource Include="Util\HibernateForm.resx">
       <DependentUpon>HibernateForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LogManagerForm.resx">
@@ -205,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RemarkManagerForm.resx">
       <DependentUpon>RemarkManagerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Util\Interaction.resx">
+      <DependentUpon>Interaction.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
@@ -274,7 +280,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="记录关机时间点.sql" />
     <None Include="Resources\ErrorMessage.jpg" />
     <Content Include="Resources\icon_main.ico" />
     <None Include="Resources\开机小程序.exe" />

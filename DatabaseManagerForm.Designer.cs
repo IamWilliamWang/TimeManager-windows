@@ -31,7 +31,7 @@ namespace 关机助手
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.timeDatabaseDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timeDatabaseDataSet = new 关机助手.SqlServerDatabase.TimeDatabaseDataSet();
             this.timeDatabaseDataSetBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
@@ -125,8 +125,8 @@ namespace 关机助手
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView1.RowHeadersWidth = 46;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.Size = new System.Drawing.Size(662, 372);
             this.dataGridView1.TabIndex = 0;
@@ -547,7 +547,7 @@ namespace 关机助手
             // 
             this.toolStripStatusLabelTime.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
             this.toolStripStatusLabelTime.Name = "toolStripStatusLabelTime";
-            this.toolStripStatusLabelTime.Size = new System.Drawing.Size(579, 20);
+            this.toolStripStatusLabelTime.Size = new System.Drawing.Size(548, 20);
             this.toolStripStatusLabelTime.Spring = true;
             this.toolStripStatusLabelTime.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -558,6 +558,7 @@ namespace 关机助手
             this.statusLabel.Padding = new System.Windows.Forms.Padding(0, 0, 15, 0);
             this.statusLabel.Size = new System.Drawing.Size(52, 20);
             this.statusLabel.Text = "完成";
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // progressBar1
             // 

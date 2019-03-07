@@ -58,7 +58,7 @@ namespace 关机助手
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxUpdateLog.Font = new System.Drawing.Font("黑体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBoxUpdateLog.Location = new System.Drawing.Point(0, 125);
+            this.textBoxUpdateLog.Location = new System.Drawing.Point(0, 127);
             this.textBoxUpdateLog.Multiline = true;
             this.textBoxUpdateLog.Name = "textBoxUpdateLog";
             this.textBoxUpdateLog.ReadOnly = true;

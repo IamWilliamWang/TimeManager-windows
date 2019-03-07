@@ -106,7 +106,6 @@ namespace 关机助手
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = db.ExecuteQuery("select * from " + TableName);
             this.dataGridView1.RowHeadersWidth = 53;
-            this.Width += 7;
             this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
         }
         
@@ -114,6 +113,8 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
+            if(this.Width==702)
+                this.Width = 710;
             // 数据库已连接与未连接都可以处理
             if (db.ConnectionState == ConnectionState.Closed)
             {
@@ -130,6 +131,8 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
+            if(this.Width==710)
+                this.Width = 702;
             // 数据库已连接与未连接都可以处理
             if (!db.ConnectionOpenned())
             {
@@ -153,28 +156,34 @@ namespace 关机助手
 
         private bool GetCustomSQLString()
         {
-            String input = Microsoft.VisualBasic.Interaction.InputBox("请输入要查询的日期，如“2018年1月1日”。支持年、年月、年月日", "精准查找");
+            String input = Interaction.InputBox("请输入要查询的日期，如“2018年1月1日”。支持年、年月、年月日", "精准查找");
             if (input == "")
                 return false;
-            String[] condition = input.Split(new char[] { '年', '月', '日' }, StringSplitOptions.RemoveEmptyEntries);
-            if (condition.Length == 1)
+            String[] conditions = input.Split(new char[] { '年', '月', '日' }, StringSplitOptions.RemoveEmptyEntries);
+            // Check sanity
+            foreach (String condition in conditions)
+                foreach (Char ch in condition.ToCharArray())
+                    if (char.IsDigit(ch) == false)
+                        return false;
+
+            if (conditions.Length == 1)
             {
-                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*", "YEAR(开机时间)=" + condition[0]);
+                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*", "YEAR(开机时间)=" + conditions[0]);
                 return true;
             }
-            else if (condition.Length == 2)
+            else if (conditions.Length == 2)
             {
                 QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*"
-                    , "YEAR(开机时间)=" + condition[0] + " and " +
-                    "MONTH(开机时间)=" + condition[1]);
+                    , "YEAR(开机时间)=" + conditions[0] + " and " +
+                    "MONTH(开机时间)=" + conditions[1]);
                 return true;
             }
-            else if (condition.Length == 3)
+            else if (conditions.Length == 3)
             {
                 QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*"
-                    , "YEAR(开机时间)=" + condition[0] + " and " +
-                    "MONTH(开机时间)=" + condition[1] + " and " +
-                    "DAY(开机时间)=" + condition[2]);
+                    , "YEAR(开机时间)=" + conditions[0] + " and " +
+                    "MONTH(开机时间)=" + conditions[1] + " and " +
+                    "DAY(开机时间)=" + conditions[2]);
                 return true;
             }
             return false;
@@ -286,7 +295,7 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
-            string input = Microsoft.VisualBasic.Interaction.InputBox("请输入要删除条目前的序号", "删除任意条");
+            string input = Interaction.InputBox("请输入要删除条目前的序号", "删除任意条");
             if (input == "")
                 return;
             string sql = "DELETE " +
@@ -360,7 +369,7 @@ namespace 关机助手
             if (MessageBox.Show("确定要使用该操作吗？使用该操作可能会导致不可逆的错误发生，您必须自己确信SQL语句完全正确，程序不会提供错误提醒。如果您是管理人员，且知道此举的后果，请点击确认。如果是正常用户请点击取消！", "严重使用警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
                 return;
 
-            String executeSQL = Microsoft.VisualBasic.Interaction.InputBox("请输入要执行的SQL语句(表名[Table]):", "SQL输入");
+            String executeSQL = Interaction.InputBox("请输入要执行的SQL语句(表名[Table]):", "SQL输入");
             if (executeSQL.Equals(""))
                 return;
             executeSQL = executeSQL.ToUpper();
@@ -427,7 +436,7 @@ namespace 关机助手
             if (AlertBusy())
                 return;
 
-            string command = Microsoft.VisualBasic.Interaction.InputBox("输入终端指令：", "终端操作");
+            string command = Interaction.InputBox("输入终端指令：", "终端操作");
             if (command == "")
                 return;
             Util.FastModeUtil.RunConsoleApplication(command.Split(' '));
