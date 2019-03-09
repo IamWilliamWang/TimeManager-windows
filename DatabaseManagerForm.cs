@@ -154,11 +154,11 @@ namespace 关机助手
 
         private string QueryCustomSQL { get; set; }
 
-        private bool GetCustomSQLString()
+        private bool? InputCustomSQLString()
         {
             String input = Interaction.InputBox("请输入要查询的日期。支持年、年月、年月日", "精准查找", hint: "如“2018年1月1日”");
             if (input == "")
-                return false;
+                return null;
             String[] conditions = input.Split(new char[] { '年', '月', '日' }, StringSplitOptions.RemoveEmptyEntries);
             // Check sanity
             foreach (String condition in conditions)
@@ -193,9 +193,13 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
-            if (GetCustomSQLString() == false)
+            var success = InputCustomSQLString();
+            if (success == null)
+                return;
+            if (success == false)
             {
                 this.展示所有数据ToolStripMenuItem_Click(sender, e);
+                MessageBox.Show("输入格式错误！已为您显示所有数据","错误提示");
                 return;
             }
             if (!db.ConnectionOpenned())

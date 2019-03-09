@@ -89,7 +89,9 @@ namespace 关机助手.Util
             this.Controls.Add(this.button确定);
             this.Controls.Add(this.textBoxInput);
             this.Controls.Add(this.labelContent);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "InputBoxFormInner";
             this.Text = "InputBoxForm";
             this.ResumeLayout(false);
@@ -112,7 +114,9 @@ namespace 关机助手.Util
         private int CharCountPerLine { get; set; } = 30;
         public string Title { get { return this.Text; } set { this.Text = value; } }
         public string HeaderText { get { return this.labelContent.Text; } set { this.labelContent.Text = value; } }
-        private string hintText;
+        private string defaultText;
+        private bool 输入成功 = false;
+
         public InputBoxFormInner(string title, string content, int? charCountPerLine = null)
         {
             InitializeComponent();
@@ -132,12 +136,12 @@ namespace 关机助手.Util
 
         private void button确定_Click(object sender, EventArgs e)
         {
+            this.输入成功 = true;
             this.Close();
         }
 
         private void button取消_Click(object sender, EventArgs e)
         {
-            BoxText = String.Empty;
             this.Close();
         }
 
@@ -145,20 +149,31 @@ namespace 关机助手.Util
         {
             if (e.KeyChar == '\r')
                 this.button确定_Click(sender, e);
-            if (this.BoxText == this.hintText)
+            if (this.BoxText == this.defaultText)
                 this.BoxText = String.Empty;
         }
         
+        public void SetDefaultText(string text)
+        {
+            BoxText = text;
+            this.defaultText = text;
+        }
+
         public void SetHint(string hint)
         {
             BoxText = hint;
-            this.hintText = hint;
+            this.defaultText = hint;
             this.textBoxInput.Click += TextBoxInput_Click;
         }
 
         private void TextBoxInput_Click(object sender, EventArgs e)
         {
             BoxText = String.Empty;
+        }
+
+        public bool InputSuccess()
+        {
+            return this.输入成功 && this.BoxText != String.Empty && this.BoxText != defaultText;
         }
     }
     
@@ -176,7 +191,7 @@ namespace 关机助手.Util
         /// <param name="defaultReturn">点击取消所返回的字符串</param>
         /// <returns></returns>
         public static string InputBox(string content, string title = "请输入", int? charCountPerline = null, 
-                                            string defaultText = null, string hint = null, string defaultReturn = null)
+                                            string defaultText = null, string hint = null, string defaultReturn = "")
         {
             InputBoxFormInner inputBox;
             if (charCountPerline != null)
@@ -184,11 +199,11 @@ namespace 关机助手.Util
             else
                 inputBox = new InputBoxFormInner(title, content);
             if (defaultText != null) 
-                inputBox.BoxText = defaultText;
+                inputBox.SetDefaultText(defaultText);
             if (hint != null)
                 inputBox.SetHint(hint);
             inputBox.ShowDialog();
-            if (inputBox.BoxText == String.Empty || inputBox.BoxText == defaultText || inputBox.BoxText == hint) 
+            if (inputBox.InputSuccess() == false) 
                 return defaultReturn;
             return inputBox.BoxText;
         }
