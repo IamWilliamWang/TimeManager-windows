@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,7 +10,7 @@ namespace 关机助手.Util
 {
     public class InputBoxFormInner : Form
     {
-        /****** InputBoxForm.designer.cs ******/
+        #region InputBoxForm.designer.cs
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -37,9 +38,9 @@ namespace 关机助手.Util
         private void InitializeComponent()
         {
             this.labelContent = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.textBoxInput = new System.Windows.Forms.TextBox();
+            this.button确定 = new System.Windows.Forms.Button();
+            this.button取消 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelContent
@@ -51,42 +52,42 @@ namespace 关机助手.Util
             this.labelContent.TabIndex = 0;
             this.labelContent.Text = "label";
             // 
-            // textBox1
+            // textBoxInput
             // 
-            this.textBox1.Location = new System.Drawing.Point(11, 82);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(449, 21);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
+            this.textBoxInput.Location = new System.Drawing.Point(11, 82);
+            this.textBoxInput.Name = "textBoxInput";
+            this.textBoxInput.Size = new System.Drawing.Size(449, 21);
+            this.textBoxInput.TabIndex = 1;
+            this.textBoxInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxInput_KeyPress);
             // 
-            // button1
+            // button确定
             // 
-            this.button1.Location = new System.Drawing.Point(378, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(83, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "确定";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button确定_Click);
+            this.button确定.Location = new System.Drawing.Point(378, 12);
+            this.button确定.Name = "button确定";
+            this.button确定.Size = new System.Drawing.Size(83, 23);
+            this.button确定.TabIndex = 2;
+            this.button确定.Text = "确定";
+            this.button确定.UseVisualStyleBackColor = true;
+            this.button确定.Click += new System.EventHandler(this.button确定_Click);
             // 
-            // button2
+            // button取消
             // 
-            this.button2.Location = new System.Drawing.Point(378, 41);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(83, 23);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "取消";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button取消_Click);
+            this.button取消.Location = new System.Drawing.Point(378, 41);
+            this.button取消.Name = "button取消";
+            this.button取消.Size = new System.Drawing.Size(83, 23);
+            this.button取消.TabIndex = 3;
+            this.button取消.Text = "取消";
+            this.button取消.UseVisualStyleBackColor = true;
+            this.button取消.Click += new System.EventHandler(this.button取消_Click);
             // 
             // InputBoxFormInner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(473, 114);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.button取消);
+            this.Controls.Add(this.button确定);
+            this.Controls.Add(this.textBoxInput);
             this.Controls.Add(this.labelContent);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "InputBoxFormInner";
@@ -99,23 +100,25 @@ namespace 关机助手.Util
         #endregion
 
         private System.Windows.Forms.Label labelContent;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox textBoxInput;
+        private System.Windows.Forms.Button button确定;
+        private System.Windows.Forms.Button button取消;
+
+        #endregion
 
 
-        
-
-        /****** InputBoxForm.cs ******/
-        public string BoxText { get; set; }
-        public int CharCountPerLine { get; set; } = 30;
+        /**************** InputBoxForm.cs ****************/
+        public string BoxText { get { return this.textBoxInput.Text; } set { this.textBoxInput.Text = value; } }
+        private int CharCountPerLine { get; set; } = 30;
         public string Title { get { return this.Text; } set { this.Text = value; } }
         public string HeaderText { get { return this.labelContent.Text; } set { this.labelContent.Text = value; } }
-        public string DefaultText { set { this.textBox1.Text = value;this.BoxText = value; } }
-        public InputBoxFormInner(string title, string content)
+        private string hintText;
+        public InputBoxFormInner(string title, string content, int? charCountPerLine = null)
         {
             InitializeComponent();
             this.Text = title;
+            if (charCountPerLine != null)
+                this.CharCountPerLine = charCountPerLine ?? 30;
             this.labelContent.Text = AddNewline(content);
         }
 
@@ -129,31 +132,64 @@ namespace 关机助手.Util
 
         private void button确定_Click(object sender, EventArgs e)
         {
-            this.BoxText = this.textBox1.Text;
             this.Close();
         }
 
         private void button取消_Click(object sender, EventArgs e)
         {
+            BoxText = String.Empty;
             this.Close();
         }
 
-        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBoxInput_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r')
                 this.button确定_Click(sender, e);
+            if (this.BoxText == this.hintText)
+                this.BoxText = String.Empty;
         }
         
+        public void SetHint(string hint)
+        {
+            BoxText = hint;
+            this.hintText = hint;
+            this.textBoxInput.Click += TextBoxInput_Click;
+        }
+
+        private void TextBoxInput_Click(object sender, EventArgs e)
+        {
+            BoxText = String.Empty;
+        }
     }
+    
 
     class Interaction
     {
-        public static string InputBox(string content, string title="输入", int charCountPerline=30, string defaultReturn = "")
+        /// <summary>
+        /// 弹出一个输入框，返回所输入的内容
+        /// </summary>
+        /// <param name="content">主体的文字</param>
+        /// <param name="title">标题</param>
+        /// <param name="charCountPerline">主体文字每行有多少字符</param>
+        /// <param name="defaultText">输入框的默认字符串</param>
+        /// <param name="hint">输入框的提示(会覆盖defaultText属性)</param>
+        /// <param name="defaultReturn">点击取消所返回的字符串</param>
+        /// <returns></returns>
+        public static string InputBox(string content, string title = "请输入", int? charCountPerline = null, 
+                                            string defaultText = null, string hint = null, string defaultReturn = null)
         {
-            var inputBox = new InputBoxFormInner(title, content);
-            inputBox.BoxText = defaultReturn;
-            inputBox.CharCountPerLine = charCountPerline;
+            InputBoxFormInner inputBox;
+            if (charCountPerline != null)
+                inputBox = new InputBoxFormInner(title, content, charCountPerline);
+            else
+                inputBox = new InputBoxFormInner(title, content);
+            if (defaultText != null) 
+                inputBox.BoxText = defaultText;
+            if (hint != null)
+                inputBox.SetHint(hint);
             inputBox.ShowDialog();
+            if (inputBox.BoxText == String.Empty || inputBox.BoxText == defaultText || inputBox.BoxText == hint) 
+                return defaultReturn;
             return inputBox.BoxText;
         }
     }

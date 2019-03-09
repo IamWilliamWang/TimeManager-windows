@@ -156,7 +156,7 @@ namespace 关机助手
 
         private bool GetCustomSQLString()
         {
-            String input = Interaction.InputBox("请输入要查询的日期，如“2018年1月1日”。支持年、年月、年月日", "精准查找");
+            String input = Interaction.InputBox("请输入要查询的日期。支持年、年月、年月日", "精准查找", hint: "如“2018年1月1日”");
             if (input == "")
                 return false;
             String[] conditions = input.Split(new char[] { '年', '月', '日' }, StringSplitOptions.RemoveEmptyEntries);
@@ -295,7 +295,7 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
-            string input = Interaction.InputBox("请输入要删除条目前的序号", "删除任意条");
+            string input = Interaction.InputBox("请输入要删除条目前的序号", "删除指定条记录",hint:"要删除的记录序号列对应的数字");
             if (input == "")
                 return;
             string sql = "DELETE " +
@@ -436,7 +436,7 @@ namespace 关机助手
             if (AlertBusy())
                 return;
 
-            string command = Interaction.InputBox("输入终端指令：", "终端操作");
+            string command = Interaction.InputBox("输入命令行指令：", "命令行选项使用");
             if (command == "")
                 return;
             Util.FastModeUtil.RunConsoleApplication(command.Split(' '));
