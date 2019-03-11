@@ -534,6 +534,11 @@ namespace 关机助手
             Application.Exit();
         }
 
+        private void 打开补丁程序ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new 关机助手补丁.PatchForm().ShowDialog();
+        }
+
         #endregion
 
         #region 更新时间线程
@@ -601,6 +606,7 @@ namespace 关机助手
                 mForm.Show();
         }
         #endregion
+
         
     }
 }
