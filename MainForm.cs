@@ -502,12 +502,12 @@ namespace 关机助手
 
         private void 缓存生成与合并ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new CacheManagerForm().ShowDialog();
+            new 关机助手补丁.PatchForm().ShowDialog();
         }
 
         private void 缓存编辑ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new 关机助手补丁.PatchForm().ShowDialog();
+            new CacheManagerForm().ShowDialog();
         }
 
         private void 禁止一次开机记时间ToolStripMenuItem_Click(object sender, EventArgs e)
