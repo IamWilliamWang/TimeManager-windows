@@ -499,7 +499,17 @@ namespace 关机助手
         {
             restartWithAdminRight(true);
         }
-        
+
+        private void 缓存生成与合并ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new CacheManagerForm().ShowDialog();
+        }
+
+        private void 缓存编辑ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new 关机助手补丁.PatchForm().ShowDialog();
+        }
+
         private void 禁止一次开机记时间ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             File.CreateText(@"C:\Users\" + ProgramLauncher.SystemUserName + @"\DONOTWRITEDATA").Close();
@@ -533,12 +543,6 @@ namespace 关机助手
             database.CloseConnection();
             Application.Exit();
         }
-
-        private void 打开补丁程序ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new 关机助手补丁.PatchForm().ShowDialog();
-        }
-
         #endregion
 
         #region 更新时间线程
@@ -605,6 +609,7 @@ namespace 关机助手
             else
                 mForm.Show();
         }
+
         #endregion
 
         

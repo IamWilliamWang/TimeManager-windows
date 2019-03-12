@@ -651,11 +651,7 @@ namespace 关机助手
 
             new RemarkManagerForm().Show();
         }
-
-        private void 缓存管理ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new CacheManagerForm().ShowDialog();
-        }
+        
         #endregion
 
         #region 返回主界面

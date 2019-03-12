@@ -63,7 +63,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
-            this.打开补丁程序ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存编辑ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存生成与合并ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
@@ -224,11 +226,12 @@
             this.升级日志ToolStripMenuItem,
             this.源头管理ToolStripMenuItem,
             this.获得管理员权限ToolStripMenuItem,
+            this.缓存管理ToolStripMenuItem,
             this.禁止一次开机记时间ToolStripMenuItem,
             this.附加功能ToolStripMenuItem,
             this.退出ToolStripMenuItem1});
             this.主界面contextMenuStrip.Name = "contextMenuStripMainForm";
-            this.主界面contextMenuStrip.Size = new System.Drawing.Size(181, 180);
+            this.主界面contextMenuStrip.Size = new System.Drawing.Size(181, 202);
             this.主界面contextMenuStrip.Tag = "主页面右击界面";
             // 
             // 安全模式ToolStripMenuItem
@@ -257,14 +260,14 @@
             // 切断数据库连接ToolStripMenuItem
             // 
             this.切断数据库连接ToolStripMenuItem.Name = "切断数据库连接ToolStripMenuItem";
-            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.切断数据库连接ToolStripMenuItem.Text = "切断数据库连接";
             this.切断数据库连接ToolStripMenuItem.Click += new System.EventHandler(this.切断数据库连接ToolStripMenuItem_Click);
             // 
             // 外链数据库ToolStripMenuItem
             // 
             this.外链数据库ToolStripMenuItem.Name = "外链数据库ToolStripMenuItem";
-            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.外链数据库ToolStripMenuItem.Text = "外链数据库";
             this.外链数据库ToolStripMenuItem.Click += new System.EventHandler(this.外链数据库ToolStripMenuItem_Click);
             // 
@@ -285,7 +288,6 @@
             // 附加功能ToolStripMenuItem
             // 
             this.附加功能ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.打开补丁程序ToolStripMenuItem,
             this.toolStripComboBox透明度,
             this.隐匿ToolStripMenuItem});
             this.附加功能ToolStripMenuItem.Name = "附加功能ToolStripMenuItem";
@@ -383,12 +385,28 @@
             this.updateTitleTimer.Interval = 77;
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
             // 
-            // 打开补丁程序ToolStripMenuItem
+            // 缓存管理ToolStripMenuItem
             // 
-            this.打开补丁程序ToolStripMenuItem.Name = "打开补丁程序ToolStripMenuItem";
-            this.打开补丁程序ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.打开补丁程序ToolStripMenuItem.Text = "打开补丁程序";
-            this.打开补丁程序ToolStripMenuItem.Click += new System.EventHandler(this.打开补丁程序ToolStripMenuItem_Click);
+            this.缓存管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.缓存生成与合并ToolStripMenuItem,
+            this.缓存编辑ToolStripMenuItem});
+            this.缓存管理ToolStripMenuItem.Name = "缓存管理ToolStripMenuItem";
+            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存管理ToolStripMenuItem.Text = "缓存管理";
+            // 
+            // 缓存编辑ToolStripMenuItem
+            // 
+            this.缓存编辑ToolStripMenuItem.Name = "缓存编辑ToolStripMenuItem";
+            this.缓存编辑ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存编辑ToolStripMenuItem.Text = "缓存编辑";
+            this.缓存编辑ToolStripMenuItem.Click += new System.EventHandler(this.缓存编辑ToolStripMenuItem_Click);
+            // 
+            // 缓存生成与合并ToolStripMenuItem
+            // 
+            this.缓存生成与合并ToolStripMenuItem.Name = "缓存生成与合并ToolStripMenuItem";
+            this.缓存生成与合并ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存生成与合并ToolStripMenuItem.Text = "缓存生成与合并";
+            this.缓存生成与合并ToolStripMenuItem.Click += new System.EventHandler(this.缓存生成与合并ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -466,7 +484,9 @@
         private System.Windows.Forms.ToolStripMenuItem 附加功能ToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox透明度;
         private System.Windows.Forms.ToolStripMenuItem 隐匿ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 打开补丁程序ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 缓存管理ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 缓存编辑ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 缓存生成与合并ToolStripMenuItem;
     }
 }
 
