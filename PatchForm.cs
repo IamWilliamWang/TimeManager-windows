@@ -9,12 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using 关机助手.Util;
 
 namespace 关机助手补丁
 {
     public partial class PatchForm : Form
     {
-        private readonly String cache = "TimeDatabase.cache";
+        private String cache { get { return CacheUtil.CacheFilename; } }
         public PatchForm()
         {
             InitializeComponent();
@@ -22,22 +23,14 @@ namespace 关机助手补丁
 
         private void button开机_Click(object sender, EventArgs e)
         {
-            File.AppendAllText(cache,
-                "INSERT INTO [Table](开机时间) VALUES (" + GETDATE() + ")鋝");
+            CacheUtil.AppendCache("INSERT INTO [Table](开机时间) VALUES (GETDATE())");
             Application.Exit();
         }
 
         private void button关机_Click(object sender, EventArgs e)
         {
-            String nowTime = GETDATE();
-            File.AppendAllText(cache,
-                "UPDATE [Table] SET 关机时间 = " + nowTime + ", 时长 = "+ nowTime + " - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) 鋝");
+            CacheUtil.AppendCache("UPDATE [Table] SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) ");
             Application.Exit();
-        }
-
-        private String GETDATE()
-        {
-            return "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
         }
 
         private void Form1_DoubleClick(object sender, EventArgs e)
@@ -46,6 +39,7 @@ namespace 关机助手补丁
             process.StartInfo.FileName = "notepad.exe";
             process.StartInfo.Arguments = cache;
             process.Start();
+            process.WaitForExit();
         }
 
         private void textBox_DragEnter(object sender, DragEventArgs e)
@@ -61,9 +55,9 @@ namespace 关机助手补丁
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             if (files.Length != 1)
                 return;
-            string filename = files[0];
-            filename = filename.Substring(0, filename.LastIndexOf('\\')+1) + cache;
-            this.textBox源.Text = filename;
+            string dragFilename = files[0];
+            dragFilename = dragFilename.Substring(0, dragFilename.LastIndexOf('\\') + 1) + cache;
+            this.textBox源.Text = dragFilename;
         }
 
         private void textBox目标_DragDrop(object sender, DragEventArgs e)
@@ -71,9 +65,9 @@ namespace 关机助手补丁
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             if (files.Length != 1)
                 return;
-            string filename = files[0];
-            filename = filename.Substring(0, filename.LastIndexOf('\\') + 1) + cache;
-            this.textBox目标.Text = filename;
+            string dragFilename = files[0];
+            dragFilename = dragFilename.Substring(0, dragFilename.LastIndexOf('\\') + 1) + cache;
+            this.textBox目标.Text = dragFilename;
         }
 
         private void button合并_Click(object sender, EventArgs e)
@@ -83,18 +77,24 @@ namespace 关机助手补丁
             try
             {
                 源内容 = File.ReadAllText(this.textBox源.Text);
-                目标内容 = File.ReadAllText(this.textBox目标.Text);
             }
             catch
             {
-                MessageBox.Show("文件名有误，无法进行合并");
-                return;
+                if (File.Exists(this.textBox目标.Text) == false
+                    && File.Exists(this.textBox源.Text))
+                    目标内容 = "";
+                else
+                {
+                    MessageBox.Show("源文件名有误，无法进行合并");
+                    return;
+                }
             }
-            int 插入index = 目标内容.LastIndexOf('鋝', 目标内容.Length - 2) + 1;
+            int 插入index = 目标内容.LastIndexOf(CacheUtil.CacheSpliter, 目标内容.Length - 2) + 1;
             StringBuilder stringBuilder = new StringBuilder(目标内容);
             stringBuilder.Insert(插入index, 源内容);
-            File.Delete(this.textBox目标.Text);
-            File.WriteAllText(this.textBox目标.Text, stringBuilder.ToString());
+            using (FileStream file = new FileStream(this.textBox目标.Text, FileMode.Create))
+                using (StreamWriter writer = new StreamWriter(file))
+                    writer.Write(stringBuilder);
             File.SetAttributes(this.textBox目标.Text, FileAttributes.Hidden);
             File.Delete(this.textBox源.Text);
             MessageBox.Show("成功！");
@@ -130,8 +130,6 @@ namespace 关机助手补丁
             using (StreamWriter writer = new StreamWriter(fileDialog.FileName, false))
                 using (StreamReader reader = new StreamReader(cache))
                     writer.Write(reader.ReadToEnd());
-            
-
         }
 
         private void 移动文件ToolStripMenuItem_Click(object sender, EventArgs e)

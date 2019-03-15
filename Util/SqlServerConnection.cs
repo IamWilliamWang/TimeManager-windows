@@ -142,7 +142,7 @@ namespace 关机助手.Util
 
         public static void ExecuteUpdateUsingCache(string commandText)
         {
-            CacheUtil.Insert(commandText);
+            CacheUtil.AppendCache(commandText);
         }
 
         public static int ClearCache()

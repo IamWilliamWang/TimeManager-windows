@@ -14,7 +14,6 @@ namespace 关机助手
         {
             MainForm.Appear();
             this.Close();
-
         }
 
         private void FormHelp_FormClosing(object sender, FormClosingEventArgs e)

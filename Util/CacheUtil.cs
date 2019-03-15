@@ -9,38 +9,85 @@ namespace 关机助手.Util
 {
     class CacheUtil
     {
-        public static char CacheSpliter { get { return splitChar; } }
-        public static string CacheFilename { get { return DbFilename; } }
+        public static char CacheSpliter { get { return splitChar; } } //缓存分割字符
+        public static string CacheFilename { get { return DbFilename; } } //缓存文件名
         
         private static string DbFilename { get; set; } = "TimeDatabase.cache";
         private const char splitChar = '鋝';
 
-        private static string DateReplacer(string str)
+        /// <summary>
+        /// 将'GETDATE()'变成当前时间字符串
+        /// </summary>
+        /// <param name="originalSql"></param>
+        /// <returns></returns>
+        private static string DateReplacer(string originalSql)
         {
             //区别对待系统时间显示上午下午与不显示的
             if (DateTime.Now.ToLongTimeString().Contains("午") == false)
-                return str.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'");
-            return str.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd") + " " + DateTime.Now.ToLongTimeString() + "'");
+                return originalSql.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'");
+            return originalSql.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd") + " " + DateTime.Now.ToLongTimeString() + "'");
         }
 
-        public static void Insert(string str)
+        /// <summary>
+        /// 追加Cache内容
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="hideFile"></param>
+        public static void AppendCache(string sql, bool hideFile = true)
         {
-            str = DateReplacer(str);
-            using (FileStream stream = new FileStream(DbFilename, FileMode.Append))
-            using (StreamWriter streamWriter = new StreamWriter(stream))
-                streamWriter.Write(str + splitChar);
-
-            File.SetAttributes(DbFilename, FileAttributes.Hidden);
+            AppendCache(sql, CacheUtil.DbFilename, hideFile);
         }
 
+        /// <summary>
+        /// 追加Cache内容，自定义Cache文件路径
+        /// </summary>
+        /// <param name="cacheFilename"></param>
+        /// <param name="sql"></param>
+        /// <param name="hideFile"></param>
+        public static void AppendCache(string sql, string cacheFilename, bool hideFile = true)
+        {
+            sql = DateReplacer(sql);
+            using (FileStream stream = new FileStream(cacheFilename, FileMode.Append))
+                using (StreamWriter streamWriter = new StreamWriter(stream))
+                    streamWriter.Write(sql + splitChar);
+            if (hideFile)
+                File.SetAttributes(cacheFilename, FileAttributes.Hidden);
+        }
+
+        /// <summary>
+        /// 获得Cache每行文本
+        /// </summary>
+        /// <returns></returns>
         public static string[] GetAllLines()
         {
-            if (File.Exists(DbFilename) == false)
-                return null;
-            return File.ReadAllText(DbFilename).Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries);
+            return GetAllLines(DbFilename);
         }
 
-        public static void SetAllLines(string[] lines)
+        /// <summary>
+        /// 获得Cache每行文本，自定义Cache文件路径
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetAllLines(string cacheFilename)
+        {
+            if (File.Exists(cacheFilename) == false)
+                return null;
+            return File.ReadAllText(cacheFilename).Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        /// <summary>
+        /// 设定Cache每行文本
+        /// </summary>
+        /// <param name="lines"></param>
+        public static void SetAllLines(string[] lines, bool hideCache = true)
+        {
+            SetAllLines(lines, CacheFilename, hideCache);
+        }
+
+        /// <summary>
+        /// 设定Cache每行文本，自定义Cache文件路径
+        /// </summary>
+        /// <param name="lines"></param>
+        public static void SetAllLines(string[] lines, string cacheFilename, bool hideCache = true)
         {
             StringBuilder savedContent = new StringBuilder();
             foreach (String line in lines)
@@ -50,15 +97,29 @@ namespace 关机助手.Util
                 savedContent.Append(line);
                 savedContent.Append(splitChar);
             }
-            File.Delete(CacheFilename);
-            File.WriteAllText(CacheFilename, savedContent.ToString());
-            File.SetAttributes(CacheFilename, FileAttributes.Hidden);
+            File.Delete(cacheFilename);
+            File.WriteAllText(cacheFilename, savedContent.ToString());
+            if (hideCache)
+                File.SetAttributes(cacheFilename, FileAttributes.Hidden);
         }
 
+        /// <summary>
+        /// 清除所有缓存并提交到数据库
+        /// </summary>
+        /// <returns></returns>
         public static int CleanDbAndExecuteTasks()
         {
+            return CleanDbAndExecuteTasks(DbFilename);
+        }
+
+        /// <summary>
+        /// 清除所有缓存并提交到数据库，自定义Cache文件路径
+        /// </summary>
+        /// <returns></returns>
+        public static int CleanDbAndExecuteTasks(string cacheFilename)
+        {
             int effectedRows = 0;
-            string[] commands = GetAllLines();
+            string[] commands = GetAllLines(cacheFilename);
             if (commands == null)
                 return -1;
 
@@ -67,7 +128,7 @@ namespace 关机助手.Util
                 int tmp = SqlServerConnection.ExecuteUpdate(str);
                 effectedRows += tmp > 0 ? tmp : 0;
             }
-            File.Delete(DbFilename);
+            File.Delete(cacheFilename);
             return effectedRows;
         }
 
