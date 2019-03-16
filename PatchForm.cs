@@ -77,6 +77,7 @@ namespace 关机助手补丁
             try
             {
                 源内容 = File.ReadAllText(this.textBox源.Text);
+                目标内容 = File.ReadAllText(this.textBox目标.Text);
             }
             catch
             {

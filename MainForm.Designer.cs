@@ -53,6 +53,9 @@
             this.切断数据库连接ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.外链数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.获得管理员权限ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存生成与合并ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存编辑ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.禁止一次开机记时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.附加功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox透明度 = new System.Windows.Forms.ToolStripComboBox();
@@ -63,9 +66,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
-            this.缓存管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.缓存编辑ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.缓存生成与合并ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
@@ -225,8 +225,8 @@
             this.安全模式ToolStripMenuItem,
             this.升级日志ToolStripMenuItem,
             this.源头管理ToolStripMenuItem,
-            this.获得管理员权限ToolStripMenuItem,
             this.缓存管理ToolStripMenuItem,
+            this.获得管理员权限ToolStripMenuItem,
             this.禁止一次开机记时间ToolStripMenuItem,
             this.附加功能ToolStripMenuItem,
             this.退出ToolStripMenuItem1});
@@ -277,6 +277,29 @@
             this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.获得管理员权限ToolStripMenuItem.Text = "获得管理员权限";
             this.获得管理员权限ToolStripMenuItem.Click += new System.EventHandler(this.获得管理员权限ToolStripMenuItem_Click);
+            // 
+            // 缓存管理ToolStripMenuItem
+            // 
+            this.缓存管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.缓存生成与合并ToolStripMenuItem,
+            this.缓存编辑ToolStripMenuItem});
+            this.缓存管理ToolStripMenuItem.Name = "缓存管理ToolStripMenuItem";
+            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存管理ToolStripMenuItem.Text = "缓存管理";
+            // 
+            // 缓存生成与合并ToolStripMenuItem
+            // 
+            this.缓存生成与合并ToolStripMenuItem.Name = "缓存生成与合并ToolStripMenuItem";
+            this.缓存生成与合并ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存生成与合并ToolStripMenuItem.Text = "缓存生成与合并";
+            this.缓存生成与合并ToolStripMenuItem.Click += new System.EventHandler(this.缓存生成与合并ToolStripMenuItem_Click);
+            // 
+            // 缓存编辑ToolStripMenuItem
+            // 
+            this.缓存编辑ToolStripMenuItem.Name = "缓存编辑ToolStripMenuItem";
+            this.缓存编辑ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存编辑ToolStripMenuItem.Text = "缓存编辑";
+            this.缓存编辑ToolStripMenuItem.Click += new System.EventHandler(this.缓存编辑ToolStripMenuItem_Click);
             // 
             // 禁止一次开机记时间ToolStripMenuItem
             // 
@@ -384,29 +407,6 @@
             // 
             this.updateTitleTimer.Interval = 77;
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
-            // 
-            // 缓存管理ToolStripMenuItem
-            // 
-            this.缓存管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.缓存生成与合并ToolStripMenuItem,
-            this.缓存编辑ToolStripMenuItem});
-            this.缓存管理ToolStripMenuItem.Name = "缓存管理ToolStripMenuItem";
-            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.缓存管理ToolStripMenuItem.Text = "缓存管理";
-            // 
-            // 缓存编辑ToolStripMenuItem
-            // 
-            this.缓存编辑ToolStripMenuItem.Name = "缓存编辑ToolStripMenuItem";
-            this.缓存编辑ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.缓存编辑ToolStripMenuItem.Text = "缓存编辑";
-            this.缓存编辑ToolStripMenuItem.Click += new System.EventHandler(this.缓存编辑ToolStripMenuItem_Click);
-            // 
-            // 缓存生成与合并ToolStripMenuItem
-            // 
-            this.缓存生成与合并ToolStripMenuItem.Name = "缓存生成与合并ToolStripMenuItem";
-            this.缓存生成与合并ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.缓存生成与合并ToolStripMenuItem.Text = "缓存生成与合并";
-            this.缓存生成与合并ToolStripMenuItem.Click += new System.EventHandler(this.缓存生成与合并ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
