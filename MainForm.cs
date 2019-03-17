@@ -492,12 +492,7 @@ namespace 关机助手
             restartWithAdminRight(true);
         }
 
-        private void 缓存生成与合并ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new 关机助手补丁.PatchForm().ShowDialog();
-        }
-
-        private void 缓存编辑ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 缓存管理ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new CacheManagerForm().ShowDialog();
         }

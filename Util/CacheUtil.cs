@@ -55,7 +55,7 @@ namespace 关机助手.Util
         }
 
         /// <summary>
-        /// 获得Cache每行文本
+        /// 获得Cache每行文本，如果找不到文件则返回null
         /// </summary>
         /// <returns></returns>
         public static string[] GetAllLines()
@@ -64,7 +64,7 @@ namespace 关机助手.Util
         }
 
         /// <summary>
-        /// 获得Cache每行文本，自定义Cache文件路径
+        /// 获得Cache每行文本，如果找不到文件则返回null，可自定义Cache文件路径
         /// </summary>
         /// <returns></returns>
         public static string[] GetAllLines(string cacheFilename)
