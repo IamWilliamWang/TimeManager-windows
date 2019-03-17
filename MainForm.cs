@@ -10,7 +10,7 @@ namespace 关机助手
 {
     public partial class MainForm : Form
     {
-        private static Form mForm = null;
+        private static MainForm mForm = null;
         // SqlServer连接代理
         private SqlConnectionAgency database = new SqlConnectionAgency();
         
@@ -23,7 +23,7 @@ namespace 关机助手
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (this.重复开启软件检查)
+            if (this.需要重复开启软件检查)
             {
                 // 检测后台是否运行同一程序
                 Process[] processes = Process.GetProcessesByName("关机助手"); 
@@ -197,7 +197,7 @@ namespace 关机助手
             #region 数据管理
         private void 数据管理ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!MainForm.databaseOffline)
+            if (!MainForm.DatabaseOffline)
                 this.安全模式ToolStripMenuItem.Enabled = false;
             new DatabaseManagerForm().ShowDialog();
         }
@@ -453,19 +453,11 @@ namespace 关机助手
             if (((ToolStripMenuItem)sender).Text.IndexOf("启动安全模式") != -1)
             {
                 if (DialogResult.Yes == MessageBox.Show("在数据库无法正常使用情况下，推荐使用此项功能。虽然可以保证软件的绝对稳定，但是会损失本系统绝大部分的功能。是否继续？", "离线使用警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
-                {
-                    databaseOffline = true;
-                    this.记录关机时间checkBox.Checked = false;
-                    this.记录关机时间checkBox.Enabled = false;
-                }
-                ((ToolStripMenuItem)sender).Text = "关闭安全模式";
+                    MainForm.DatabaseOffline = true;
             }
             else
             {
-                databaseOffline = false;
-                this.记录关机时间checkBox.Checked = true;
-                this.记录关机时间checkBox.Enabled = true;
-                ((ToolStripMenuItem)sender).Text = "启动安全模式";
+                MainForm.DatabaseOffline = false;
             }
         }
 
@@ -593,11 +585,8 @@ namespace 关机助手
                 Application.Exit();
             }
         }
-
-        // 是否脱离数据库连接（安全模式是否打开）
-        public static bool databaseOffline { get; set; } = false;
-
-        public bool 重复开启软件检查 { get; set; } = true;
+        
+        public bool 需要重复开启软件检查 { get; set; } = true;
 
         /// <summary>
         /// 重新显示主窗口
@@ -610,8 +599,40 @@ namespace 关机助手
                 mForm.Show();
         }
 
+        public static void CheckSaftyModeSanity()
+        {
+            if (SqlServerConnection.ConnectionState != System.Data.ConnectionState.Closed)
+                mForm.安全模式ToolStripMenuItem.Enabled = false;
+        }
+
         #endregion
 
-        
+        #region 安全模式模块
+        /// <summary>
+        /// 是否脱离数据库连接（安全模式是否打开）
+        /// </summary>
+        public static bool DatabaseOffline
+        {
+            get => mForm.databaseOffline;
+            set { mForm.Enable安全模式(value); }
+        }
+        /// <summary>
+        /// 安全模式状态（请勿直接对此变量进行操作，请使用MainForm.DatabaseOffline）
+        /// </summary>
+        private bool databaseOffline { get; set; } = false;
+
+        private void Enable安全模式(bool enable = true)
+        {
+            // 不必要的操作就提前返回，提高代码性能
+            if (this.记录关机时间checkBox.Enabled == !enable)
+                return;
+
+            databaseOffline = enable;
+            this.记录关机时间checkBox.Checked = !enable;
+            this.记录关机时间checkBox.Enabled = !enable;
+            this.安全模式ToolStripMenuItem.Text = enable ? "关闭安全模式" : "启动安全模式";
+        }
+        #endregion
+
     }
 }

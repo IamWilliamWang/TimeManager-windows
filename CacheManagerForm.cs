@@ -16,7 +16,7 @@ namespace 关机助手
 
         private void CacheManagerForm_Load(object sender, EventArgs e)
         {
-            if (MainForm.databaseOffline)
+            if (MainForm.DatabaseOffline)
                 this.buttonClearCache.Enabled = false;
             if (File.Exists(CacheUtil.CacheFilename) == false)
             {

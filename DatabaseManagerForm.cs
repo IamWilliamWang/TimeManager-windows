@@ -49,21 +49,9 @@ namespace 关机助手
         {
             //处理非UI线程异常，激活全局错误弹窗
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            if (MainForm.databaseOffline)
+            if (MainForm.DatabaseOffline == true)
             {
-                this.查询所有记录ToolStripMenuItem.Enabled = false;
-                this.插入一条开机记录ToolStripMenuItem.Enabled = false;
-                this.填补空处ToolStripMenuItem.Enabled = false;
-                this.添加数据ToolStripMenuItem.Enabled = false;
-                this.删除数据ToolStripMenuItem.Enabled = false;
-                this.修改数据ToolStripMenuItem.Enabled = false;
-                this.执行SQL语句ToolStripMenuItem.Enabled = false;
-                this.保存下方数据ToolStripMenuItem.Enabled = false;
-                this.日志管理ToolStripMenuItem.Enabled = false;
-                this.数据可视化ToolStripMenuItem.Enabled = false;
-                this.注释管理ToolStripMenuItem.Enabled = false;
-                this.命令行选项使用ToolStripMenuItem.Enabled = false;
-                this.运行SQL脚本ToolStripMenuItem.Enabled = false;
+                this.DatabaseOffline = true;
                 return;
             }
             this.progressBar1.Value = 10;
@@ -76,6 +64,11 @@ namespace 关机助手
                 if (MessageBox.Show(needInitialized ? "是否自动完成初始化工作？" : "检测到开机记录已经失效，是否进行修复？", needInitialized ? "欢迎使用本软件" : "警告！", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
                     安装写入开机记录时间插件ToolStripMenuItem_Click(sender, e);
             }
+        }
+
+        private void DatabaseManagerForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            MainForm.CheckSaftyModeSanity();
         }
         #endregion
 
@@ -716,6 +709,47 @@ namespace 关机助手
             显示后15条ToolStripMenuItem_Click(sender, e);
         }
         #endregion
-        
+
+        #region 安全模式模块
+        public bool DatabaseOffline { set { Enable安全模式(value); } }
+        private void Enable安全模式(bool enable = true)
+        {
+            // 无用操作提前返回，提高代码效率
+            if (this.查询所有记录ToolStripMenuItem.Enabled == !enable)
+                return;
+
+            this.查询所有记录ToolStripMenuItem.Enabled = !enable;
+            this.插入一条开机记录ToolStripMenuItem.Enabled = !enable;
+            this.填补空处ToolStripMenuItem.Enabled = !enable;
+            this.添加数据ToolStripMenuItem.Enabled = !enable;
+            this.删除数据ToolStripMenuItem.Enabled = !enable;
+            this.修改数据ToolStripMenuItem.Enabled = !enable;
+            this.执行SQL语句ToolStripMenuItem.Enabled = !enable;
+            this.保存下方数据ToolStripMenuItem.Enabled = !enable;
+            this.日志管理ToolStripMenuItem.Enabled = !enable;
+            this.数据可视化ToolStripMenuItem.Enabled = !enable;
+            this.注释管理ToolStripMenuItem.Enabled = !enable;
+            this.命令行选项使用ToolStripMenuItem.Enabled = !enable;
+            this.运行SQL脚本ToolStripMenuItem.Enabled = !enable;
+
+            if (enable)
+            {
+                //为高级选项添加停用安全模式按钮
+                var 安全模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+                高级选项ToolStripMenuItem.DropDownItems.Add(安全模式ToolStripMenuItem);
+                安全模式ToolStripMenuItem.Name = "停用安全模式ToolStripMenuItem";
+                安全模式ToolStripMenuItem.Text = "停用安全模式";
+                安全模式ToolStripMenuItem.Click += new System.EventHandler(this.停用安全模式ToolStripMenuItem_Click);
+            }
+        }
+
+        private void 停用安全模式ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.DatabaseOffline = false; //取消安全模式状态
+            MainForm.DatabaseOffline = false; //取消主页安全模式状态
+            高级选项ToolStripMenuItem.DropDownItems.RemoveByKey("停用安全模式ToolStripMenuItem"); //删除停用安全模式按钮
+        }
+        #endregion
+
     }
 }

@@ -57,7 +57,7 @@ namespace 关机助手
             this.修改数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.提交手动修改ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.直接修改下方数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.管理员选项ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.高级选项ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.执行SQL语句ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.运行SQL脚本ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.释放数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -192,7 +192,7 @@ namespace 关机助手
             this.添加数据ToolStripMenuItem,
             this.删除数据ToolStripMenuItem,
             this.修改数据ToolStripMenuItem,
-            this.管理员选项ToolStripMenuItem});
+            this.高级选项ToolStripMenuItem});
             this.编辑数据库ToolStripMenuItem.Name = "编辑数据库ToolStripMenuItem";
             this.编辑数据库ToolStripMenuItem.Size = new System.Drawing.Size(80, 21);
             this.编辑数据库ToolStripMenuItem.Text = "数据库管理";
@@ -305,9 +305,9 @@ namespace 关机助手
             this.直接修改下方数据ToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.直接修改下方数据ToolStripMenuItem.Text = "(请直接修改下方数据)";
             // 
-            // 管理员选项ToolStripMenuItem
+            // 高级选项ToolStripMenuItem
             // 
-            this.管理员选项ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.高级选项ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.执行SQL语句ToolStripMenuItem,
             this.运行SQL脚本ToolStripMenuItem,
             this.释放数据库ToolStripMenuItem,
@@ -315,9 +315,9 @@ namespace 关机助手
             this.报错窗口预览ToolStripMenuItem,
             this.命令行选项使用ToolStripMenuItem,
             this.激活禁止系统休眠ToolStripMenuItem});
-            this.管理员选项ToolStripMenuItem.Name = "管理员选项ToolStripMenuItem";
-            this.管理员选项ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.管理员选项ToolStripMenuItem.Text = "高级选项";
+            this.高级选项ToolStripMenuItem.Name = "高级选项ToolStripMenuItem";
+            this.高级选项ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.高级选项ToolStripMenuItem.Text = "高级选项";
             // 
             // 执行SQL语句ToolStripMenuItem
             // 
@@ -467,21 +467,21 @@ namespace 关机助手
             // 日志管理ToolStripMenuItem
             // 
             this.日志管理ToolStripMenuItem.Name = "日志管理ToolStripMenuItem";
-            this.日志管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.日志管理ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.日志管理ToolStripMenuItem.Text = "日志管理";
             this.日志管理ToolStripMenuItem.Click += new System.EventHandler(this.日志管理ToolStripMenuItem_Click);
             // 
             // 数据可视化ToolStripMenuItem
             // 
             this.数据可视化ToolStripMenuItem.Name = "数据可视化ToolStripMenuItem";
-            this.数据可视化ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.数据可视化ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.数据可视化ToolStripMenuItem.Text = "数据可视化";
             this.数据可视化ToolStripMenuItem.Click += new System.EventHandler(this.数据可视化ToolStripMenuItem_Click);
             // 
             // 注释管理ToolStripMenuItem
             // 
             this.注释管理ToolStripMenuItem.Name = "注释管理ToolStripMenuItem";
-            this.注释管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.注释管理ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.注释管理ToolStripMenuItem.Text = "注释管理";
             this.注释管理ToolStripMenuItem.Click += new System.EventHandler(this.注释管理ToolStripMenuItem_Click);
             // 
@@ -572,6 +572,7 @@ namespace 关机助手
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "DatabaseManagerForm";
             this.Text = "开关机时间记录 管理主窗口";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DatabaseManagerForm_FormClosed);
             this.Load += new System.EventHandler(this.SqlServerResult_Load);
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSet)).EndInit();
@@ -620,7 +621,7 @@ namespace 关机助手
         private System.Windows.Forms.ToolStripMenuItem 修改数据ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 提交手动修改ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 直接修改下方数据ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 管理员选项ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 高级选项ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 执行SQL语句ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 释放数据库ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 高级功能ToolStripMenuItem;
