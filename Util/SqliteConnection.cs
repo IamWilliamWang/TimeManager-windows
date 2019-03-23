@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace 关机助手.Util
 {
-    class SqliteConnection
+    class SqliteConnection 
     {
         private static string connStr = "Data Source=TimeDatabase.db;";
 
@@ -47,7 +47,7 @@ namespace 关机助手.Util
 
         public void ResetConnection()
         {
-
+            throw new NotImplementedException();
         }
 
         public Boolean ConnectionOpenned()
@@ -73,8 +73,6 @@ namespace 关机助手.Util
         {
             throw new NotImplementedException();
         }
-
-
 
         /// <summary>
         /// 执行增删改的方法

@@ -15,7 +15,7 @@ namespace 关机助手
         #endregion
 
         #region 变量定义
-        private SqlConnectionAgency db = new SqlConnectionAgency();
+        private DatabaseAgency db = new DatabaseAgency();
         private QueryMode backgroundQueryMode = new QueryMode();
         /// <summary>
         /// 是否需要初始化操作（只有第一次点开时才为True）

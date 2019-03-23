@@ -9,7 +9,7 @@ namespace 关机助手.Util
 {
     class SqlUtil
     {
-        static SqlConnectionAgency sqlite = new SqlConnectionAgency();
+        static DatabaseAgency sqlite = new DatabaseAgency();
 
         /// <summary>
         /// 简单查询功能。

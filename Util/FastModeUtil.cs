@@ -7,7 +7,7 @@ namespace 关机助手.Util
 {
     public class FastModeUtil
     {
-        private static SqlConnectionAgency dbAgency = new SqlConnectionAgency();
+        private static DatabaseAgency dbAgency = new DatabaseAgency();
 
         /// <summary>
         /// 不显示窗体直接记录关机事件并根据参数执行关机

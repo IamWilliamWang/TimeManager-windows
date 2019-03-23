@@ -155,7 +155,7 @@
     <Compile Include="Util\LogUtil.cs" />
     <Compile Include="Util\BinaryWriterUtil.cs" />
     <Compile Include="Util\ShutdownUtil.cs" />
-    <Compile Include="Util\SqlConnectionAgency.cs" />
+    <Compile Include="Util\DatabaseAgency.cs" />
     <Compile Include="Util\SqlExecuter.cs" />
     <Compile Include="Util\SqliteConnection.cs" />
     <Compile Include="Util\SqlServerConnection.cs" />

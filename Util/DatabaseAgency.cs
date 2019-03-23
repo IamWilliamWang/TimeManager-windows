@@ -8,11 +8,26 @@ using System.Threading.Tasks;
 
 namespace 关机助手.Util
 {
-    class SqlConnectionAgency
+    public enum DatabaseType { MSSqlServer, SqLite };
+    /// <summary>
+    /// 数据库的代理类，负责执行不同数据库的相同操作。
+    /// </summary>
+    class DatabaseAgency /*<DbType> where DbType : DatabaseType*/
     {
-        public enum DatabaseType { MSSqlServer, SqLite};
-        private static DatabaseType dbType;
-        public static string DbFullName
+        private DatabaseType dbType;
+
+        /// <summary>
+        /// 无参构造函数，默认SqlServer。
+        /// 由于数据库类都使用单例进行保护，该类可以任意被创建
+        /// </summary>
+        public DatabaseAgency() : this(DatabaseType.MSSqlServer) { }
+
+        public DatabaseAgency(DatabaseType databaseType)
+        {
+            dbType = databaseType;
+        }
+
+        public string DbFullName
         { get
             {
                 if (dbType == DatabaseType.MSSqlServer)
@@ -23,7 +38,8 @@ namespace 关机助手.Util
                     return "";
             }
         }
-        public static object Instance
+
+        private object Instance
         { get
             {
                 if (dbType == DatabaseType.MSSqlServer)
@@ -34,7 +50,8 @@ namespace 关机助手.Util
                     return null;
             }
         }
-        public static DatabaseType DBType { get { return dbType; } }
+
+        public DatabaseType DBType { get { return dbType; } }
 
         public ConnectionState ConnectionState
         { get
@@ -46,13 +63,6 @@ namespace 关机助手.Util
                 else
                     return 0;
             }
-        }
-
-        public SqlConnectionAgency() : this(DatabaseType.MSSqlServer) { }
-
-        public SqlConnectionAgency(DatabaseType databaseType)
-        {
-            dbType = databaseType;
         }
 
         public void OpenConnection()
@@ -205,6 +215,28 @@ namespace 关机助手.Util
                     throw new ArgumentException();
             }
         }
-
     }
+
+
+    #region 将枚举类封装功能
+    //internal class DatabaseType //
+    //{
+    //    private enum EDatabaseType { MSSqlServer, SqLite };
+    //    private EDatabaseType type;
+    //    private DatabaseType(EDatabaseType dbType)
+    //    {
+    //        this.type = dbType;
+    //    }
+    //    public static DatabaseType MSSqlServer { get { return new DatabaseType(EDatabaseType.MSSqlServer); } }
+    //    public static DatabaseType SqLite { get { return new DatabaseType(EDatabaseType.SqLite); } }
+    //    public static bool operator == (DatabaseType t1,DatabaseType t2)
+    //    {
+    //        return t1.type == t2.type;
+    //    }
+    //    public static bool operator != (DatabaseType t1, DatabaseType t2)
+    //    {
+    //        return !(t1 == t2);
+    //    }
+    //}
+    #endregion
 }

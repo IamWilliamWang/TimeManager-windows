@@ -125,7 +125,7 @@ namespace 关机助手.Util
 
             foreach (string str in commands)
             {
-                int tmp = SqlServerConnection.ExecuteUpdate(str);
+                int tmp = new DatabaseAgency().ExecuteUpdate(str);
                 effectedRows += tmp > 0 ? tmp : 0;
             }
             File.Delete(cacheFilename);

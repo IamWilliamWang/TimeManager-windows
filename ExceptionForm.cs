@@ -12,7 +12,7 @@ namespace 关机助手
     public partial class ExceptionForm : Form
     {
         Exception mException = null;
-        Util.SqlConnectionAgency database = new Util.SqlConnectionAgency();
+        Util.DatabaseAgency database = new Util.DatabaseAgency();
 
         public ExceptionForm(Exception exception)
         {

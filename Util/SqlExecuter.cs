@@ -7,7 +7,7 @@ namespace 关机助手.Util
 {
     class SqlExecuter
     {
-        static SqlConnectionAgency dbAgency = new SqlConnectionAgency();
+        static DatabaseAgency dbAgency = new DatabaseAgency();
 
         //public void 记录关机事件()//Doesn't work yet
         //{
@@ -29,7 +29,7 @@ namespace 关机助手.Util
 
         public static bool 记录开机事件(String TableName)
         {
-            if (!SqlServerConnection.ConnectionOpenned())
+            if (!dbAgency.ConnectionOpenned())
             {
                 dbAgency.ExecuteUpdateUsingCache(InsertPowerOnTimeSQL(TableName));
                 return true;
@@ -40,7 +40,7 @@ namespace 关机助手.Util
 
         private static string InsertPowerOnTimeSQL(String TableName)
         {
-            if (SqlConnectionAgency.DBType == SqlConnectionAgency.DatabaseType.MSSqlServer)
+            if (dbAgency.DBType == DatabaseType.MSSqlServer)
                 return "INSERT "
             + "INTO " + TableName + "(开机时间) "
             + "VALUES (GETDATE())";
@@ -53,7 +53,7 @@ namespace 关机助手.Util
 
         public static bool 记录关机事件()
         {
-            if (!SqlServerConnection.ConnectionOpenned())
+            if (!dbAgency.ConnectionOpenned())
             {
                 dbAgency.ExecuteUpdateUsingCache(UpdateShutdownTimeSQL());
                 return true;
@@ -75,12 +75,12 @@ namespace 关机助手.Util
 
         private static string UpdateShutdownTimeSQL()
         {
-            return UpdateShutdownTimeSQL(SqlConnectionAgency.DBType);
+            return UpdateShutdownTimeSQL(dbAgency.DBType);
         }
 
-        private static string UpdateShutdownTimeSQL(SqlConnectionAgency.DatabaseType databaseType)
+        private static string UpdateShutdownTimeSQL(DatabaseType databaseType)
         {
-            if (databaseType == SqlConnectionAgency.DatabaseType.SqLite)
+            if (databaseType == DatabaseType.SqLite)
                 return "UPDATE [Table] " +
             "SET 关机时间 = \'" + DateTime.Now.ToString("s") + "\', 时长 = \'" + DateTime.Now.ToString("s") + "\' - 开机时间  " +
             "WHERE 序号 in " +
@@ -92,7 +92,6 @@ namespace 关机助手.Util
             "(SELECT MAX(序号) " +
             "FROM[Table]) ";
         }
-
 
         private static string UpdateShutdownTimeSQL(String 延迟时间) =>
             "UPDATE [Table] " +

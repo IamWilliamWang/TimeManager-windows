@@ -12,7 +12,7 @@ namespace 关机助手
     {
         private static MainForm mForm = null;
         // SqlServer连接代理
-        private SqlConnectionAgency database = new SqlConnectionAgency();
+        private DatabaseAgency database { get; set; } = new DatabaseAgency();
         
         #region 窗体加载关闭事件
         public MainForm()
@@ -596,7 +596,7 @@ namespace 关机助手
 
         public static void CheckSaftyModeSanity()
         {
-            if (SqlServerConnection.ConnectionState != System.Data.ConnectionState.Closed)
+            if (mForm.database.ConnectionState != System.Data.ConnectionState.Closed)
                 mForm.安全模式ToolStripMenuItem.Enabled = false;
         }
 

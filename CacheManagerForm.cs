@@ -125,13 +125,15 @@ namespace 关机助手
 
         private void 插入开机缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CacheUtil.AppendCache("INSERT INTO [Table](开机时间) VALUES (GETDATE())");
+            CacheUtil.AppendCache("INSERT INTO [Table](开机时间) VALUES (GETDATE())"
+                .Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'"), false);
             this.Close();
         }
 
         private void 插入关机缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CacheUtil.AppendCache("UPDATE [Table] SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) ");
+            CacheUtil.AppendCache("UPDATE [Table] SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
+                .Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'"), false);
             this.Close();
         }
         #endregion

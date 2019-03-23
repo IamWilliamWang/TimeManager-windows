@@ -7,7 +7,7 @@ namespace 关机助手
 {
     public partial class LogManagerForm : Form
     {
-        SqlConnectionAgency database = new SqlConnectionAgency();
+        DatabaseAgency database = new DatabaseAgency();
         public LogManagerForm()
         {
             InitializeComponent();

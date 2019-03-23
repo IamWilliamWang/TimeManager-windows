@@ -12,7 +12,7 @@ namespace 关机助手
     public partial class AnalysingForm : Form
     {
         DataTable resultTable { get; set; }
-        SqlConnectionAgency sqlite = new SqlConnectionAgency();
+        DatabaseAgency sqlite = new DatabaseAgency();
 
         public AnalysingForm()
         {
