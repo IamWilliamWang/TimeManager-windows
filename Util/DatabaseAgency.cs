@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace 关机助手.Util
 {
-    public enum DatabaseType { MSSqlServer, SqLite };
     /// <summary>
     /// 数据库的代理类，负责执行不同数据库的相同操作。
     /// </summary>
     class DatabaseAgency /*<DbType> where DbType : DatabaseType*/
     {
-        private DatabaseType dbType;
+        public DatabaseType DbType { get; }
 
         /// <summary>
         /// 无参构造函数，默认SqlServer。
@@ -24,15 +23,15 @@ namespace 关机助手.Util
 
         public DatabaseAgency(DatabaseType databaseType)
         {
-            dbType = databaseType;
+            DbType = databaseType;
         }
 
         public string DbFullName
         { get
             {
-                if (dbType == DatabaseType.MSSqlServer)
+                if (DbType == DatabaseType.MSSqlServer)
                     return SqlServerConnection.DbFullName;
-                else if (dbType == DatabaseType.SqLite)
+                else if (DbType == DatabaseType.SqLite)
                     return SqliteConnection.DbFullName;
                 else
                     return "";
@@ -42,23 +41,21 @@ namespace 关机助手.Util
         private object Instance
         { get
             {
-                if (dbType == DatabaseType.MSSqlServer)
+                if (DbType == DatabaseType.MSSqlServer)
                     return SqlServerConnection.Instance;
-                else if (dbType == DatabaseType.SqLite)
+                else if (DbType == DatabaseType.SqLite)
                     return SqliteConnection.Instance;
                 else
                     return null;
             }
         }
 
-        public DatabaseType DBType { get { return dbType; } }
-
         public ConnectionState ConnectionState
         { get
             {
-                if (dbType == DatabaseType.MSSqlServer)
+                if (DbType == DatabaseType.MSSqlServer)
                     return SqlServerConnection.ConnectionState;
-                else if (dbType == DatabaseType.SqLite)
+                else if (DbType == DatabaseType.SqLite)
                     return SqliteConnection.Instance.ConnectionState;
                 else
                     return 0;
@@ -67,176 +64,145 @@ namespace 关机助手.Util
 
         public void OpenConnection()
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    SqlServerConnection.OpenConnection();
-                    break;
-                case DatabaseType.SqLite:
-                    SqliteConnection.Instance.OpenConnection();
-                    break;
-                default:
-                    break;
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                SqlServerConnection.OpenConnection();
+            else if (DbType == DatabaseType.SqLite) 
+                SqliteConnection.Instance.OpenConnection();
         }
 
         public void OpenConnection(String dbFullFilename)
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    SqlServerConnection.OpenConnection(dbFullFilename);
-                    break;
-                case DatabaseType.SqLite:
-                    SqliteConnection.Instance.OpenConnection(dbFullFilename);
-                    break;
-                default:
-                    break;
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                SqlServerConnection.OpenConnection(dbFullFilename);
+            else if (DbType == DatabaseType.SqLite)
+                SqliteConnection.Instance.OpenConnection(dbFullFilename);
         }
 
         public void CloseConnection()
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    SqlServerConnection.CloseConnection();
-                    break;
-                case DatabaseType.SqLite:
-                    SqliteConnection.Instance.CloseConnection();
-                    break;
-                default:
-                    break;
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                SqlServerConnection.CloseConnection();
+            else if (DbType == DatabaseType.SqLite)
+                SqliteConnection.Instance.CloseConnection();
         }
 
         public void DisposeConnection()
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    SqlServerConnection.DisposeConnection();
-                    break;
-                case DatabaseType.SqLite:
-                    SqliteConnection.Instance.DisposeConnection();
-                    break;
-                default:
-                    break;
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                SqlServerConnection.DisposeConnection();
+            else if (DbType == DatabaseType.SqLite)
+                SqliteConnection.Instance.DisposeConnection();
         }
 
         public void ResetConnection()
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    SqlServerConnection.ResetConnection();
-                    break;
-                case DatabaseType.SqLite:
-                    SqliteConnection.Instance.ResetConnection();
-                    break;
-                default:
-                    break;
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                SqlServerConnection.ResetConnection();
+            else if (DbType == DatabaseType.SqLite)
+                SqliteConnection.Instance.ResetConnection();
         }
 
         public Boolean ConnectionOpenned()
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    return SqlServerConnection.ConnectionOpenned();
-                case DatabaseType.SqLite:
-                    return SqliteConnection.Instance.ConnectionOpenned();
-                default:
-                    throw new ArgumentException();
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                return SqlServerConnection.ConnectionOpenned();
+            else if (DbType == DatabaseType.SqLite)
+                return SqliteConnection.Instance.ConnectionOpenned();
+            else
+                throw new ArgumentException();
+            
         }
         
         public DataTable ExecuteQuery(string selectCommandText)
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    return SqlServerConnection.ExecuteQuery(selectCommandText);
-                case DatabaseType.SqLite:
-                    return SqliteConnection.Instance.ExecuteQuery(selectCommandText);
-                default:
-                    throw new ArgumentException();
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+            	return SqlServerConnection.ExecuteQuery(selectCommandText);
+            else if (DbType == DatabaseType.SqLite)
+                return SqliteConnection.Instance.ExecuteQuery(selectCommandText);
+            else
+                throw new ArgumentException();
         }
 
         public void ExecuteQueryUsingCache(string selectCommandText)
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    SqlServerConnection.ExecuteQuery_delay(selectCommandText);
-                    break;
-                case DatabaseType.SqLite:
-                    throw new NotImplementedException();
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+            	SqlServerConnection.ExecuteQuery_delay(selectCommandText);
+            else if (DbType == DatabaseType.SqLite)
+                throw new NotImplementedException();
+            else
+                throw new ArgumentException();
         }
 
         public int ExecuteUpdate(string commandText)
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    return SqlServerConnection.ExecuteUpdate(commandText);
-                case DatabaseType.SqLite:
-                    return SqliteConnection.Instance.ExecuteUpdate(commandText);
-                default:
-                    throw new ArgumentException();
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                return SqlServerConnection.ExecuteUpdate(commandText);
+            else if (DbType == DatabaseType.SqLite)
+                return SqliteConnection.Instance.ExecuteUpdate(commandText);
+            else
+                throw new ArgumentException();
         }
 
         public void ExecuteUpdateUsingCache(string commandText)
         {
-            switch(dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    SqlServerConnection.ExecuteUpdateUsingCache(commandText);
-                    break;
-                case DatabaseType.SqLite:
-                    throw new NotImplementedException();
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                SqlServerConnection.ExecuteUpdateUsingCache(commandText);
+            else if (DbType == DatabaseType.SqLite)
+                throw new NotImplementedException();
         }
 
         public Boolean UpdateDatabase(DataTable dataTable)
         {
-            switch (dbType)
-            {
-                case DatabaseType.MSSqlServer:
-                    return SqlServerConnection.UpdateDatabase(dataTable);
-                case DatabaseType.SqLite:
-                    return SqliteConnection.Instance.UpdateDatabase(dataTable);
-                default:
-                    throw new ArgumentException();
-            }
+            if (DbType == DatabaseType.MSSqlServer)
+                return SqlServerConnection.UpdateDatabase(dataTable);
+            else if (DbType == DatabaseType.SqLite)
+                return SqliteConnection.Instance.UpdateDatabase(dataTable);
+            else
+                throw new ArgumentException();
+            
+        }
+
+        public void ClearCache()
+        {
+            if (this.DbType == DatabaseType.MSSqlServer)
+                SqlServerConnection.ClearCache();
+            else
+                throw new NotImplementedException();
         }
     }
 
 
     #region 将枚举类封装功能
-    //internal class DatabaseType //
-    //{
-    //    private enum EDatabaseType { MSSqlServer, SqLite };
-    //    private EDatabaseType type;
-    //    private DatabaseType(EDatabaseType dbType)
-    //    {
-    //        this.type = dbType;
-    //    }
-    //    public static DatabaseType MSSqlServer { get { return new DatabaseType(EDatabaseType.MSSqlServer); } }
-    //    public static DatabaseType SqLite { get { return new DatabaseType(EDatabaseType.SqLite); } }
-    //    public static bool operator == (DatabaseType t1,DatabaseType t2)
-    //    {
-    //        return t1.type == t2.type;
-    //    }
-    //    public static bool operator != (DatabaseType t1, DatabaseType t2)
-    //    {
-    //        return !(t1 == t2);
-    //    }
-    //}
+    class DatabaseType //封装枚举类型可以查看具体调用情况
+    {
+        private enum EDatabaseType { MSSqlServer, SqLite };
+        private EDatabaseType type;
+        public DatabaseType() : this(EDatabaseType.MSSqlServer) { }
+        private DatabaseType(EDatabaseType dbType)
+        {
+            this.type = dbType;
+        }
+        public static DatabaseType MSSqlServer { get { return new DatabaseType(EDatabaseType.MSSqlServer); } }
+        public static DatabaseType SqLite { get { return new DatabaseType(EDatabaseType.SqLite); } }
+        public static bool operator ==(DatabaseType t1, DatabaseType t2)
+        {
+            return t1.type == t2.type;
+        }
+        public static bool operator !=(DatabaseType t1, DatabaseType t2)
+        {
+            return t1.type != t2.type;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.type == (obj as DatabaseType).type;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.type.GetHashCode();
+        }
+    }
+    //public enum DatabaseType { MSSqlServer, SqLite };
     #endregion
 }

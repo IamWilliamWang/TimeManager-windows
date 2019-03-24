@@ -15,7 +15,7 @@ namespace 关机助手
         #endregion
 
         #region 变量定义
-        private DatabaseAgency db = new DatabaseAgency();
+        private DatabaseAgency database = new DatabaseAgency();
         private QueryMode backgroundQueryMode = new QueryMode();
         /// <summary>
         /// 是否需要初始化操作（只有第一次点开时才为True）
@@ -30,7 +30,7 @@ namespace 关机助手
         /// <returns></returns>
         private bool AlertBusy()
         {
-            if (db.ConnectionState == ConnectionState.Connecting)
+            if (database.ConnectionState == ConnectionState.Connecting)
             {
                 MessageBox.Show("稍安勿躁，请在程序不忙时重试", "操作失败", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return true;
@@ -97,7 +97,7 @@ namespace 关机助手
         private void ShowTotalTable()
         {
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = db.ExecuteQuery("select * from " + TableName);
+            dataGridView1.DataSource = database.ExecuteQuery("select * from " + TableName);
             this.dataGridView1.RowHeadersWidth = 53;
             this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
         }
@@ -109,7 +109,7 @@ namespace 关机助手
             if(this.Width==702)
                 this.Width = 710;
             // 数据库已连接与未连接都可以处理
-            if (db.ConnectionState == ConnectionState.Closed)
+            if (database.ConnectionState == ConnectionState.Closed)
             {
                 this.progressBar1.Value = 40;
                 this.statusLabel.Text = "正在加载数据";
@@ -127,7 +127,7 @@ namespace 关机助手
             if(this.Width==710)
                 this.Width = 702;
             // 数据库已连接与未连接都可以处理
-            if (!db.ConnectionOpenned())
+            if (!database.ConnectionOpenned())
             {
                 this.progressBar1.Value = 40;
                 this.statusLabel.Text = "正在加载数据";
@@ -137,7 +137,7 @@ namespace 关机助手
             else
             {
                 dataGridView1.DataSource = null;
-                dataGridView1.DataSource = db.ExecuteQuery(
+                dataGridView1.DataSource = database.ExecuteQuery(
                     "select * from " + 
                     TableName + 
                     " where 序号>((select max(序号) from " + TableName + ")-14)");
@@ -195,7 +195,7 @@ namespace 关机助手
                 MessageBox.Show("输入格式错误！已为您显示所有数据","错误提示");
                 return;
             }
-            if (!db.ConnectionOpenned())
+            if (!database.ConnectionOpenned())
             {
                 this.progressBar1.Value = 40;
                 this.statusLabel.Text = "正在加载数据";
@@ -205,7 +205,7 @@ namespace 关机助手
             else
             {
                 dataGridView1.DataSource = null;
-                dataGridView1.DataSource = db.ExecuteQuery(QueryCustomSQL);
+                dataGridView1.DataSource = database.ExecuteQuery(QueryCustomSQL);
                 this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
             }
         }
@@ -251,7 +251,7 @@ namespace 关机助手
             if (MessageBox.Show("此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return false;
 
-            if (db.ExecuteUpdate("delete from " + TableName) != 0)
+            if (database.ExecuteUpdate("delete from " + TableName) != 0)
             {
                 MessageBox.Show("清空数据库" + TableName + "成功", "成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return true;
@@ -311,7 +311,7 @@ namespace 关机助手
                 if (MessageBox.Show("此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return;
 
-                if (db.ExecuteUpdate(sql) > 0)
+                if (database.ExecuteUpdate(sql) > 0)
                 {
                     MessageBox.Show("删除成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.显示后15条ToolStripMenuItem_Click(null, null);
@@ -332,7 +332,7 @@ namespace 关机助手
 
             string connStr = Properties.Settings.Default.TimeDatabaseConnectionString;//连接字符串
 
-            if (db.ExecuteUpdate(DeleteMaxIDSQL()) != 0)
+            if (database.ExecuteUpdate(DeleteMaxIDSQL()) != 0)
             {
                 MessageBox.Show("删除最后一条记录成功!", "删除成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.显示后15条ToolStripMenuItem_Click(null, null);
@@ -352,7 +352,7 @@ namespace 关机助手
             if (AlertBusy())
                 return;
 
-            if (db.UpdateDatabase((DataTable)dataGridView1.DataSource))
+            if (database.UpdateDatabase((DataTable)dataGridView1.DataSource))
                 System.Windows.MessageBox.Show("手动修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             this.显示后15条ToolStripMenuItem_Click(sender, e);
         }
@@ -373,10 +373,10 @@ namespace 关机助手
             dataGridView1.DataSource = null;
 
             if (executeSQL.IndexOf("SELECT") == 0)
-                dataGridView1.DataSource = db.ExecuteQuery(executeSQL);
+                dataGridView1.DataSource = database.ExecuteQuery(executeSQL);
             else
             {
-                int count = db.ExecuteUpdate(executeSQL);
+                int count = database.ExecuteUpdate(executeSQL);
                 if (count == 0)
                     MessageBox.Show("执行失败，没有条目受到影响");
                 else
@@ -400,7 +400,7 @@ namespace 关机助手
                 return;
             string filename = fileDialog.FileName.Trim().Replace("\"", "");
 
-            int count = db.ExecuteUpdate(File.ReadAllText(filename).Replace("go", " "));
+            int count = database.ExecuteUpdate(File.ReadAllText(filename).Replace("go", " "));
             if (count == 0)
                 MessageBox.Show("执行失败，没有条目受到影响");
             else
@@ -409,15 +409,15 @@ namespace 关机助手
 
         private void 释放数据库ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            db.ResetConnection();
+            database.ResetConnection();
             MessageBox.Show("释放成功");
         }
 
         private void 查看已连接数据库ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (db.ConnectionOpenned() == true)
+            if (database.ConnectionOpenned() == true)
                 MessageBox.Show("已连接数据库" + SqliteConnection.DbFullName, "数据库文件名");
-            else if (db.ConnectionState == ConnectionState.Connecting)
+            else if (database.ConnectionState == ConnectionState.Connecting)
                 MessageBox.Show("正在连接数据库，请稍后重试. . .");
             else
                 MessageBox.Show("未连接数据库");
@@ -479,7 +479,7 @@ namespace 关机助手
             #region 导入所有数据
         private Boolean CanReadMdfFile()
         {
-            return !db.ConnectionOpenned();
+            return !database.ConnectionOpenned();
         }
         /// <summary>
         /// 选择并加载.backup备份数据库文件
@@ -490,7 +490,7 @@ namespace 关机助手
         {
             if (CanReadMdfFile() == false)
             {
-                db.ResetConnection();
+                database.ResetConnection();
             }
 
             OpenFileDialog fileDialog = new OpenFileDialog();
@@ -504,7 +504,7 @@ namespace 关机助手
 
         private void 还原数据库_RarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            db.ResetConnection();
+            database.ResetConnection();
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "还原文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
             if (fileDialog.ShowDialog() == DialogResult.OK)
@@ -525,7 +525,7 @@ namespace 关机助手
             #region 导出所有数据
         private void 无损导出数据库ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            db.ResetConnection();
+            database.ResetConnection();
 
             SaveFileDialog fileDialog = new SaveFileDialog();
             fileDialog.Filter = "备份文件 (*.backup)|*.backup|所有文件 (*.*)|*.*";
@@ -540,7 +540,7 @@ namespace 关机助手
 
         private void 备份数据库_RarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            db.ResetConnection();
+            database.ResetConnection();
             SaveFileDialog fileDialog = new SaveFileDialog();
             fileDialog.Filter = "备份文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
             if (fileDialog.ShowDialog() == DialogResult.OK)
@@ -664,7 +664,7 @@ namespace 关机助手
         {
             try
             {
-                db.OpenConnection();
+                database.OpenConnection();
                 this.dbBackgroundWorker.ReportProgress(100); //报告执行完毕，执行RunWorkerCompleted
             }
             catch (Exception ex)
@@ -699,7 +699,7 @@ namespace 关机助手
         private void clearCacheBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             this.statusLabel.Text = "正在清除缓存并完成同步操作";
-            SqlServerConnection.ClearCache();
+            database.ClearCache();
         }
 
         private void clearCacheBackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)

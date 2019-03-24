@@ -40,7 +40,7 @@ namespace 关机助手.Util
 
         private static string InsertPowerOnTimeSQL(String TableName)
         {
-            if (dbAgency.DBType == DatabaseType.MSSqlServer)
+            if (dbAgency.DbType == DatabaseType.MSSqlServer)
                 return "INSERT "
             + "INTO " + TableName + "(开机时间) "
             + "VALUES (GETDATE())";
@@ -75,7 +75,7 @@ namespace 关机助手.Util
 
         private static string UpdateShutdownTimeSQL()
         {
-            return UpdateShutdownTimeSQL(dbAgency.DBType);
+            return UpdateShutdownTimeSQL(dbAgency.DbType);
         }
 
         private static string UpdateShutdownTimeSQL(DatabaseType databaseType)
