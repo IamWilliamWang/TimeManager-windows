@@ -289,7 +289,6 @@
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "AnalysingForm";
             this.Text = "数据可视化";

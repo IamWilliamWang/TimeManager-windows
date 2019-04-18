@@ -58,6 +58,7 @@ namespace 关机助手.Util
             this.textBoxInput.Name = "textBoxInput";
             this.textBoxInput.Size = new System.Drawing.Size(449, 21);
             this.textBoxInput.TabIndex = 1;
+            this.textBoxInput.Click += new System.EventHandler(this.TextBoxInput_Click);
             this.textBoxInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxInput_KeyPress);
             // 
             // button确定
@@ -115,6 +116,7 @@ namespace 关机助手.Util
         public string Title { get { return this.Text; } set { this.Text = value; } }
         public string HeaderText { get { return this.labelContent.Text; } set { this.labelContent.Text = value; } }
         private string defaultText;
+        private bool? needClearDefaultText = null;
         private bool 输入成功 = false;
 
         public InputBoxFormInner(string title, string content, int? charCountPerLine = null)
@@ -147,9 +149,14 @@ namespace 关机助手.Util
 
         private void textBoxInput_KeyPress(object sender, KeyPressEventArgs e)
         {
+            // 回车键确认
             if (e.KeyChar == '\r')
                 this.button确定_Click(sender, e);
-            if (this.BoxText == this.defaultText)
+            // Esc键取消
+            else if (e.KeyChar == 27)
+                this.button取消_Click(sender, e);
+            // 确保在hint状态下输入时删除掉提示
+            if (this.needClearDefaultText == true && this.BoxText == this.defaultText) 
                 this.BoxText = String.Empty;
         }
         
@@ -157,18 +164,21 @@ namespace 关机助手.Util
         {
             BoxText = text;
             this.defaultText = text;
+            this.needClearDefaultText = false;
         }
 
         public void SetHint(string hint)
         {
             BoxText = hint;
             this.defaultText = hint;
-            this.textBoxInput.Click += TextBoxInput_Click;
+            this.needClearDefaultText = true;
         }
 
         private void TextBoxInput_Click(object sender, EventArgs e)
         {
-            BoxText = String.Empty;
+            // 在hint状态下清空文本框
+            if (this.needClearDefaultText == true) 
+                BoxText = String.Empty;
         }
 
         public bool InputSuccess()
