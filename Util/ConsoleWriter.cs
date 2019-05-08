@@ -4,7 +4,7 @@ using System.IO;
 
 namespace 关机助手.Util
 {
-    public class ConsoleOutputUtil
+    public class ConsoleWriter
     {
         private static bool consoleOpenned = false;
         private static String printerFullFilename = "关机助手(终端版).exe";
@@ -47,9 +47,12 @@ namespace 关机助手.Util
         /// <param name="strings">要输出的字符串数组</param>
         public static void WriteLines(String[] strings)
         {
+            if (strings == null)
+                return;
+
             if (consoleOpenned == false)
                 OpenWrite();
-
+            
             Process process = new Process();
             process.StartInfo.FileName = Directory.GetCurrentDirectory()+"\\"+ printerFullFilename;
             //process.StartInfo.UseShellExecute = false;

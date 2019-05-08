@@ -502,7 +502,12 @@ namespace 关机助手
             File.CreateText(@"C:\Users\" + ProgramLauncher.SystemUserName + @"\DONOTWRITEDATA").Close();
             MessageBox.Show("下次开机不会记录开机时间", "成功");
         }
-        
+
+        private void darkModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)
         {
             float opacity = 100;
@@ -524,6 +529,7 @@ namespace 关机助手
         {
             this.ShowInTaskbar = false;
         }
+
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.updateTitleTimer.Enabled = false;
@@ -628,6 +634,6 @@ namespace 关机助手
             this.安全模式ToolStripMenuItem.Text = enable ? "关闭安全模式" : "启动安全模式";
         }
         #endregion
-
+        
     }
 }

@@ -177,14 +177,14 @@ namespace 关机助手.Util
                 }
                 catch(System.IndexOutOfRangeException)
                 {
-                    ConsoleOutputUtil.WriteLine("无法执行。原因：缺少参数错误！");
+                    ConsoleWriter.WriteLine("无法执行。原因：缺少参数错误！");
                 }
             }
 
             // 先判断是否有失败
             if (失败后弹出的字符串 != null)
             {
-                ConsoleOutputUtil.WriteLine(失败后弹出的字符串 + "\n如需其他帮助请使用-help");
+                ConsoleWriter.WriteLine(失败后弹出的字符串 + "\n如需其他帮助请使用-help");
                 return;
             }
             /* 首先先判断是否必要调用数据库，如果必要则打开数据库，清除cache文件信息，保证后方调用都使用数据库。 */
@@ -201,7 +201,7 @@ namespace 关机助手.Util
             if (记录开机时间 == true)
             {
                 if (离线模式) //离线模式优先
-                    ConsoleOutputUtil.WriteLine("离线模式下记录开机时间已被禁止。");
+                    ConsoleWriter.WriteLine("离线模式下记录开机时间已被禁止。");
                 else if (cache文件 == null) 
                     SqlExecuter.记录开机事件(); //未指定数据库的默认调用。调用数据库或缓存由内部处理
                 else //指定缓存文件需要单独处理
@@ -227,7 +227,7 @@ namespace 关机助手.Util
             if (delay时间秒 != null)
             {
                 if (离线模式)
-                    ConsoleOutputUtil.WriteLine("暂不支持离线模式下的延迟时间，请使用窗体版本。");
+                    ConsoleWriter.WriteLine("暂不支持离线模式下的延迟时间，请使用窗体版本。");
                 else if (cache文件 == null)
                     ShutdownWithSeconds_DelayMode(delay时间秒 ?? 0); //内部实现自动处理是否调用缓存
                 else
@@ -282,9 +282,9 @@ namespace 关机助手.Util
             if (显示缓存)
             {
                 if (cache文件 == null)
-                    ConsoleOutputUtil.WriteLines(CacheUtil.GetAllLines());
+                    ConsoleWriter.WriteLines(CacheUtil.GetAllLines());
                 else
-                    ConsoleOutputUtil.WriteLines(CacheUtil.GetAllLines(cache文件));
+                    ConsoleWriter.WriteLines(CacheUtil.GetAllLines(cache文件));
             }
             if (删除缓存)
             {
@@ -296,7 +296,7 @@ namespace 关机助手.Util
             if(!离线模式)
                 dbAgency.CloseConnection();
             if (成功后弹出的字符串 != null)
-                ConsoleOutputUtil.WriteLine(成功后弹出的字符串);
+                ConsoleWriter.WriteLine(成功后弹出的字符串);
             Environment.Exit(0);
         }
 
@@ -335,7 +335,7 @@ namespace 关机助手.Util
 "|-del            |--delete_cache                  |删除缓存文件（可指定缓存文件）                     |-del -db my_cache.cache"
             };
 
-            Util.ConsoleOutputUtil.WriteLines(infos);
+            Util.ConsoleWriter.WriteLines(infos);
         }
     }
 }
