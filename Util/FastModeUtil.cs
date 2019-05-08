@@ -77,6 +77,8 @@ namespace 关机助手.Util
             bool 休眠 = false;
             bool 禁用缓存 = false;
             bool 离线模式 = false;
+            bool 显示缓存 = false;
+            bool 删除缓存 = false;
             // 内部使用的变量
             String cache文件 = null;
             String 失败后弹出的字符串 = null;
@@ -160,6 +162,14 @@ namespace 关机助手.Util
                         case "--offline":
                             离线模式 = true;
                             break;
+                        case "-sc":case "/sc":
+                        case "--show_cache":
+                            显示缓存 = true;
+                            break;
+                        case "-del":case "/del":
+                        case "--delete_cache":
+                            删除缓存 = true;
+                            break;
                         default:
                             PrintHelp();
                             break;
@@ -188,7 +198,7 @@ namespace 关机助手.Util
             }
             
             // 检查开机时间
-            if (记录开机时间==true)
+            if (记录开机时间 == true)
             {
                 if (离线模式) //离线模式优先
                     ConsoleOutputUtil.WriteLine("离线模式下记录开机时间已被禁止。");
@@ -269,6 +279,20 @@ namespace 关机助手.Util
                 }
             }
 
+            if (显示缓存)
+            {
+                if (cache文件 == null)
+                    ConsoleOutputUtil.WriteLines(CacheUtil.GetAllLines());
+                else
+                    ConsoleOutputUtil.WriteLines(CacheUtil.GetAllLines(cache文件));
+            }
+            if (删除缓存)
+            {
+                if (cache文件 == null)
+                    File.Delete(CacheUtil.CacheFilename);
+                else
+                    File.Delete(cache文件);
+            }   
             if(!离线模式)
                 dbAgency.CloseConnection();
             if (成功后弹出的字符串 != null)
@@ -294,7 +318,7 @@ namespace 关机助手.Util
         {
             String[] infos =
             {
-"关机助手(终端版 v2.0)","使用说明：",
+"关机助手(终端版 v2.0.1)","使用说明：",
 "|       选项     |             完整选项           |         含义                                      |    示例",
 "|-s [sec/min]s/m |--shutdown_seconds [sec/min]s/m |倒计时关机(秒)                                     |-s 60s or -s 1m",
 "|-d [sec/min]s/m |--shutdown_delay [sec/min]s/m   |记录被delay后的关机时间                            |-d 30s or -d 0.5m ",
@@ -306,7 +330,9 @@ namespace 关机助手.Util
 "|-sleep          |--sleep                         |睡眠电脑(记录关机和下次开机时间)                   |-sleep",
 "|-db [dbFilename]|--database_filename [dbFilename]|设定数据库文件名(不使用-dc会自动检测对应的缓存文件)|-db D:\\database.mdf",
 "|-dc             |--disable_cache                 |强制禁用使用缓存                                   |-dc",
-"|-offline        |--offline                       |离线模式，不记录任何时间                           |-offline"
+"|-offline        |--offline                       |离线模式，不记录任何时间                           |-offline",
+"|-sc             |--show_cache                    |显示缓存文件内容（可指定缓存文件）                 |-sc -db my_cache.cache",
+"|-del            |--delete_cache                  |删除缓存文件（可指定缓存文件）                     |-del -db my_cache.cache"
             };
 
             Util.ConsoleOutputUtil.WriteLines(infos);
