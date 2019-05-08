@@ -124,14 +124,20 @@ namespace 关机助手.Util
                         case "-k":case "/k":
                         case "--start":
                             记录开机时间 = true;
-                            char nextFirstChar = args[i + 1][0];
-                            if (i < args.Length - 1 && nextFirstChar!='-' && nextFirstChar!='/') //有自定义数据库文件完整路径的参数
-                                mdf文件 = args[++i];
+                            if (i < args.Length - 1)
+                            {
+                                char nextFirstChar = args[i + 1][0];
+                                if (nextFirstChar != '-' && nextFirstChar != '/')
+                                { //有自定义数据库文件完整路径的参数
+                                    mdf文件 = args[++i];
+                                    cache文件 = mdf文件.Replace(".mdf", ".cache");
+                                }
+                            }
                             //string insertSql = "INSERT INTO [Table](开机时间) VALUES ('GETDATE()')".Replace("GETDATE()",
                             //DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                             //File.AppendAllText(mdf文件.Replace(".mdf", ".cache"), insertSql + CacheUtil.CacheSpliter);
                             //File.SetAttributes(mdf文件.Replace(".mdf", ".cache"), FileAttributes.Hidden);
-                            return;
+                            break;
                         case "-h":case "/h":
                         case "--hibernate":
                             休眠 = true;
@@ -173,7 +179,7 @@ namespace 关机助手.Util
             }
             /* 首先先判断是否必要调用数据库，如果必要则打开数据库，清除cache文件信息，保证后方调用都使用数据库。 */
             // 在非离线模式 and 禁用缓存时才会打开数据库。
-            if (离线模式==false && 禁用缓存==true)
+            if (离线模式 == false && 禁用缓存 == true) 
             {
                 if (mdf文件 != null)
                     dbAgency.OpenConnection(mdf文件); //如果指定的数据库文件确实有用，就只在这里使用
@@ -182,7 +188,7 @@ namespace 关机助手.Util
             }
             
             // 检查开机时间
-            if (记录开机时间)
+            if (记录开机时间==true)
             {
                 if (离线模式) //离线模式优先
                     ConsoleOutputUtil.WriteLine("离线模式下记录开机时间已被禁止。");
@@ -225,14 +231,42 @@ namespace 关机助手.Util
                 ShutdownUtil.CancelShutdownCommand();
             if (睡眠 == true)
             {
-                ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.睡眠);
-                休眠结束(); //因为重启后数据库连接状态未改变，所以不需要分类讨论
+                if (离线模式)
+                    ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.睡眠);
+                else if(cache文件 == null)
+                {
+                    SqlExecuter.记录关机事件();
+                    ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.睡眠);
+                    休眠结束(); //因为重启后数据库连接状态未改变，所以不需要分类讨论
+                }
+                else //指定cache文件特殊对待
+                {
+                    String shutdownSql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL();
+                    CacheUtil.AppendCache(shutdownSql, cache文件);
+                    ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.睡眠);
+                    String poweronSql = SqlExecuter.UsefulSqlExpressions.InsertPowerOnTimeSQL();
+                    CacheUtil.AppendCache(poweronSql, cache文件);
+                }
             }
             // 检查休眠
             if (休眠 == true)
             {
-                ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.休眠);
-                休眠结束(); 
+                if (离线模式)
+                    ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.休眠);
+                else if (cache文件 == null)
+                {
+                    SqlExecuter.记录关机事件();
+                    ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.休眠);
+                    休眠结束(); //因为重启后数据库连接状态未改变，所以不需要分类讨论
+                }
+                else //指定cache文件特殊对待
+                {
+                    String shutdownSql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL();
+                    CacheUtil.AppendCache(shutdownSql, cache文件);
+                    ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.休眠);
+                    String poweronSql = SqlExecuter.UsefulSqlExpressions.InsertPowerOnTimeSQL();
+                    CacheUtil.AppendCache(poweronSql, cache文件);
+                }
             }
 
             if(!离线模式)
@@ -244,11 +278,10 @@ namespace 关机助手.Util
 
         private static void 休眠结束()
         {
-
             new Thread(休眠结束后的工作).Start();
         }
 
-        private static  void 休眠结束后的工作()
+        private static void 休眠结束后的工作()
         {
             Thread.Sleep(10000);
             SqlExecuter.记录开机事件();
@@ -265,7 +298,7 @@ namespace 关机助手.Util
 "|       选项     |             完整选项           |         含义                                      |    示例",
 "|-s [sec/min]s/m |--shutdown_seconds [sec/min]s/m |倒计时关机(秒)                                     |-s 60s or -s 1m",
 "|-d [sec/min]s/m |--shutdown_delay [sec/min]s/m   |记录被delay后的关机时间                            |-d 30s or -d 0.5m ",
-"|-c [string]     |--comment [string]              |执行成功后弹出的字符串(支持\n)                     |-s 2.5m -c 150秒后将关机",
+"|-c [string]     |--comment [string]              |执行成功后弹出的字符串(支持\\n)                     |-s 2.5m -c 150秒后将关机",
 "|-a              |--cancel_all                    |销毁所有倒计时                                     |-a",
 "|-k              |--start                         |记录当前的开机时间                                 |-k",
 "|-k [dbFilename] |--start [dbFilename]            |指定数据库记录当前的开机时间(弃用，推荐使用--db)   |-k D:\\database.mdf",

@@ -9,6 +9,9 @@ namespace 关机助手.Util
 {
     class SqlExecuter
     {
+        /// <summary>
+        /// 提取出有用的SQL语句函数一共外部调用，不改变原有函数的结构
+        /// </summary>
         public static class UsefulSqlExpressions
         {
             public static string InsertPowerOnTimeSQL() => SqlExecuter.InsertPowerOnTimeSQL("[Table]");
@@ -75,8 +78,10 @@ namespace 关机助手.Util
         {
             StringBuilder str延迟时间 = new StringBuilder();
             str延迟时间.Append(delaySeconds / 3600);
+            delaySeconds -= delaySeconds / 3600 * 3600;
             str延迟时间.Append(":");
             str延迟时间.Append(delaySeconds / 60);
+            delaySeconds -= delaySeconds / 60 * 60;
             str延迟时间.Append(":");
             str延迟时间.Append(delaySeconds % 60);
             return str延迟时间.ToString();

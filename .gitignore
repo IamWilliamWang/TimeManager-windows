@@ -1,4 +1,4 @@
-# Windows image file caches
+﻿# Windows image file caches
 Thumbs.db
 ehthumbs.db
 
@@ -50,6 +50,7 @@ Temporary Items
 .vs
 
 # 生成文件
+bin/
 obj/
 
 # 备份文件
@@ -64,3 +65,6 @@ script/
 # 数据库文件
 *.mdf
 *.ldf
+
+# 临时文件
+*.cache
