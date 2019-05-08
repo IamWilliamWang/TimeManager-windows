@@ -258,14 +258,14 @@
             // 切断数据库连接ToolStripMenuItem
             // 
             this.切断数据库连接ToolStripMenuItem.Name = "切断数据库连接ToolStripMenuItem";
-            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.切断数据库连接ToolStripMenuItem.Text = "切断数据库连接";
             this.切断数据库连接ToolStripMenuItem.Click += new System.EventHandler(this.切断数据库连接ToolStripMenuItem_Click);
             // 
             // 外链数据库ToolStripMenuItem
             // 
             this.外链数据库ToolStripMenuItem.Name = "外链数据库ToolStripMenuItem";
-            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.外链数据库ToolStripMenuItem.Text = "外链数据库";
             this.外链数据库ToolStripMenuItem.Click += new System.EventHandler(this.外链数据库ToolStripMenuItem_Click);
             // 
@@ -414,6 +414,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MainForm";
             this.Opacity = 0.96D;
             this.Text = "关机助手 {Version}";

@@ -221,6 +221,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="README.md" />
     <None Include="Resources\EmptyDB.gz" />
     <None Include="SqlServerDatabase\TimeDatabaseDataSet.xsc">
       <DependentUpon>TimeDatabaseDataSet.xsd</DependentUpon>

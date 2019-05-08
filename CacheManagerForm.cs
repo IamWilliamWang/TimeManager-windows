@@ -163,6 +163,7 @@ namespace 关机助手
                 MessageBox.Show("成功！但是缓存文件为空或者没有缓存文件");
                 File.Delete(cache);
                 this.Close();
+                return;
             }
             if (CacheUtil.CleanDbAndExecuteTasks() == 0)
                 MessageBox.Show("操作失败。可能原因：缓存文件异常，或者缓存为空。", "提示");

@@ -45,7 +45,7 @@ namespace 关机助手
             }
 
             // 获取版本号并替换标题
-            this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version(2));
+            this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version(1));
             // 保存Form
             SaveMainForm();
             // 给ComboBox添加选项
