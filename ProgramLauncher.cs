@@ -45,7 +45,7 @@ namespace 关机助手
             {
                 if (args.Length == 0)
                     Application.Run(new MainForm());
-                else if (args.Length == 1 || args[0] == "MessageUnabled")
+                else if (args.Length == 1 && args[0] == "MessageUnabled")
                 {
                     var mainForm = new MainForm();
                     mainForm.需要重复开启软件检查 = false;

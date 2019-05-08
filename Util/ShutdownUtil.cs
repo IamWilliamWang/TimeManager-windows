@@ -5,7 +5,7 @@ namespace 关机助手.Util
 {
     class ShutdownUtil
     {
-        public static bool DEBUG_MODE { set; get; } = true; //调试模式开启时，该类形同虚设
+        public static bool DEBUG_MODE { set; get; } = false; //调试模式开启时，该类形同虚设
         /**
          * 取消指令
          */
