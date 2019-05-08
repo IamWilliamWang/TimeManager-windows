@@ -167,7 +167,7 @@
       <DependentUpon>TimeDatabaseDataSet.xsd</DependentUpon>
     </Compile>
     <Compile Include="Util\GZipUtil.cs" />
-    <Compile Include="Util\ConsoleOutputUtil.cs" />
+    <Compile Include="Util\ConsoleWriter.cs" />
     <Compile Include="Util\TimeUtil.cs" />
     <Compile Include="Util\UnicodeSaverUtil.cs" />
     <Compile Include="Util\WinRARUtil.cs" />
