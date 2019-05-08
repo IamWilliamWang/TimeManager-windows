@@ -311,7 +311,7 @@ namespace 关机助手
                             再次添加开机记录();
                             break;
                         case "延缓":
-                            FastModeUtil.ShutdownWithMinutes_DelayMode(float.Parse(this.comboBoxTime.Text));
+                            FastModeUtil.ShutdownWithSeconds_DelayMode((int)(float.Parse(this.comboBoxTime.Text) * 60));
                             break;
                         case "睡眠":
                             RunSuspendCommand(Mode.睡眠);

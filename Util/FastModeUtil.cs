@@ -24,7 +24,15 @@ namespace 关机助手.Util
             ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, countdownSeconds);
         }
 
+        public static void ShutdownWithSeconds_DelayMode(int delaySeconds)
+        {
+            SqlExecuter.记录延迟关机事件(delaySeconds);
 
+            ShutdownUtil.CancelShutdownCommand();
+            ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, delaySeconds);
+        }
+
+        [Obsolete]
         public static void ShutdownWithMinutes_DelayMode(int countdownMinute)
         {
             if(countdownMinute>=60) // bug needs fix.
@@ -35,10 +43,21 @@ namespace 关机助手.Util
             ShutdownUtil.CancelShutdownCommand();
             ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, countdownMinute * 60);
         }
-
+        [Obsolete]
         public static void ShutdownWithMinutes_DelayMode(float countdownMinute)
         {
             ShutdownWithMinutes_DelayMode((int)countdownMinute);// bug needs fix.
+        }
+
+        private static int GetSecondFromTimeStringContainsMS(String stringContainsMS)
+        {
+            stringContainsMS = stringContainsMS.ToLower();
+            if (stringContainsMS[stringContainsMS.Length - 1] == 's')
+                return (int)(float.Parse(stringContainsMS.Substring(0, stringContainsMS.Length - 1)));
+            else if (stringContainsMS[stringContainsMS.Length - 1] == 'm')
+                return 60 * (int)(float.Parse(stringContainsMS.Substring(0, stringContainsMS.Length - 1)));
+            else
+                return -1;
         }
 
         /// <summary>
@@ -47,71 +66,93 @@ namespace 关机助手.Util
         /// <param name="args">向程序输送的参数组</param>
         public static void RunConsoleApplication(String[] args)
         {
-            bool recordPoweronTime = false;
-            int? countDownSeconds = null;
-            String comment = null;
-            bool cancel = false;
-            String delayDuration = null;
-            String mdfFullname = null;
-            bool sleep = false;
+            // 传入的要使用的变量
+            int? 关机倒计时秒 = null;
+            int? delay时间秒 = null;
+            String 成功后弹出的字符串 = null;
+            bool 取消关机 = false;
+            bool 记录开机时间 = false;
+            String mdf文件 = null;
+            bool 睡眠 = false;
+            bool 休眠 = false;
+            bool 禁用缓存 = false;
+            bool 离线模式 = false;
+            // 内部使用的变量
+            String cache文件 = null;
+            String 失败后弹出的字符串 = null;
 
+            // 检查跳过处理
             if (File.Exists("C:\\Users\\"+ProgramLauncher.SystemUserName+"\\DONOTWRITEDATA"))
             {
                 File.Delete( "C:\\Users\\"+ProgramLauncher.SystemUserName+"\\DONOTWRITEDATA");
                 return;
             }
-
+            
+            // 解析所有参数并赋值
             for (int i = 0; i < args.Length; i++)
             {
                 try
                 {
                     switch (args[i])
                     {
-                        case "/s":
-                        case "-s":
-                            if (countDownSeconds != null)
+                        case "-s":case "/s":
+                        case "--shutdown_seconds":
+                            关机倒计时秒 = FastModeUtil.GetSecondFromTimeStringContainsMS(args[++i]);
+                            if (关机倒计时秒 == -1)
                             {
-                                ConsoleOutputUtil.WriteLine("错误！[-s] 与 [-m]不可同时使用！");
-                                return;
+                                失败后弹出的字符串 = "执行失败！时间请以s（秒）或m（分钟）结尾";
+                                i = args.Length; //强制跳出大循环
                             }
-                            countDownSeconds = (int)Math.Floor(float.Parse(args[++i]));
                             break;
-                        case "/m":
-                        case "-m":
-                            if (countDownSeconds != null)
+                        case "-d":case "/d":
+                        case "--shutdown_delay":
+                            delay时间秒 = FastModeUtil.GetSecondFromTimeStringContainsMS(args[++i]);
+                            if (delay时间秒 == -1)
                             {
-                                ConsoleOutputUtil.WriteLine("错误！[-s] 与 [-m]不可同时使用！");
-                                return;
+                                失败后弹出的字符串 = "执行失败！时间请以s（秒）或m（分钟）结尾";
+                                i = args.Length; //强制跳出大循环
                             }
-                            countDownSeconds = (int)Math.Floor(float.Parse(args[++i]) * 60);
                             break;
-                        case "/c":
-                        case "-c":
-                            comment = args[++i];
+                        case "-c":case "/c":
+                        case "--comment":
+                            成功后弹出的字符串 = args[++i].Replace("\\n","\n");
                             break;
-                        case "/a":
-                        case "-a":
-                            cancel = true;
+                        case "-a":case "/a":
+                        case "--cancel_all":
+                            取消关机 = true;
                             break;
-                        case "/d":
-                        case "-d":
-                            delayDuration = args[++i];
-                            break;
-                        case "/k":
-                        case "-k":
-                            recordPoweronTime = true;
-                            if (i < args.Length - 1 && !"/-".Contains(args[i + 1][0].ToString())) //有自定义数据库文件完整路径的参数
-                            {
-                                mdfFullname = args[++i];
-                            }
-                            string insertSql = "INSERT INTO [Table](开机时间) VALUES ('GETDATE()')".Replace("GETDATE()",
-                            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                            File.AppendAllText(mdfFullname.Replace(".mdf", ".cache"), insertSql + CacheUtil.CacheSpliter);
-                            File.SetAttributes(mdfFullname.Replace(".mdf", ".cache"), FileAttributes.Hidden);
+                        case "-k":case "/k":
+                        case "--start":
+                            记录开机时间 = true;
+                            char nextFirstChar = args[i + 1][0];
+                            if (i < args.Length - 1 && nextFirstChar!='-' && nextFirstChar!='/') //有自定义数据库文件完整路径的参数
+                                mdf文件 = args[++i];
+                            //string insertSql = "INSERT INTO [Table](开机时间) VALUES ('GETDATE()')".Replace("GETDATE()",
+                            //DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                            //File.AppendAllText(mdf文件.Replace(".mdf", ".cache"), insertSql + CacheUtil.CacheSpliter);
+                            //File.SetAttributes(mdf文件.Replace(".mdf", ".cache"), FileAttributes.Hidden);
                             return;
-                        case "/x":
-                        case "-x":
-                            sleep = true;
+                        case "-h":case "/h":
+                        case "--hibernate":
+                            休眠 = true;
+                            break;
+                        case "-sleep":case "/sleep":
+                        case "--sleep":
+                            睡眠 = true;
+                            break;
+                        case "-db":case "/db":
+                        case "--database_filename":
+                            mdf文件 = args[++i];
+                            cache文件 = mdf文件.Replace(".mdf", ".cache");
+                            break;
+                        case "-dc":case "/dc":
+                        case "--disable_cache":
+                            禁用缓存 = true;
+                            cache文件 = null; //如果禁用缓存，删除缓存文件信息
+                            break;
+                        case "-offline":case "/offline":
+                        case "--offline":
+                            离线模式 = true;
                             break;
                         default:
                             PrintHelp();
@@ -120,31 +161,84 @@ namespace 关机助手.Util
                 }
                 catch(System.IndexOutOfRangeException)
                 {
-                    ConsoleOutputUtil.OpenWrite();
                     ConsoleOutputUtil.WriteLine("无法执行。原因：缺少参数错误！");
-                    ConsoleOutputUtil.CloseWrite();
                 }
             }
-            if (mdfFullname != null)
+
+            // 先判断是否有失败
+            if (失败后弹出的字符串 != null)
             {
-                dbAgency.OpenConnection(mdfFullname);
+                ConsoleOutputUtil.WriteLine(失败后弹出的字符串 + "\n如需其他帮助请使用-help");
+                return;
             }
-            if (recordPoweronTime)
-                Util.SqlExecuter.记录开机事件();
-            if (countDownSeconds != null)
-                FastModeUtil.ShutdownWithSeconds(countDownSeconds ?? 0);
-            if (cancel == true)
+            /* 首先先判断是否必要调用数据库，如果必要则打开数据库，清除cache文件信息，保证后方调用都使用数据库。 */
+            // 在非离线模式 and 禁用缓存时才会打开数据库。
+            if (离线模式==false && 禁用缓存==true)
+            {
+                if (mdf文件 != null)
+                    dbAgency.OpenConnection(mdf文件); //如果指定的数据库文件确实有用，就只在这里使用
+                else
+                    dbAgency.OpenConnection();
+            }
+            
+            // 检查开机时间
+            if (记录开机时间)
+            {
+                if (离线模式) //离线模式优先
+                    ConsoleOutputUtil.WriteLine("离线模式下记录开机时间已被禁止。");
+                else if (cache文件 == null) 
+                    SqlExecuter.记录开机事件(); //未指定数据库的默认调用。调用数据库或缓存由内部处理
+                else //指定缓存文件需要单独处理
+                {
+                    String insertSql = SqlExecuter.UsefulSqlExpressions.InsertPowerOnTimeSQL();
+                    CacheUtil.AppendCache(insertSql, cache文件);
+                }
+            }
+            // 检查关机时间
+            if (关机倒计时秒 != null)
+            {
+                if (离线模式)
+                    ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, 关机倒计时秒 ?? 0);
+                else if (cache文件 == null)
+                    FastModeUtil.ShutdownWithSeconds(关机倒计时秒 ?? 0); //内部实现自动处理是否调用缓存
+                else
+                {
+                    String shutdownSql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL();
+                    CacheUtil.AppendCache(shutdownSql, cache文件);
+                }
+            }
+            // 检查延迟时间
+            if (delay时间秒 != null)
+            {
+                if (离线模式)
+                    ConsoleOutputUtil.WriteLine("暂不支持离线模式下的延迟时间，请使用窗体版本。");
+                else if (cache文件 == null)
+                    ShutdownWithSeconds_DelayMode(delay时间秒 ?? 0); //内部实现自动处理是否调用缓存
+                else
+                {
+                    String delaySql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL(delay时间秒 ?? 0);
+                    CacheUtil.AppendCache(delaySql, cache文件);
+                }
+            }
+            // 检查是否取消关机，与上方连续使用可以做到记录时间却不调用系统关机的目的
+            if (取消关机 == true)
                 ShutdownUtil.CancelShutdownCommand();
-            if (comment != null)
-                ConsoleOutputUtil.WriteLine(comment);
-            if (delayDuration != null)
-                FastModeUtil.ShutdownWithMinutes_DelayMode(int.Parse(delayDuration));
-            if (sleep == true)
+            if (睡眠 == true)
+            {
+                ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.睡眠);
+                休眠结束(); //因为重启后数据库连接状态未改变，所以不需要分类讨论
+            }
+            // 检查休眠
+            if (休眠 == true)
             {
                 ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.休眠);
-                休眠结束();
+                休眠结束(); 
             }
-            dbAgency.CloseConnection();
+
+            if(!离线模式)
+                dbAgency.CloseConnection();
+            if (成功后弹出的字符串 != null)
+                ConsoleOutputUtil.WriteLine(成功后弹出的字符串);
             Environment.Exit(0);
         }
 
@@ -158,7 +252,6 @@ namespace 关机助手.Util
         {
             Thread.Sleep(10000);
             SqlExecuter.记录开机事件();
-            Environment.Exit(0);
         }
 
         /// <summary>
@@ -166,20 +259,24 @@ namespace 关机助手.Util
         /// </summary>
         static void PrintHelp()
         {
-            String[] helps = {
+            String[] infos =
+            {
 "关机助手(终端版 v2.0)","使用说明：",
-"|     选项      |           含义          |         示例          |备注",
-"|-s [seconds]   |倒计时关机(秒)           |-s 60                  |",
-"|-m [minutes]   |倒计时关机(分钟)         |-m 1                   |",
-"|-c [string]    |执行成功后弹出的字符串   |-m 2.5 /c 150秒后将关机|",
-"|-a             |销毁所有倒计时           |-a                     |",
-"|-d [minutes]   |记录真正的关机时间       |-d 40                  |记录的是现在的时间加上设定的分钟后的时间",
-"|-k             |记录当前的开机时间       |-k                     |",
-"|-k [dbFilename]|记录开机时间写入指定文件 |-k D:\\database.mdf     |",
-"|-x             |休眠电脑                 |-x                     |记录关机并在下次开机时记录开机时间",
-"注，-也可换成/"};
+"|       选项     |             完整选项           |         含义                                      |    示例",
+"|-s [sec/min]s/m |--shutdown_seconds [sec/min]s/m |倒计时关机(秒)                                     |-s 60s or -s 1m",
+"|-d [sec/min]s/m |--shutdown_delay [sec/min]s/m   |记录被delay后的关机时间                            |-d 30s or -d 0.5m ",
+"|-c [string]     |--comment [string]              |执行成功后弹出的字符串(支持\n)                     |-s 2.5m -c 150秒后将关机",
+"|-a              |--cancel_all                    |销毁所有倒计时                                     |-a",
+"|-k              |--start                         |记录当前的开机时间                                 |-k",
+"|-k [dbFilename] |--start [dbFilename]            |指定数据库记录当前的开机时间(弃用，推荐使用--db)   |-k D:\\database.mdf",
+"|-h              |--hibernate                     |休眠电脑(记录关机和下次开机时间)                   |-h",
+"|-sleep          |--sleep                         |睡眠电脑(记录关机和下次开机时间)                   |-sleep",
+"|-db [dbFilename]|--database_filename [dbFilename]|设定数据库文件名(不使用-dc会自动检测对应的缓存文件)|-db D:\\database.mdf",
+"|-dc             |--disable_cache                 |强制禁用使用缓存                                   |-dc",
+"|-offline        |--offline                       |离线模式，不记录任何时间                           |-offline"
+            };
 
-            Util.ConsoleOutputUtil.WriteLines(helps);
+            Util.ConsoleOutputUtil.WriteLines(infos);
         }
     }
 }

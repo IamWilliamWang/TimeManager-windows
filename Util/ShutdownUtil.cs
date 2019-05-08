@@ -5,6 +5,7 @@ namespace 关机助手.Util
 {
     class ShutdownUtil
     {
+        public static bool DEBUG_MODE { set; get; } = true; //调试模式开启时，该类形同虚设
         /**
          * 取消指令
          */
@@ -26,6 +27,8 @@ namespace 关机助手.Util
          */
         private static void RunShutdownCommand(Mode mode, int seconds)
         {
+            if (DEBUG_MODE)
+                return;
             String command = "shutdown ";
             switch (mode)
             {
@@ -47,6 +50,8 @@ namespace 关机助手.Util
 
         public static void RunSuspendCommand(Mode mode)
         {
+            if (DEBUG_MODE)
+                return;
             if (mode == Mode.休眠)
             {
                 //command = "rundll32.exe powrprof.dll SetSuspendState";

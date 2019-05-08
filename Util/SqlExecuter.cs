@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace 关机助手.Util
 {
     class SqlExecuter
     {
+        public static class UsefulSqlExpressions
+        {
+            public static string InsertPowerOnTimeSQL() => SqlExecuter.InsertPowerOnTimeSQL("[Table]");
+            public static string UpdateShutdownTimeSQL() => SqlExecuter.UpdateShutdownTimeSQL();
+            public static string UpdateShutdownTimeSQL(int delaySeconds) => SqlExecuter.UpdateShutdownTimeSQL(SqlExecuter.ConvertSecondsToString(delaySeconds));
+        }
         static DatabaseAgency dbAgency = new DatabaseAgency();
 
         //public void 记录关机事件()//Doesn't work yet
@@ -63,14 +71,31 @@ namespace 关机助手.Util
 
         }
 
+        private static string ConvertSecondsToString(int delaySeconds)
+        {
+            StringBuilder str延迟时间 = new StringBuilder();
+            str延迟时间.Append(delaySeconds / 3600);
+            str延迟时间.Append(":");
+            str延迟时间.Append(delaySeconds / 60);
+            str延迟时间.Append(":");
+            str延迟时间.Append(delaySeconds % 60);
+            return str延迟时间.ToString();
+        }
+        public static bool 记录延迟关机事件(int delaySeconds)
+        {
+            return 记录延迟关机事件(ConvertSecondsToString(delaySeconds));
+        }
+
         public static bool 记录延迟关机事件(String 延迟时间)
         {
-            if (延迟时间[0] != '\'' && 延迟时间[延迟时间.Length - 1] != '\'')
-            {
-                return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL("'" + 延迟时间 + "'")) != 0;
-            }
-            else
+            Regex regex = new Regex(@"^'(.+)'$");
+            if (!regex.IsMatch(延迟时间))
+                延迟时间 = "\'" + 延迟时间 + "\'";
+            if (dbAgency.ConnectionOpenned())
                 return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间)) != 0;
+            else
+                dbAgency.ExecuteUpdateUsingCache(UpdateShutdownTimeSQL(延迟时间));
+            return true;
         }
 
         private static string UpdateShutdownTimeSQL()
