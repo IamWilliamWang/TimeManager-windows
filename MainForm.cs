@@ -46,7 +46,7 @@ namespace 关机助手
             }
 
             // 获取版本号并替换标题
-            this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version(1));
+            this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version(2));
             // 保存Form
             SaveMainForm();
             // 给ComboBox添加选项
@@ -389,6 +389,22 @@ namespace 关机助手
         #endregion
         
         #region 注册关机倒计时
+        public static void WritePowerOnShellInStartUpFolder()
+        {
+            try
+            {
+                File.WriteAllText(Properties.Resources.RecorderShellFullFilename,
+                        "chcp 65001\r\n" //先切换cmd的字符编码为UTF-8（注意一定要使用CRLF否则第二行会被吃字）
+                        + @"C:\Users\{1}\Desktop\关机助手.exe -k C:\Users\{1}\Desktop\TimeDatabase.cache"
+                            .Replace("{1}", ProgramLauncher.SystemUserName),
+                        new System.Text.UTF8Encoding(false)); //保存为无BOM的UTF-8文件
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw;
+            }
+        }
+
         private void 注册关机事件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -409,11 +425,10 @@ namespace 关机助手
             }
             try
             {
-
                 File.AppendAllText
                     (Properties.Resources.RecorderShellFullFilename,
-                    " -d " + minutes,
-                    System.Text.Encoding.ASCII);
+                    " -d " + minutes + "m",
+                    new System.Text.UTF8Encoding(false));
             }
             catch (UnauthorizedAccessException)
             {
@@ -428,7 +443,7 @@ namespace 关机助手
         {
             try
             {
-                File.WriteAllText(Properties.Resources.RecorderShellFullFilename, "\"C:\\Users\\"+ProgramLauncher.SystemUserName+"\\sd.exe\" -k", System.Text.Encoding.ASCII);
+                WritePowerOnShellInStartUpFolder();
             }
             catch (UnauthorizedAccessException)
             {

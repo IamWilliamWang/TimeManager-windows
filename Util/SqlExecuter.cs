@@ -76,15 +76,13 @@ namespace 关机助手.Util
 
         private static string ConvertSecondsToString(int delaySeconds)
         {
-            StringBuilder str延迟时间 = new StringBuilder();
-            str延迟时间.Append(delaySeconds / 3600);
+            String str延迟时间 = "";
+            str延迟时间 += delaySeconds / 3600 + ":";
             delaySeconds -= delaySeconds / 3600 * 3600;
-            str延迟时间.Append(":");
-            str延迟时间.Append(delaySeconds / 60);
+            str延迟时间 += delaySeconds / 60 + ":";
             delaySeconds -= delaySeconds / 60 * 60;
-            str延迟时间.Append(":");
-            str延迟时间.Append(delaySeconds % 60);
-            return str延迟时间.ToString();
+            str延迟时间 += delaySeconds;
+            return str延迟时间;
         }
         public static bool 记录延迟关机事件(int delaySeconds)
         {

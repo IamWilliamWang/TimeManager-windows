@@ -451,9 +451,9 @@ namespace 关机助手
         {
             try
             {
-                File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\" + ProgramLauncher.SystemUserName + @"\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
+                //File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\" + ProgramLauncher.SystemUserName + @"\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
+                MainForm.WritePowerOnShellInStartUpFolder();
                 MessageBox.Show("已经安装！", "成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
             }
             catch (UnauthorizedAccessException)
             {
@@ -511,7 +511,7 @@ namespace 关机助手
             {
                 if (WinRARUtil.DecompressFile(fileDialog.FileName, Directory.GetCurrentDirectory()))
                 {
-                    if (EncryptUtil.DecryptFile(fileDialog.FileName))
+                    if (EncryptUtil.DecryptFile_HC128(fileDialog.FileName))
                         MessageBox.Show("无损还原数据库成功！", "还原成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     else
                         MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -553,7 +553,7 @@ namespace 关机助手
                                  },
                     fileDialog.FileName))
                 {
-                    if (EncryptUtil.DecryptFile(fileDialog.FileName))
+                    if (EncryptUtil.EncryptFile_HC128(fileDialog.FileName))
                         MessageBox.Show("无损备份数据库成功！", "备份成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     else
                         MessageBox.Show("备份失败！加密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
