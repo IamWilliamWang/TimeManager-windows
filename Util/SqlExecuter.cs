@@ -16,7 +16,8 @@ namespace 关机助手.Util
         {
             public static string InsertPowerOnTimeSQL() => SqlExecuter.InsertPowerOnTimeSQL("[Table]");
             public static string UpdateShutdownTimeSQL() => SqlExecuter.UpdateShutdownTimeSQL();
-            public static string UpdateShutdownTimeSQL(int delaySeconds) => SqlExecuter.UpdateShutdownTimeSQL(SqlExecuter.ConvertSecondsToString(delaySeconds));
+            public static string UpdateShutdownTimeSQL(int delaySeconds) { String str=ConvertSecondsToString(delaySeconds);
+                Regex regex=new Regex(@"^'(.+)'$");if(!regex.IsMatch(str))str="\'"+str+"\'";return SqlExecuter.UpdateShutdownTimeSQL(str);}
         }
         static DatabaseAgency dbAgency = new DatabaseAgency();
 

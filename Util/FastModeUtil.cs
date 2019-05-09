@@ -17,7 +17,6 @@ namespace 关机助手.Util
         {
             //TimeLogUtil.Tik();
             SqlExecuter.记录关机事件();
-
             //TimeLogUtil.Tok(writeErrorLog:true);
 
             ShutdownUtil.CancelShutdownCommand();
