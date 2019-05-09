@@ -50,8 +50,8 @@ Temporary Items
 .vs
 
 # 生成文件
-bin/
 obj/
+*.dll
 
 # 备份文件
 backups/
@@ -63,8 +63,17 @@ oldVersion/
 script/
 
 # 数据库文件
+SqlServerDatabase/
 *.mdf
 *.ldf
+*.db
+*.csv
+*.xlsx
 
 # 临时文件
 *.cache
+*.config
+*.manifest
+*.pdb
+*.vs*.exe
+*[Ll]og.txt
