@@ -70,12 +70,31 @@ namespace 关机助手.Util
         }
 
         /// <summary>
+        /// 使用HC128算法加密一般文件
+        /// </summary>
+        public static bool EncryptFile_HC128(string sourceFile,string targetFile)
+        {
+            new HC128Executor(sourceFile, targetFile).Encrypt();
+            return true;
+        }
+
+        /// <summary>
         /// 使用HC128算法解密一般文件
         /// </summary>
         /// <param name="filename">文件名</param>
         public static bool DecryptFile_HC128(string filename)
         {
             new HC128Executor(filename).Decrypt();
+            return true;
+        }
+
+        /// <summary>
+        /// 使用HC128算法解密一般文件
+        /// </summary>
+        /// <param name="filename">文件名</param>
+        public static bool DecryptFile_HC128(string sourceFile, string targetFile)
+        {
+            new HC128Executor(sourceFile, targetFile).Decrypt();
             return true;
         }
         #region HC128部分
