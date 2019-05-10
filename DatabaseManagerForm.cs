@@ -532,15 +532,18 @@ namespace 关机助手
             fileDialog.Filter = "还原文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (EncryptUtil.DecryptFile_HC128(fileDialog.FileName))
+                String file = fileDialog.FileName;
+                String rawRarTempFilename = file.Insert(file.Length - 4, "_rawfile");
+                if (EncryptUtil.DecryptFile_HC128(file, rawRarTempFilename))
                 {
-                    if (WinRARUtil.DecompressFile(fileDialog.FileName, Directory.GetCurrentDirectory()))
+                    if (WinRARUtil.DecompressFile(rawRarTempFilename, Directory.GetCurrentDirectory()))
                         MessageBox.Show("无损还原数据库成功！", "还原成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     else
                         MessageBox.Show("还原失败！该操作需要电脑上装有WinRAR软件。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                     MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                File.Delete(rawRarTempFilename);
             }
             Application.Restart();
         }
