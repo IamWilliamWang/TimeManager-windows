@@ -531,6 +531,7 @@ namespace 关机助手
             this.comboBoxTime.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.comboBoxTime.ForeColor = System.Drawing.SystemColors.Menu;
             this.comboBoxMode.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.comboBoxMode.ForeColor = System.Drawing.SystemColors.Menu;
             //this.buttonOK.ForeColor = System.Drawing.SystemColors.MenuText;
             this.注册关机事件ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.销毁关机事件ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;

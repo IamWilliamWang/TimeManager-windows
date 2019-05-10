@@ -70,12 +70,7 @@ namespace 关机助手
             this.卸载写入开机记录时间插件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.导入与导出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.导入所有数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.无损加载数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.还原数据库_RarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.导出所有数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.无损导出数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.备份数据库_RarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.保存下方数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.高级功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.日志管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.数据可视化ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,6 +84,8 @@ namespace 关机助手
             this.toolStripStatusLabelTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.保存下方表格ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.导入所有数据旧版ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource1)).BeginInit();
@@ -395,64 +392,26 @@ namespace 关机助手
             // 
             this.导入与导出ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.导入所有数据ToolStripMenuItem,
-            this.导出所有数据ToolStripMenuItem});
+            this.导出所有数据ToolStripMenuItem,
+            this.保存下方表格ToolStripMenuItem,
+            this.导入所有数据旧版ToolStripMenuItem});
             this.导入与导出ToolStripMenuItem.Name = "导入与导出ToolStripMenuItem";
             this.导入与导出ToolStripMenuItem.Size = new System.Drawing.Size(80, 21);
             this.导入与导出ToolStripMenuItem.Text = "备份与恢复";
             // 
             // 导入所有数据ToolStripMenuItem
             // 
-            this.导入所有数据ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.无损加载数据库ToolStripMenuItem,
-            this.还原数据库_RarToolStripMenuItem});
             this.导入所有数据ToolStripMenuItem.Name = "导入所有数据ToolStripMenuItem";
-            this.导入所有数据ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.导入所有数据ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.导入所有数据ToolStripMenuItem.Text = "导入所有数据";
-            // 
-            // 无损加载数据库ToolStripMenuItem
-            // 
-            this.无损加载数据库ToolStripMenuItem.Name = "无损加载数据库ToolStripMenuItem";
-            this.无损加载数据库ToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.无损加载数据库ToolStripMenuItem.Text = "无损加载数据库";
-            this.无损加载数据库ToolStripMenuItem.Click += new System.EventHandler(this.无损加载数据库ToolStripMenuItem_Click);
-            // 
-            // 还原数据库_RarToolStripMenuItem
-            // 
-            this.还原数据库_RarToolStripMenuItem.Name = "还原数据库_RarToolStripMenuItem";
-            this.还原数据库_RarToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.还原数据库_RarToolStripMenuItem.Text = "还原数据库(RAR)";
-            this.还原数据库_RarToolStripMenuItem.Click += new System.EventHandler(this.还原数据库_RarToolStripMenuItem_Click);
+            this.导入所有数据ToolStripMenuItem.Click += new System.EventHandler(this.还原数据库_RarToolStripMenuItem_Click);
             // 
             // 导出所有数据ToolStripMenuItem
             // 
-            this.导出所有数据ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.无损导出数据库ToolStripMenuItem,
-            this.备份数据库_RarToolStripMenuItem,
-            this.保存下方数据ToolStripMenuItem});
             this.导出所有数据ToolStripMenuItem.Name = "导出所有数据ToolStripMenuItem";
-            this.导出所有数据ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.导出所有数据ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.导出所有数据ToolStripMenuItem.Text = "导出所有数据";
-            // 
-            // 无损导出数据库ToolStripMenuItem
-            // 
-            this.无损导出数据库ToolStripMenuItem.Name = "无损导出数据库ToolStripMenuItem";
-            this.无损导出数据库ToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.无损导出数据库ToolStripMenuItem.Text = "无损导出数据库";
-            this.无损导出数据库ToolStripMenuItem.Click += new System.EventHandler(this.无损导出数据库ToolStripMenuItem_Click);
-            // 
-            // 备份数据库_RarToolStripMenuItem
-            // 
-            this.备份数据库_RarToolStripMenuItem.Name = "备份数据库_RarToolStripMenuItem";
-            this.备份数据库_RarToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.备份数据库_RarToolStripMenuItem.Text = "备份数据库(RAR)";
-            this.备份数据库_RarToolStripMenuItem.Click += new System.EventHandler(this.备份数据库_RarToolStripMenuItem_Click);
-            // 
-            // 保存下方数据ToolStripMenuItem
-            // 
-            this.保存下方数据ToolStripMenuItem.Name = "保存下方数据ToolStripMenuItem";
-            this.保存下方数据ToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.保存下方数据ToolStripMenuItem.Text = "保存下方数据(Excel)";
-            this.保存下方数据ToolStripMenuItem.Click += new System.EventHandler(this.保存下方数据ToolStripMenuItem_Click);
+            this.导出所有数据ToolStripMenuItem.Click += new System.EventHandler(this.备份数据库_RarToolStripMenuItem_Click);
             // 
             // 高级功能ToolStripMenuItem
             // 
@@ -560,6 +519,20 @@ namespace 关机助手
             this.progressBar1.Step = 20;
             this.progressBar1.TabIndex = 6;
             // 
+            // 保存下方表格ToolStripMenuItem
+            // 
+            this.保存下方表格ToolStripMenuItem.Name = "保存下方表格ToolStripMenuItem";
+            this.保存下方表格ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.保存下方表格ToolStripMenuItem.Text = "保存下方表格";
+            this.保存下方表格ToolStripMenuItem.Click += new System.EventHandler(this.保存下方数据ToolStripMenuItem_Click);
+            // 
+            // 导入所有数据旧版ToolStripMenuItem
+            // 
+            this.导入所有数据旧版ToolStripMenuItem.Name = "导入所有数据旧版ToolStripMenuItem";
+            this.导入所有数据旧版ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.导入所有数据旧版ToolStripMenuItem.Text = "导入所有数据(旧版)";
+            this.导入所有数据旧版ToolStripMenuItem.Click += new System.EventHandler(this.导入所有数据旧版ToolStripMenuItem_Click);
+            // 
             // DatabaseManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -603,9 +576,6 @@ namespace 关机助手
         private System.Windows.Forms.ToolStripMenuItem 导入与导出ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 导入所有数据ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 导出所有数据ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 保存下方数据ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 无损导出数据库ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 无损加载数据库ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 展示所有数据ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 显示后15条ToolStripMenuItem1;
         private System.ComponentModel.BackgroundWorker dbBackgroundWorker;
@@ -636,8 +606,6 @@ namespace 关机助手
         private System.Windows.Forms.ToolStripMenuItem 添加数据ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 插入开机记录ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 插入关机记录ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 备份数据库_RarToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 还原数据库_RarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 命令行选项使用ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 激活禁止系统休眠ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 运行SQL脚本ToolStripMenuItem;
@@ -647,5 +615,7 @@ namespace 关机助手
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTime;
         private System.Windows.Forms.ToolStripMenuItem 精准查找显示ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 保存下方表格ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 导入所有数据旧版ToolStripMenuItem;
     }
 }

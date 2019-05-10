@@ -502,6 +502,29 @@ namespace 关机助手
             }
         }
 
+        private void 导入所有数据旧版ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("本功能为向后兼容数据导入。如果使用4.2及以前版本进行的备份，请点确定，否则点击取消。"
+                , "警告：4.4版本开始将删除本功能", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                return;
+            database.ResetConnection();
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "还原文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (EncryptUtil.DecryptFile(fileDialog.FileName))
+                {
+                    if (WinRARUtil.DecompressFile(fileDialog.FileName, Directory.GetCurrentDirectory()))
+                        MessageBox.Show("无损还原数据库成功！", "还原成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    else
+                        MessageBox.Show("还原失败！该操作需要电脑上装有WinRAR软件。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                    MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Application.Restart();
+        }
+
         private void 还原数据库_RarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             database.ResetConnection();
@@ -509,15 +532,15 @@ namespace 关机助手
             fileDialog.Filter = "还原文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (WinRARUtil.DecompressFile(fileDialog.FileName, Directory.GetCurrentDirectory()))
+                if (EncryptUtil.DecryptFile_HC128(fileDialog.FileName))
                 {
-                    if (EncryptUtil.DecryptFile_HC128(fileDialog.FileName))
+                    if (WinRARUtil.DecompressFile(fileDialog.FileName, Directory.GetCurrentDirectory()))
                         MessageBox.Show("无损还原数据库成功！", "还原成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     else
-                        MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("还原失败！该操作需要电脑上装有WinRAR软件。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
-                    MessageBox.Show("还原失败！该操作需要电脑上装有WinRAR软件。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             Application.Restart();
         }
@@ -725,7 +748,7 @@ namespace 关机助手
             this.删除数据ToolStripMenuItem.Enabled = !enable;
             this.修改数据ToolStripMenuItem.Enabled = !enable;
             this.执行SQL语句ToolStripMenuItem.Enabled = !enable;
-            this.保存下方数据ToolStripMenuItem.Enabled = !enable;
+            this.保存下方表格ToolStripMenuItem.Enabled = !enable;
             this.日志管理ToolStripMenuItem.Enabled = !enable;
             this.数据可视化ToolStripMenuItem.Enabled = !enable;
             this.注释管理ToolStripMenuItem.Enabled = !enable;
@@ -751,5 +774,6 @@ namespace 关机助手
         }
         #endregion
 
+        
     }
 }
