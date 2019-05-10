@@ -46,10 +46,10 @@ namespace 关机助手.Util
         {
             try
             {
-                string sourceFullFilename = "";
+                string sourceFullFilenameLongArguments = "";
                 foreach(string fileItem in sourceFullFilenames)
                 {
-                    sourceFullFilename += "\"" + fileItem + "\" ";
+                    sourceFullFilenameLongArguments += "\"" + fileItem + "\" ";
                 }
                 targetFullFilename = "\"" + targetFullFilename + "\"";
                 ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -58,13 +58,13 @@ namespace 关机助手.Util
                 startInfo.WorkingDirectory = winrarExe.DirectoryName;
                 startInfo.Arguments = "a -ep -m5 ";
                 if (targetFullFilename != null)
-                    startInfo.Arguments += targetFullFilename + " " + sourceFullFilename;
+                    startInfo.Arguments += targetFullFilename + " " + sourceFullFilenameLongArguments;
                 else if (targetFullFilename == null)
                 {
-                    if (sourceFullFilename.LastIndexOf(".") != -1)
-                        startInfo.Arguments += sourceFullFilename.Remove(sourceFullFilename.LastIndexOf(".")) + ".rar " + sourceFullFilename;
+                    if (sourceFullFilenameLongArguments.LastIndexOf(".") != -1)
+                        startInfo.Arguments += sourceFullFilenameLongArguments.Remove(sourceFullFilenameLongArguments.LastIndexOf(".")) + ".rar " + sourceFullFilenameLongArguments;
                     else
-                        startInfo.Arguments += sourceFullFilename + ".rar " + sourceFullFilename;
+                        startInfo.Arguments += sourceFullFilenameLongArguments + ".rar " + sourceFullFilenameLongArguments;
                 }
 
                 Process compressProcess = new Process();
@@ -87,17 +87,20 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static bool DecompressFile(string sourceFullFilename, string targetFolder=null)
         {
-            sourceFullFilename = "\"" + sourceFullFilename + "\"";
+            if (!sourceFullFilename.Contains(":")) //没有使用文件的完整路径
+                sourceFullFilename = Directory.GetCurrentDirectory() + "\\" + sourceFullFilename;
+
+            //sourceFullFilename = "\"" + sourceFullFilename + "\"";
             try
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo();
-                FileInfo unrarExe = new FileInfo(GetWinRarPath().Replace("WinRAR.exe","UnRAR.exe"));
+                FileInfo unrarExe = new FileInfo(GetWinRarPath().Replace("WinRAR.exe", "UnRAR.exe"));
                 startInfo.FileName = unrarExe.Name;
                 startInfo.WorkingDirectory = unrarExe.DirectoryName;
-                if(targetFolder==null)
-                    startInfo.Arguments = "e -o+" + sourceFullFilename + " \"" + sourceFullFilename.Remove(sourceFullFilename.LastIndexOf('\\'))+"\"";
+                if (targetFolder == null)
+                    startInfo.Arguments = "e -o+ " + "\"" + sourceFullFilename + "\" \"" + sourceFullFilename.Remove(sourceFullFilename.LastIndexOf('\\')) + "\"";
                 else
-                    startInfo.Arguments = "e -o+" + sourceFullFilename + " \"" + targetFolder+"\"";
+                    startInfo.Arguments = "e -o+ " + "\"" + sourceFullFilename + "\" \"" + targetFolder + "\"";
                 Process decompressProcess = new Process();
                 decompressProcess.StartInfo = startInfo;
                 if (!decompressProcess.Start())
