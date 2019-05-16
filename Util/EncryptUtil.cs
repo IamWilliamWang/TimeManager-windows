@@ -9,6 +9,7 @@ namespace 关机助手.Util
 {
     class EncryptUtil
     {
+        [Obsolete]
         /// <summary>
         /// 使用位处理加密一般文件
         /// </summary>
@@ -49,6 +50,7 @@ namespace 关机助手.Util
             return true;
         }
 
+        [Obsolete]
         /// <summary>
         /// 使用位处理解密一般文件
         /// </summary>

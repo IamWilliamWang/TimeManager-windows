@@ -132,11 +132,6 @@ namespace 关机助手.Util
 
         public static void 记录结算()
         {
-            if (MessageBox.Show("填补可能会持续数十秒，是否继续？", "一键填补", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
-            {
-                return;
-            }
-
             dbAgency.ExecuteUpdate(CalculateEverydayTimesAndUsedTimesSQL());
         }
 

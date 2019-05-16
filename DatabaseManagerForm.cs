@@ -11,7 +11,8 @@ namespace 关机助手
     {
         #region 常量定义
         public readonly static String TableName = "[Table]";
-        enum QueryMode { 显示所有数据, 显示后五行数据, 精准查找 };
+        private object backgroundWorkerLock = new object();
+        enum QueryMode { 显示所有数据, 显示后五行数据, 精准查找, 统计结算填补 };
         #endregion
 
         #region 变量定义
@@ -216,8 +217,12 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
-
-            SqlExecuter.记录结算();
+            if (MessageBox.Show("该操作会将时长、当天使用次数、当月使用次数完全计算并填补，是否继续？", "一键填补", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+                return;
+            this.progressBar1.Value = 40;
+            this.statusLabel.Text = "正在填补空处";
+            backgroundQueryMode = QueryMode.统计结算填补;
+            this.dbBackgroundWorker.RunWorkerAsync(null);
             this.显示后15条ToolStripMenuItem_Click(sender, e);
         }
             #region 添加数据
@@ -342,8 +347,8 @@ namespace 关机助手
         private string DeleteMaxIDSQL() =>
             "DELETE " +
             "FROM[Table] " +
-            "WHERE 序号 = ( " +
-            "SELECT MAX(序号) " +
+            "WHERE 开机时间 = ( " +
+            "SELECT MAX(开机时间) " +
             "FROM[Table])";
         #endregion
             #region 修改数据
@@ -706,18 +711,25 @@ namespace 关机助手
         /// <param name="e"></param>
         private void openDBBackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            if (backgroundQueryMode == QueryMode.显示所有数据)
-                ShowTotalTable();
-            else if (backgroundQueryMode == QueryMode.显示后五行数据)
+            lock (backgroundWorkerLock)
             {
-                this.显示后15条ToolStripMenuItem_Click(sender, e);
+                if (backgroundQueryMode == QueryMode.显示所有数据)
+                    ShowTotalTable();
+                else if (backgroundQueryMode == QueryMode.显示后五行数据)
+                {
+                    this.显示后15条ToolStripMenuItem_Click(sender, e);
+                }
+                else if (backgroundQueryMode == QueryMode.精准查找)
+                {
+                    this.精准查找显示ToolStripMenuItem_Click(sender, e);
+                }
+                else if (backgroundQueryMode == QueryMode.统计结算填补)
+                {
+                    SqlExecuter.记录结算();
+                }
+                this.progressBar1.Value = 100;
+                this.statusLabel.Text = "完成";
             }
-            else
-            {
-                this.精准查找显示ToolStripMenuItem_Click(sender, e);
-            }
-            this.progressBar1.Value = 100;
-            this.statusLabel.Text = "完成";
         }
         #endregion
         
