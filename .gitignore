@@ -68,7 +68,7 @@ SqlServerDatabase/
 *.ldf
 *.db
 *.csv
-*.xlsx
+*.xls*
 
 # 临时文件
 *.cache

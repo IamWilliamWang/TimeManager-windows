@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -173,38 +174,74 @@ namespace 关机助手
             this.Close();
         }
         #endregion
-        
+
         #region 缓存合并
+        private class SqlItem
+        {
+            public string SqlString { get; set; }
+            public string SqlTime {
+                get
+                {
+                    int from = SqlString.IndexOf('\'') + 1;
+                    int to = SqlString.IndexOf('\'', from);
+                    return SqlString.Substring(from, to - from);
+                }
+            }
+            public SqlItem(string sqlString)
+            {
+                this.SqlString = sqlString;
+            }
+        }
+        private string[] SortStringsByTime(string[] cacheLines)
+        {
+            List<SqlItem> list = new List<SqlItem>();
+            foreach (string cache in cacheLines)
+                list.Add(new SqlItem(cache));
+            list.Sort((item1, item2) => item1.SqlTime.CompareTo(item2.SqlTime));
+            List<string> result = new List<string>();
+            foreach (SqlItem item in list)
+                result.Add(item.SqlString);
+            return result.ToArray();
+        }
+
+        private string[] ListAdd(string[] list1, string[] list2)
+        {
+            // 防错处理
+            if (list1 == null && list2 == null)
+                return new string[0];
+            else if (list2 == null)
+                return list1;
+            else if (list1 == null)
+                return list2;
+
+            var result = new List<string>(list1);
+            result.AddRange(list2);
+            return result.ToArray();
+        }
+
         private void button合并_Click(object sender, EventArgs e)
         {
-            String 源内容 = null;
-            String 目标内容 = null;
+            String[] 源内容 = null;
+            String[] 目标内容 = null;
             try
             {
-                源内容 = File.ReadAllText(this.textBox源.Text);
-                目标内容 = File.ReadAllText(this.textBox目标.Text);
+                源内容 = CacheUtil.GetAllLines(this.textBox源.Text);
+                目标内容 = CacheUtil.GetAllLines(this.textBox目标.Text);
             }
             catch
             {
                 if (File.Exists(this.textBox目标.Text) == false
                     && File.Exists(this.textBox源.Text))
-                    目标内容 = "";
+                    目标内容 = null;
                 else
                 {
                     MessageBox.Show("源文件名有误，无法进行合并");
                     return;
                 }
             }
-            int 插入index = 目标内容.LastIndexOf(CacheUtil.CacheSpliter, 目标内容.Length - 2) + 1;
-            StringBuilder stringBuilder = new StringBuilder(目标内容);
-            stringBuilder.Insert(插入index, 源内容);
-            //注释掉的方法会报未授权Exception，原因是文件是隐藏的
-            //using (FileStream file = new FileStream(this.textBox目标.Text, FileMode.Create))
-            //using (StreamWriter writer = new StreamWriter(file))
-            //    writer.Write(stringBuilder);
+            string[] resultLines = SortStringsByTime(ListAdd(源内容, 目标内容));
             File.Delete(this.textBox目标.Text);
-            File.WriteAllText(this.textBox目标.Text, stringBuilder.ToString());
-            File.SetAttributes(this.textBox目标.Text, FileAttributes.Hidden);
+            CacheUtil.SetAllLines(resultLines, this.textBox目标.Text);
             File.Delete(this.textBox源.Text);
             this.CacheManagerForm_Load(sender, e);
             MessageBox.Show("合并成功！");
