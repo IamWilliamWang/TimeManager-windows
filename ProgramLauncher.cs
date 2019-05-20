@@ -10,6 +10,13 @@ namespace 关机助手
     {
         #region 外部类调用模块
         public static string SystemUserName { get { return Environment.UserName; } }
+        public static string Version()
+        {
+            string version = Version(2);
+            if (version[version.Length - 1] == '0')
+                return Version(1);
+            return version;
+        }
         public static string Version(int 版本号保留几个点)
         {
             if (版本号保留几个点 < 0 || 版本号保留几个点 > 3)
