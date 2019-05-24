@@ -209,10 +209,46 @@ namespace 关机助手.Util
         }
 
         /// <summary>
-        /// 使用事务直接执行sql脚本(beta)
+        /// 使用事务直接执行sql脚本(测试版本)
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
+        public static int ExecuteSqlWithGoUseTran(String[] sqlArray)
+        {
+            OpenConnection();
+            int effectedRows = 0;
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = GetConnection();
+            SqlTransaction tx = GetConnection().BeginTransaction();
+            cmd.Transaction = tx;
+            try
+            {
+                //注： 此处以 换行_后面带0到多个空格_再后面是go 来分割字符串
+                foreach (string strsql in sqlArray)
+                {
+                    if (strsql.Trim().Length > 1 && strsql.Trim() != "\r\n")
+                    {
+                        cmd.CommandText = strsql;
+                        int r = cmd.ExecuteNonQuery();
+                        if (r > 0)
+                            effectedRows += r;
+                    }
+                }
+                tx.Commit();
+            }
+            catch (System.Data.SqlClient.SqlException E)
+            {
+                tx.Rollback();
+                throw new Exception(E.Message);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+            return effectedRows;
+        }
+
         private static int ExecuteSqlWithGoUseTran(String sql)
         {
             int effectedRows = 0;

@@ -98,7 +98,17 @@ namespace 关机助手.Util
             if (dbAgency.ConnectionOpenned())
                 return dbAgency.ExecuteUpdate(UpdateShutdownTimeSQL(延迟时间)) != 0;
             else
-                dbAgency.ExecuteUpdateUsingCache(UpdateShutdownTimeSQL(延迟时间));
+            {
+                string sql = UpdateShutdownTimeSQL(延迟时间);
+                string[] hourMinSec = sql.Split(new char[] { '\'', ':' }, StringSplitOptions.RemoveEmptyEntries);
+                
+                DateTime insertTime = DateTime.Now;
+                insertTime = insertTime.AddHours(double.Parse(hourMinSec[1]));
+                insertTime = insertTime.AddMinutes(double.Parse(hourMinSec[2]));
+                insertTime = insertTime.AddSeconds(double.Parse(hourMinSec[3]));
+                sql = sql.Replace("GETDATE()+" + 延迟时间, "'" + insertTime.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'");
+                dbAgency.ExecuteUpdateUsingCache(sql);
+            }
             return true;
         }
 

@@ -12,6 +12,7 @@ namespace 关机助手
     {
         // 缓存文件名
         private String cache { get { return CacheUtil.CacheFilename; } }
+        private int CacheTextLength { get; set; } = 0;
         #region 加载窗口事件
         public CacheManagerForm()
         {
@@ -22,19 +23,30 @@ namespace 关机助手
         {
             if (MainForm.DatabaseOffline)
                 this.buttonClearCache.Enabled = false;
-            if (File.Exists(CacheUtil.CacheFilename) == false)
+            string[] allLines = CacheUtil.GetAllLines();
+            if (allLines == null)
             {
                 this.Text += "（未找到缓存文件）";
                 return;
             }
-            this.textBox.Lines = CacheUtil.GetAllLines();
+            this.textBox.Lines = allLines;
+            this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
+        }
+
+        private bool CacheChanged { get { return this.CacheTextLength != this.textBox.Text.Replace("\r", "").Replace("\n", "").Length; } }
+
+        private void CacheManagerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (CacheChanged)
+                if (DialogResult.Yes == MessageBox.Show("检测到有未保存的内容，是否对缓存内容进行保存？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Information)) 
+                    UpdateCache();
         }
         #endregion
 
         #region 窗体双击事件
         private void CacheManagerForm_DoubleClick(object sender, EventArgs e)
         {
-            this.buttonEdit_Click(sender, e);
+            this.buttonOpenFile_Click(sender, e);
         }
         #endregion
 
@@ -79,7 +91,7 @@ namespace 关机助手
 
         private void 移动缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(cache) == false)
+            if (CacheUtil.ExistCache() == false)
             {
                 MessageBox.Show("不存在缓存文件，移动文件失败");
                 return;
@@ -102,7 +114,7 @@ namespace 关机助手
 
         private void 另存为缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(cache) == false)
+            if (CacheUtil.ExistCache() == false)
             {
                 MessageBox.Show("不存在缓存文件，另存为失败");
                 return;
@@ -140,7 +152,7 @@ namespace 关机助手
         #endregion
 
         #region 缓存编辑
-        private void buttonEdit_Click(object sender, EventArgs e)
+        private void buttonOpenFile_Click(object sender, EventArgs e)
         {
             Process notepadProcess = new Process();
             notepadProcess.StartInfo.FileName = "notepad.exe";
@@ -152,25 +164,28 @@ namespace 关机助手
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            CacheUtil.SetAllLines(this.textBox.Lines);
+            UpdateCache();
             MessageBox.Show("保存成功！");
+        }
+
+        private void UpdateCache()
+        {
+            if (this.textBox.Text == "")
+                File.Delete(cache);
+            CacheUtil.SetAllLines(this.textBox.Lines);
+            this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
         {
-            var allLines = CacheUtil.GetAllLines(cache);
-            if (allLines == null || allLines.Length == 0)
-            {
-                MessageBox.Show("成功！但是缓存文件为空或者没有缓存文件");
-                File.Delete(cache);
-                this.Close();
-                return;
-            }
-            if (CacheUtil.CleanDbAndExecuteTasks() == 0)
-                MessageBox.Show("操作失败。可能原因：缓存文件异常，或者缓存为空。", "提示");
+            UpdateCache();
+            int effectRows = new DatabaseAgency().ClearCache();
+            if (effectRows == -1)
+                MessageBox.Show("无需提交，因为没有缓存文件。");
+            else if (effectRows == 0)
+                MessageBox.Show("无需提交，因为缓存为空。", "提示");
             else
                 MessageBox.Show("操作成功，已经清除缓存并提交到数据库中。", "提示");
-            
             this.Close();
         }
         #endregion
@@ -230,8 +245,8 @@ namespace 关机助手
             }
             catch
             {
-                if (File.Exists(this.textBox目标.Text) == false
-                    && File.Exists(this.textBox源.Text))
+                if (CacheUtil.ExistCache(this.textBox目标.Text) == false
+                    && CacheUtil.ExistCache(this.textBox源.Text))
                     目标内容 = null;
                 else
                 {
@@ -247,5 +262,6 @@ namespace 关机助手
             MessageBox.Show("合并成功！");
         }
         #endregion
+
     }
 }

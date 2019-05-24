@@ -272,7 +272,7 @@ namespace 关机助手
         {
             try
             {
-                if (this.记录关机时间checkBox.Checked)
+                if (this.记录关机时间checkBox.Checked && this.comboBoxMode.Text != "延缓") 
                     SqlExecuter.记录关机事件();
 
                 if (float.Parse(this.comboBoxTime.Text) < 0)

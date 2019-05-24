@@ -2,6 +2,7 @@
 using System.Data;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using 关机助手.Util;
 
@@ -11,8 +12,8 @@ namespace 关机助手
     {
         #region 常量定义
         public readonly static String TableName = "[Table]";
-        private object backgroundWorkerLock = new object();
-        enum QueryMode { 显示所有数据, 显示后五行数据, 精准查找, 统计结算填补 };
+        private Semaphore semaphore = new Semaphore(initialCount:1, maximumCount:3);
+        enum QueryMode { 显示所有数据, 显示后十五条数据, 精准查找, 统计结算填补 };
         #endregion
 
         #region 变量定义
@@ -132,7 +133,7 @@ namespace 关机助手
             {
                 this.progressBar1.Value = 40;
                 this.statusLabel.Text = "正在加载数据";
-                backgroundQueryMode = QueryMode.显示后五行数据;
+                backgroundQueryMode = QueryMode.显示后十五条数据;
                 this.dbBackgroundWorker.RunWorkerAsync(1);
             }
             else
@@ -219,18 +220,22 @@ namespace 关机助手
                 return;
             if (MessageBox.Show("该操作会将时长、当天使用次数、当月使用次数完全计算并填补，是否继续？", "一键填补", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
                 return;
+            //this.progressBar1.Value = 40;
+            //this.statusLabel.Text = "正在填补空处";
+            //backgroundQueryMode = QueryMode.统计结算填补;
+            //this.dbBackgroundWorker.RunWorkerAsync(null);
+            SqlExecuter.记录结算();
             this.progressBar1.Value = 40;
             this.statusLabel.Text = "正在填补空处";
-            backgroundQueryMode = QueryMode.统计结算填补;
+            backgroundQueryMode = QueryMode.显示后十五条数据;
             this.dbBackgroundWorker.RunWorkerAsync(null);
-            this.显示后15条ToolStripMenuItem_Click(sender, e);
         }
             #region 添加数据
         private void 插入开机记录ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
-            if (File.Exists("TimeDatabase.cache")) 
+            if (CacheUtil.ExistCache()) 
             {
                 MessageBox.Show("检测到缓存清理功能故障，无法继续进行添加操作。请暂时不要改变数据库内数据并与程序员联系！", "严重警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -307,13 +312,13 @@ namespace 关机助手
             {
                 sql += int.Parse(input);
             }
-            catch (Exception)
+            catch (FormatException)
             {
                 MessageBox.Show("输入的不是正整数，删除失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             try
             {
-                if (MessageBox.Show("此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                if (MessageBox.Show("序号为"+input+"将被删除。此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return;
 
                 if (database.ExecuteUpdate(sql) > 0)
@@ -711,25 +716,24 @@ namespace 关机助手
         /// <param name="e"></param>
         private void openDBBackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            lock (backgroundWorkerLock)
+            semaphore.WaitOne();
+            if (backgroundQueryMode == QueryMode.显示所有数据)
+                ShowTotalTable();
+            else if (backgroundQueryMode == QueryMode.显示后十五条数据)
             {
-                if (backgroundQueryMode == QueryMode.显示所有数据)
-                    ShowTotalTable();
-                else if (backgroundQueryMode == QueryMode.显示后五行数据)
-                {
-                    this.显示后15条ToolStripMenuItem_Click(sender, e);
-                }
-                else if (backgroundQueryMode == QueryMode.精准查找)
-                {
-                    this.精准查找显示ToolStripMenuItem_Click(sender, e);
-                }
-                else if (backgroundQueryMode == QueryMode.统计结算填补)
-                {
-                    SqlExecuter.记录结算();
-                }
-                this.progressBar1.Value = 100;
-                this.statusLabel.Text = "完成";
+                this.显示后15条ToolStripMenuItem_Click(sender, e);
             }
+            else if (backgroundQueryMode == QueryMode.精准查找)
+            {
+                this.精准查找显示ToolStripMenuItem_Click(sender, e);
+            }
+            else if (backgroundQueryMode == QueryMode.统计结算填补)
+            {
+                SqlExecuter.记录结算();
+            }
+            this.progressBar1.Value = 100;
+            this.statusLabel.Text = "完成";
+            semaphore.Release();
         }
         #endregion
         

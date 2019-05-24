@@ -12,7 +12,7 @@ namespace 关机助手.Util
         public static char CacheSpliter { get { return splitChar; } } //缓存分割字符
         public static string CacheFilename { get { return DbFilename; } } //缓存文件名
         
-        private static string DbFilename { get; set; } = "TimeDatabase.cache";
+        private const string DbFilename = "TimeDatabase.cache";
         private const char splitChar = '鋝';
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace 关机助手.Util
         /// </summary>
         /// <param name="originalSql"></param>
         /// <returns></returns>
-        private static string DateReplacer(string originalSql)
+        private static string ReplaceGETDATE(string originalSql)
         {
             //区别对待系统时间显示上午下午与不显示的
             if (DateTime.Now.ToLongTimeString().Contains("午") == false)
@@ -28,6 +28,11 @@ namespace 关机助手.Util
             return originalSql.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd") + " " + DateTime.Now.ToLongTimeString() + "'");
         }
 
+        public static bool ExistCache(string cacheFileName = DbFilename)
+        {
+            return File.Exists(cacheFileName);
+        }
+        
         /// <summary>
         /// 追加Cache内容
         /// </summary>
@@ -35,7 +40,7 @@ namespace 关机助手.Util
         /// <param name="hideFile"></param>
         public static void AppendCache(string sql, bool hideFile = true)
         {
-            AppendCache(sql, CacheUtil.DbFilename, hideFile);
+            AppendCache(sql, CacheUtil.CacheFilename, hideFile);
         }
 
         /// <summary>
@@ -46,7 +51,7 @@ namespace 关机助手.Util
         /// <param name="hideFile"></param>
         public static void AppendCache(string sql, string cacheFilename, bool hideFile = true)
         {
-            sql = DateReplacer(sql);
+            sql = ReplaceGETDATE(sql);
             using (FileStream stream = new FileStream(cacheFilename, FileMode.Append))
                 using (StreamWriter streamWriter = new StreamWriter(stream))
                     streamWriter.Write(sql + splitChar);
@@ -60,7 +65,7 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static string[] GetAllLines()
         {
-            return GetAllLines(DbFilename);
+            return GetAllLines(CacheFilename);
         }
 
         /// <summary>
@@ -109,7 +114,7 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static int CleanDbAndExecuteTasks()
         {
-            return CleanDbAndExecuteTasks(DbFilename);
+            return CleanDbAndExecuteTasks(CacheFilename);
         }
 
         /// <summary>
@@ -122,14 +127,21 @@ namespace 关机助手.Util
             string[] commands = GetAllLines(cacheFilename);
             if (commands == null)
                 return -1;
-
-            foreach (string str in commands)
+            //foreach (string str in commands)
+            //{
+            //    int tmp = new DatabaseAgency().ExecuteUpdate(str);
+            //    effectedRows += tmp > 0 ? tmp : 0;
+            //}
+            try
             {
-                int tmp = new DatabaseAgency().ExecuteUpdate(str);
-                effectedRows += tmp > 0 ? tmp : 0;
+                effectedRows = SqlServerConnection.ExecuteSqlWithGoUseTran(commands);
+                File.Delete(cacheFilename);
+                return effectedRows;
             }
-            File.Delete(cacheFilename);
-            return effectedRows;
+            catch(Exception)
+            {
+                throw;
+            }
         }
 
         //public delegate void CacheRowsExecutedEventHandler(object sender, EventArgs e);

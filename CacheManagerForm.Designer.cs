@@ -95,7 +95,7 @@
             this.buttonOpenFile.TabIndex = 4;
             this.buttonOpenFile.Text = "直接打开缓存文件";
             this.buttonOpenFile.UseVisualStyleBackColor = true;
-            this.buttonOpenFile.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonOpenFile.Click += new System.EventHandler(this.buttonOpenFile_Click);
             // 
             // menuStrip
             // 
@@ -254,6 +254,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "CacheManagerForm";
             this.Text = "缓存管理器";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CacheManagerForm_FormClosing);
             this.Load += new System.EventHandler(this.CacheManagerForm_Load);
             this.DoubleClick += new System.EventHandler(this.CacheManagerForm_DoubleClick);
             this.menuStrip.ResumeLayout(false);

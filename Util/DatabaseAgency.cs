@@ -162,10 +162,10 @@ namespace 关机助手.Util
             
         }
 
-        public void ClearCache()
+        public int ClearCache()
         {
             if (this.DbType == DatabaseType.MSSqlServer)
-                SqlServerConnection.ClearCache();
+                return SqlServerConnection.ClearCache();
             else
                 throw new NotImplementedException();
         }
