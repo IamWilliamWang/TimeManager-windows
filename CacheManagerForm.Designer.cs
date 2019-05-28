@@ -59,7 +59,6 @@
             this.textBox.Location = new System.Drawing.Point(6, 20);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
-            this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox.Size = new System.Drawing.Size(522, 281);
             this.textBox.TabIndex = 1;
             // 
@@ -256,6 +255,7 @@
             this.Text = "缓存管理器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CacheManagerForm_FormClosing);
             this.Load += new System.EventHandler(this.CacheManagerForm_Load);
+            this.ResizeEnd += new System.EventHandler(this.CacheManagerForm_ResizeEnd);
             this.DoubleClick += new System.EventHandler(this.CacheManagerForm_DoubleClick);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

@@ -19,6 +19,29 @@ namespace 关机助手
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 显示在屏幕上有多少行字
+        /// </summary>
+        private int ShowedTextLines
+        {
+            get
+            {
+                double 每行文字实际高度 = 16.65;
+                return (int)(this.textBox.ClientSize.Height / 每行文字实际高度);
+            }
+        }
+
+        private void AutoScrollBar()
+        {
+            int lineCount = this.textBox.GetLineFromCharIndex(this.textBox.Text.Length) + 1;
+            // 当总行数大于显示，显示ScrollBar
+            if (this.textBox.ScrollBars == ScrollBars.None && lineCount > ShowedTextLines) // 提高执行效率
+                this.textBox.ScrollBars = ScrollBars.Vertical;
+            // 当总行数小于显示，隐藏ScrollBar
+            if (this.textBox.ScrollBars == ScrollBars.Vertical && lineCount < ShowedTextLines) // 提高执行效率
+                this.textBox.ScrollBars = ScrollBars.None;
+        }
+
         private void CacheManagerForm_Load(object sender, EventArgs e)
         {
             if (MainForm.DatabaseOffline)
@@ -31,6 +54,7 @@ namespace 关机助手
             }
             this.textBox.Lines = allLines;
             this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
+            AutoScrollBar();
         }
 
         private bool CacheChanged { get { return this.CacheTextLength != this.textBox.Text.Replace("\r", "").Replace("\n", "").Length; } }
@@ -263,5 +287,9 @@ namespace 关机助手
         }
         #endregion
 
+        private void CacheManagerForm_ResizeEnd(object sender, EventArgs e)
+        {
+            AutoScrollBar();
+        }
     }
 }

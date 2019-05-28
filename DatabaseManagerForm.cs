@@ -537,11 +537,11 @@ namespace 关机助手
 
         private void 还原数据库_RarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            database.ResetConnection();
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "还原文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
+                database.ResetConnection();
                 String file = fileDialog.FileName;
                 String rawRarTempFilename = file.Insert(file.Length - 4, "_rawfile");
                 if (EncryptUtil.DecryptFile_HC128(file, rawRarTempFilename))
@@ -554,8 +554,8 @@ namespace 关机助手
                 else
                     MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 File.Delete(rawRarTempFilename);
+                Application.Restart();
             }
-            Application.Restart();
         }
             #endregion
             #region 导出所有数据
@@ -576,11 +576,11 @@ namespace 关机助手
 
         private void 备份数据库_RarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            database.ResetConnection();
             SaveFileDialog fileDialog = new SaveFileDialog();
             fileDialog.Filter = "备份文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
+                database.ResetConnection();
                 if (File.Exists(fileDialog.FileName))
                     File.Delete(fileDialog.FileName);
                 if (WinRARUtil.CompressFile(
