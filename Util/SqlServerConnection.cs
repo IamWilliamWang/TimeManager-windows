@@ -298,31 +298,5 @@ namespace 关机助手.Util
         {
             return Instance.connection;
         }
-
-        #region Sql错误处理类
-        //private static class Error
-        //{
-        //    public static void SqlExceptionOccur(System.Data.SqlClient.SqlException sqlExp)
-        //    {
-        //        if (sqlExp.ErrorCode == 50)
-        //        {
-        //            LogUtil.Log("发生了 Local Database Runtime 错误。在 LocalDB 实例启动期间出错: 无法启动 SQL Server 进程。", sqlExp);
-        //            MessageBox.Show("无法启动数据库实例，详情请看日志文件。", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-        //        }
-        //        else if (sqlExp.ToString().Contains("执行超时已过期"))
-        //        {
-        //            LogUtil.Log("服务器响应超时。完成操作之前已超时或服务器未响应", sqlExp);
-        //            MessageBox.Show("服务器响应超时，详情请看日志文件。", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        }
-        //        else
-        //        {
-        //            LogUtil.Log("未知错误发生", sqlExp);
-        //            MessageBox.Show("未知错误发生，详情请看日志文件。", "错误警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-        //        }
-        //    }
-        //}
-        #endregion
     }
 }

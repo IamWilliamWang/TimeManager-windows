@@ -44,11 +44,13 @@ namespace 关机助手
                 MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。", "欢迎！", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DatabaseManagerForm.needInitialized = true;
             }
-
+            if (ConfigUtil.ConfigLoaded && ConfigUtil.MainFormAutoDarkMode)
+                darkModeToolStripMenuItem_Click(null, null);
+                
             // 获取版本号并替换标题
             this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version());
             // 保存Form
-            SaveMainForm();
+            mForm = this;
             // 给ComboBox添加选项
             AddSelectOptionsInComboBoxTime();
             // 添加鼠标滚动事件
@@ -69,12 +71,6 @@ namespace 关机助手
         {
             this.Text += " " + DateTime.Now.ToString("HH:mm:ss");
 
-        }
-
-
-        private void SaveMainForm()
-        {
-            mForm = this;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

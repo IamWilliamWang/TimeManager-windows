@@ -55,6 +55,13 @@ namespace 关机助手
             this.textBox.Lines = allLines;
             this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
             AutoScrollBar();
+            if (ConfigUtil.ConfigLoaded)
+            {
+                this.textBox源.Text = ConfigUtil.CacheFromPath;
+                this.textBox目标.Text = ConfigUtil.CacheToPath;
+                if (ConfigUtil.CacheManagerAutoMerge)
+                    this.button合并_Click(null, null);
+            }
         }
 
         private bool CacheChanged { get { return this.CacheTextLength != this.textBox.Text.Replace("\r", "").Replace("\n", "").Length; } }
@@ -111,6 +118,7 @@ namespace 关机助手
                 return;
             File.Delete(cache);
             MessageBox.Show("已删除缓存文件！");
+            this.Close();
         }
 
         private void 移动缓存ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -287,7 +295,7 @@ namespace 关机助手
         }
         #endregion
 
-        private void CacheManagerForm_ResizeEnd(object sender, EventArgs e)
+        private void CacheManagerForm_Resize(object sender, EventArgs e)
         {
             AutoScrollBar();
         }

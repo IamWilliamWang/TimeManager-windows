@@ -255,8 +255,8 @@
             this.Text = "缓存管理器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CacheManagerForm_FormClosing);
             this.Load += new System.EventHandler(this.CacheManagerForm_Load);
-            this.ResizeEnd += new System.EventHandler(this.CacheManagerForm_ResizeEnd);
             this.DoubleClick += new System.EventHandler(this.CacheManagerForm_DoubleClick);
+            this.Resize += new System.EventHandler(this.CacheManagerForm_Resize);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.groupBox缓存编辑.ResumeLayout(false);
