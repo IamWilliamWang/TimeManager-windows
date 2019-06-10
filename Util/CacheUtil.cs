@@ -14,6 +14,8 @@ namespace 关机助手.Util
         
         private const string DbFilename = "TimeDatabase.cache";
         private const char splitChar = '鋝';
+        public static string BackupFilename { get { return DbFilename + ".autosave"; } }
+        private static List<FileInfo> tempBackupCaches = new List<FileInfo>();
 
         /// <summary>
         /// 将'GETDATE()'变成当前时间字符串
@@ -108,6 +110,19 @@ namespace 关机助手.Util
                 File.SetAttributes(cacheFilename, FileAttributes.Hidden);
         }
 
+        private static void BackupMyCache(string cacheFilename)
+        {
+            File.Copy(cacheFilename, BackupFilename);
+            File.SetAttributes(BackupFilename, FileAttributes.Hidden);
+            tempBackupCaches.Add(new FileInfo(BackupFilename));
+        }
+
+        public static void CleanBackupCache()
+        {
+            foreach (FileInfo fileInfo in tempBackupCaches)
+                fileInfo.Delete();
+        }
+
         /// <summary>
         /// 清除所有缓存并提交到数据库
         /// </summary>
@@ -123,15 +138,11 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static int CleanDbAndExecuteTasks(string cacheFilename)
         {
+            BackupMyCache(cacheFilename);
             int effectedRows = 0;
             string[] commands = GetAllLines(cacheFilename);
             if (commands == null)
                 return -1;
-            //foreach (string str in commands)
-            //{
-            //    int tmp = new DatabaseAgency().ExecuteUpdate(str);
-            //    effectedRows += tmp > 0 ? tmp : 0;
-            //}
             try
             {
                 effectedRows = SqlServerConnection.ExecuteSqlWithGoUseTran(commands);
@@ -143,8 +154,5 @@ namespace 关机助手.Util
                 throw;
             }
         }
-
-        //public delegate void CacheRowsExecutedEventHandler(object sender, EventArgs e);
-        //public event CacheRowsExecutedEventHandler CacheRowsExecutedEvent;
     }
 }

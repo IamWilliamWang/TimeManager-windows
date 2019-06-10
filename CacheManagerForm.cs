@@ -46,6 +46,14 @@ namespace 关机助手
         {
             if (MainForm.DatabaseOffline)
                 this.buttonClearCache.Enabled = false;
+            if (File.Exists(CacheUtil.BackupFilename))
+            {
+                if (DialogResult.Yes == MessageBox.Show("检测到上次执行缓存时程序崩溃，是否恢复原来的缓存文件？", "程序崩溃后的自动恢复", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
+                {
+                    File.WriteAllText(CacheUtil.CacheFilename, File.ReadAllText(CacheUtil.BackupFilename));
+                    File.Delete(CacheUtil.BackupFilename);
+                }
+            }
             string[] allLines = CacheUtil.GetAllLines();
             if (allLines == null)
             {
@@ -60,7 +68,7 @@ namespace 关机助手
                 this.textBox源.Text = ConfigUtil.CacheFromPath;
                 this.textBox目标.Text = ConfigUtil.CacheToPath;
                 if (ConfigUtil.CacheManagerAutoMerge)
-                    this.button合并_Click(null, null);
+                    this.button合并_Click(sender, e);
             }
         }
 
