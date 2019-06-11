@@ -17,6 +17,7 @@ namespace 关机助手.Util
         XmlDocument xml = new XmlDocument();
         CacheManagerConfig cacheManagerConfig = new CacheManagerConfig();
         MainConfig mainConfig = new MainConfig();
+
         #region 内部数据变量
         private class CacheManagerConfig
         {
@@ -32,6 +33,7 @@ namespace 关机助手.Util
             public int mainAutoShutdownSeconds = -1;
         }
         #endregion
+
         #region 外部调用接口
         /* 外部调用接口只能获取而不能改变 */
         /// <summary>
@@ -93,7 +95,9 @@ namespace 关机助手.Util
         {
             return parent.SelectSingleNode(childName) != null;
         }
-
+        /// <summary>
+        /// 加载所有属性
+        /// </summary>
         private ConfigUtil()
         {
             try
@@ -154,6 +158,7 @@ namespace 关机助手.Util
             }
         }
 
+        #region 属性操作
         /// <summary>
         /// 添加属性
         /// </summary>
@@ -185,5 +190,6 @@ namespace 关机助手.Util
         {
             throw new NotImplementedException();
         }
+        #endregion
     }
 }

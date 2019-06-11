@@ -31,6 +31,18 @@ namespace 关机助手
             }
         }
 
+        private void LoadData()
+        {
+            string[] allLines = CacheUtil.GetAllLines();
+            if (allLines == null)
+            {
+                this.Text += "（未找到缓存文件）";
+                return;
+            }
+            this.textBox.Lines = allLines;
+            this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
+        }
+
         private void AutoScrollBar()
         {
             int lineCount = this.textBox.GetLineFromCharIndex(this.textBox.Text.Length) + 1;
@@ -54,14 +66,7 @@ namespace 关机助手
                     File.Delete(CacheUtil.BackupFilename);
                 }
             }
-            string[] allLines = CacheUtil.GetAllLines();
-            if (allLines == null)
-            {
-                this.Text += "（未找到缓存文件）";
-                return;
-            }
-            this.textBox.Lines = allLines;
-            this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
+            LoadData();
             AutoScrollBar();
             if (ConfigUtil.CacheManagerConfigLoaded)
             {
@@ -70,6 +75,7 @@ namespace 关机助手
                 if (ConfigUtil.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }
+            CacheUtil.BackupMyCache(CacheUtil.CacheFilename);
         }
 
         private bool CacheChanged { get { return this.CacheTextLength != this.textBox.Text.Replace("\r", "").Replace("\n", "").Length; } }
@@ -298,7 +304,7 @@ namespace 关机助手
             File.Delete(this.textBox目标.Text);
             CacheUtil.SetAllLines(resultLines, this.textBox目标.Text);
             File.Delete(this.textBox源.Text);
-            this.CacheManagerForm_Load(sender, e);
+            this.LoadData();
             MessageBox.Show("合并成功！");
         }
         #endregion

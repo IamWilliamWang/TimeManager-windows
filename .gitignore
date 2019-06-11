@@ -72,7 +72,6 @@ SqlServerDatabase/
 
 # 临时文件
 *.cache
-*.config
 *.manifest
 *.pdb
 *.vs*.exe

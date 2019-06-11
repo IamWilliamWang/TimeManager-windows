@@ -14,7 +14,7 @@ namespace 关机助手.Util
         
         private const string DbFilename = "TimeDatabase.cache";
         private const char splitChar = '鋝';
-        public static string BackupFilename { get { return DbFilename + ".autosave"; } }
+        public static string BackupFilename { get { return DbFilename + ".backup"; } }
         private static List<FileInfo> tempBackupCaches = new List<FileInfo>();
 
         /// <summary>
@@ -78,7 +78,8 @@ namespace 关机助手.Util
         {
             if (File.Exists(cacheFilename) == false)
                 return null;
-            return File.ReadAllText(cacheFilename).Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries);
+            string[] result = File.ReadAllText(cacheFilename).Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries);
+            return result.Length != 0 ? result : null;
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace 关机助手.Util
                 File.SetAttributes(cacheFilename, FileAttributes.Hidden);
         }
 
-        private static void BackupMyCache(string cacheFilename)
+        public static void BackupMyCache(string cacheFilename)
         {
             File.Copy(cacheFilename, BackupFilename);
             File.SetAttributes(BackupFilename, FileAttributes.Hidden);
@@ -138,7 +139,6 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static int CleanDbAndExecuteTasks(string cacheFilename)
         {
-            BackupMyCache(cacheFilename);
             int effectedRows = 0;
             string[] commands = GetAllLines(cacheFilename);
             if (commands == null)
