@@ -9,7 +9,7 @@ namespace 关机助手.Util
 {
     class SqlUtil
     {
-        static DatabaseAgency sqlite = new DatabaseAgency();
+        static DatabaseAgency database = new DatabaseAgency();
 
         /// <summary>
         /// 简单查询功能。
@@ -20,7 +20,7 @@ namespace 关机助手.Util
         /// <param name="查询条件">满足的查询条件，可为空</param>
         public static DataTable Select(string 查询表名,string 查询列名,string 查询条件 = null)
         {
-            return sqlite.ExecuteQuery(Select_Sql(查询表名, 查询列名, 查询条件));
+            return database.ExecuteQuery(Select_Sql(查询表名, 查询列名, 查询条件));
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static bool Insert(string 表名称,string 各列的值,string 列名称=null)
         {
-            return sqlite.ExecuteUpdate(Insert_Sql(表名称, 各列的值, 列名称))>0;
+            return database.ExecuteUpdate(Insert_Sql(表名称, 各列的值, 列名称))>0;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace 关机助手.Util
         /// <returns></returns>
         public static bool Update(string 表名称,string 列名称,string 新值,string 更新条件=null)
         {
-            return sqlite.ExecuteUpdate(Update_Sql(表名称, 列名称, 新值, 更新条件)) == 1;
+            return database.ExecuteUpdate(Update_Sql(表名称, 列名称, 新值, 更新条件)) == 1;
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace 关机助手.Util
                 string sql = "update " + 表名称 + " set " + 列名称[0] + "=" + 新值[0];
                 for (int index = 1; index < 列名称.Length; index++)
                     sql += "," + 列名称[index] + "=" + 新值[index];
-                return sqlite.ExecuteUpdate(sql) == 1;
+                return database.ExecuteUpdate(sql) == 1;
             }
             else
             {
@@ -133,7 +133,7 @@ namespace 关机助手.Util
                 for (int index = 1; index < 列名称.Length; index++)
                     sql += "," + 列名称[index] + "=" + 新值[index];
                 sql += " where " + 更新条件;
-                return sqlite.ExecuteUpdate(sql) == 1;
+                return database.ExecuteUpdate(sql) == 1;
             }
         }
 
@@ -180,9 +180,9 @@ namespace 关机助手.Util
         public static bool Delete(string 表名称,string 更新条件=null)
         {
             if (更新条件 != null)
-                return sqlite.ExecuteUpdate("delete from " + 表名称 + " where " + 更新条件) > 0;
+                return database.ExecuteUpdate("delete from " + 表名称 + " where " + 更新条件) > 0;
             else
-                return sqlite.ExecuteUpdate("delete from " + 表名称) > 0;
+                return database.ExecuteUpdate("delete from " + 表名称) > 0;
         }
     }
 }

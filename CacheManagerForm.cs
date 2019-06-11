@@ -63,10 +63,10 @@ namespace 关机助手
             this.textBox.Lines = allLines;
             this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
             AutoScrollBar();
-            if (ConfigUtil.ConfigLoaded)
+            if (ConfigUtil.CacheManagerConfigLoaded)
             {
-                this.textBox源.Text = ConfigUtil.CacheFromPath;
-                this.textBox目标.Text = ConfigUtil.CacheToPath;
+                this.textBox源.Text = ConfigUtil.CacheManagerFromPath;
+                this.textBox目标.Text = ConfigUtil.CacheManagerToPath;
                 if (ConfigUtil.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }

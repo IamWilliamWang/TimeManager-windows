@@ -44,9 +44,17 @@ namespace 关机助手
                 MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。", "欢迎！", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DatabaseManagerForm.needInitialized = true;
             }
-            if (ConfigUtil.ConfigLoaded && ConfigUtil.MainFormAutoDarkMode)
-                darkModeToolStripMenuItem_Click(null, null);
-                
+            if (ConfigUtil.MainFormConfigLoaded)
+            {
+                if (ConfigUtil.MainFormAutoDarkMode)
+                    darkModeToolStripMenuItem_Click(null, null);
+                if (ConfigUtil.MainFormAutoShutdownSeconds != -1)
+                {
+                    this.comboBoxTime.Text = (1.0 * ConfigUtil.MainFormAutoShutdownSeconds / 60).ToString();
+                    button确定_Click(sender, e);
+                }
+
+            }
             // 获取版本号并替换标题
             this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version());
             // 保存Form

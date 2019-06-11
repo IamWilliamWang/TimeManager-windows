@@ -19,6 +19,11 @@ namespace 关机助手
         {
             this.RefreshDatas();
             this.RefreshRemarks();
+            DataTable data = (DataTable)this.dataGridViewDatas.DataSource;
+            if (data == null)
+                return;
+            
+            this.textBoxId.Text = data.Rows[data.Rows.Count - 1][0].ToString();
         }
         #endregion
 
