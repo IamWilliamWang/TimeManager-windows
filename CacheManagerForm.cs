@@ -75,7 +75,8 @@ namespace 关机助手
                 if (ConfigUtil.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }
-            CacheUtil.BackupMyCache(CacheUtil.CacheFilename);
+            if (CacheUtil.ExistCache())
+                CacheUtil.BackupMyCache(CacheUtil.CacheFilename);
         }
 
         private bool CacheChanged { get { return this.CacheTextLength != this.textBox.Text.Replace("\r", "").Replace("\n", "").Length; } }
