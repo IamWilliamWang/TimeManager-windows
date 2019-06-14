@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace 关机助手.Util
 {
-    public class FastModeUtil
+    public class FastModeExecutor
     {
         private static DatabaseAgency dbAgency = new DatabaseAgency();
 
@@ -98,7 +98,7 @@ namespace 关机助手.Util
                     {
                         case "-s":case "/s":
                         case "--shutdown_seconds":
-                            关机倒计时秒 = FastModeUtil.GetSecondFromTimeStringContainsMS(args[++i]);
+                            关机倒计时秒 = FastModeExecutor.GetSecondFromTimeStringContainsMS(args[++i]);
                             if (关机倒计时秒 == -1)
                             {
                                 失败后弹出的字符串 = "执行失败！时间请以s（秒）或m（分钟）结尾";
@@ -107,7 +107,7 @@ namespace 关机助手.Util
                             break;
                         case "-d":case "/d":
                         case "--shutdown_delay":
-                            delay时间秒 = FastModeUtil.GetSecondFromTimeStringContainsMS(args[++i]);
+                            delay时间秒 = FastModeExecutor.GetSecondFromTimeStringContainsMS(args[++i]);
                             if (delay时间秒 == -1)
                             {
                                 失败后弹出的字符串 = "执行失败！时间请以s（秒）或m（分钟）结尾";
@@ -206,7 +206,7 @@ namespace 关机助手.Util
                 else //指定缓存文件需要单独处理
                 {
                     String insertSql = SqlExecuter.UsefulSqlExpressions.InsertPowerOnTimeSQL();
-                    CacheUtil.AppendCache(insertSql, cache文件);
+                    Cache.AppendCache(insertSql, cache文件);
                 }
             }
             // 检查关机时间
@@ -215,11 +215,11 @@ namespace 关机助手.Util
                 if (离线模式)
                     ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, 关机倒计时秒 ?? 0);
                 else if (cache文件 == null)
-                    FastModeUtil.ShutdownWithSeconds(关机倒计时秒 ?? 0); //内部实现自动处理是否调用缓存
+                    FastModeExecutor.ShutdownWithSeconds(关机倒计时秒 ?? 0); //内部实现自动处理是否调用缓存
                 else
                 {
                     String shutdownSql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL();
-                    CacheUtil.AppendCache(shutdownSql, cache文件);
+                    Cache.AppendCache(shutdownSql, cache文件);
                 }
             }
             // 检查延迟时间
@@ -232,7 +232,7 @@ namespace 关机助手.Util
                 else
                 {
                     String delaySql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL(delay时间秒 ?? 0);
-                    CacheUtil.AppendCache(delaySql, cache文件);
+                    Cache.AppendCache(delaySql, cache文件);
                 }
             }
             // 检查是否取消关机，与上方连续使用可以做到记录时间却不调用系统关机的目的
@@ -251,10 +251,10 @@ namespace 关机助手.Util
                 else //指定cache文件特殊对待
                 {
                     String shutdownSql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL();
-                    CacheUtil.AppendCache(shutdownSql, cache文件);
+                    Cache.AppendCache(shutdownSql, cache文件);
                     ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.睡眠);
                     String poweronSql = SqlExecuter.UsefulSqlExpressions.InsertPowerOnTimeSQL();
-                    CacheUtil.AppendCache(poweronSql, cache文件);
+                    Cache.AppendCache(poweronSql, cache文件);
                 }
             }
             // 检查休眠
@@ -271,24 +271,24 @@ namespace 关机助手.Util
                 else //指定cache文件特殊对待
                 {
                     String shutdownSql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL();
-                    CacheUtil.AppendCache(shutdownSql, cache文件);
+                    Cache.AppendCache(shutdownSql, cache文件);
                     ShutdownUtil.RunSuspendCommand(ShutdownUtil.Mode.休眠);
                     String poweronSql = SqlExecuter.UsefulSqlExpressions.InsertPowerOnTimeSQL();
-                    CacheUtil.AppendCache(poweronSql, cache文件);
+                    Cache.AppendCache(poweronSql, cache文件);
                 }
             }
 
             if (显示缓存)
             {
                 if (cache文件 == null)
-                    ConsoleWriter.WriteLines(CacheUtil.GetAllLines());
+                    ConsoleWriter.WriteLines(Cache.GetAllLines());
                 else
-                    ConsoleWriter.WriteLines(CacheUtil.GetAllLines(cache文件));
+                    ConsoleWriter.WriteLines(Cache.GetAllLines(cache文件));
             }
             if (删除缓存)
             {
                 if (cache文件 == null)
-                    File.Delete(CacheUtil.CacheFilename);
+                    File.Delete(Cache.CacheFilename);
                 else
                     File.Delete(cache文件);
             }   

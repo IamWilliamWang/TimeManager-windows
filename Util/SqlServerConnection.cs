@@ -135,12 +135,12 @@ namespace 关机助手.Util
 
         public static void ExecuteUpdateUsingCache(string commandText)
         {
-            CacheUtil.AppendCache(commandText);
+            Cache.AppendCache(commandText);
         }
 
         public static int ClearCache()
         {
-            return CacheUtil.CleanDbAndExecuteTasks();
+            return Cache.CleanDbAndExecuteTasks();
         }
 
         public static Boolean UpdateDatabase(DataTable dataTable)

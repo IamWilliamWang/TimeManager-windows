@@ -102,7 +102,7 @@
     <Compile Include="ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util\ConfigUtil.cs" />
+    <Compile Include="Util\ConfigManager.cs" />
     <Compile Include="Util\HibernateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,13 +147,13 @@
     <Compile Include="RemarkManagerForm.Designer.cs">
       <DependentUpon>RemarkManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util\CacheUtil.cs" />
+    <Compile Include="Util\Cache.cs" />
     <Compile Include="Util\EncryptUtil.cs" />
-    <Compile Include="Util\FastModeUtil.cs" />
+    <Compile Include="Util\FastModeExecutor.cs" />
     <Compile Include="Util\Interaction.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Util\LogUtil.cs" />
+    <Compile Include="Util\LogError.cs" />
     <Compile Include="Util\BinaryWriterUtil.cs" />
     <Compile Include="Util\ShutdownUtil.cs" />
     <Compile Include="Util\DatabaseAgency.cs" />

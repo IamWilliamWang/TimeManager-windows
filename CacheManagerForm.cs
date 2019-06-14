@@ -11,7 +11,7 @@ namespace 关机助手
     public partial class CacheManagerForm : Form
     {
         // 缓存文件名
-        private String cache { get { return CacheUtil.CacheFilename; } }
+        private String cache { get { return Cache.CacheFilename; } }
         private int CacheTextLength { get; set; } = 0;
         #region 加载窗口事件
         public CacheManagerForm()
@@ -33,7 +33,7 @@ namespace 关机助手
 
         private void LoadData()
         {
-            string[] allLines = CacheUtil.GetAllLines();
+            string[] allLines = Cache.GetAllLines();
             if (allLines == null)
             {
                 this.Text += "（未找到缓存文件）";
@@ -58,25 +58,25 @@ namespace 关机助手
         {
             if (MainForm.DatabaseOffline)
                 this.buttonClearCache.Enabled = false;
-            if (File.Exists(CacheUtil.BackupFilename))
+            if (File.Exists(Cache.BackupFilename))
             {
                 if (DialogResult.Yes == MessageBox.Show("检测到上次执行缓存时程序崩溃，是否恢复原来的缓存文件？", "程序崩溃后的自动恢复", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
                 {
-                    File.WriteAllText(CacheUtil.CacheFilename, File.ReadAllText(CacheUtil.BackupFilename));
-                    File.Delete(CacheUtil.BackupFilename);
+                    File.WriteAllText(Cache.CacheFilename, File.ReadAllText(Cache.BackupFilename));
+                    File.Delete(Cache.BackupFilename);
                 }
             }
             LoadData();
             AutoScrollBar();
-            if (ConfigUtil.CacheManagerConfigLoaded)
+            if (ConfigManager.CacheManagerConfigLoaded)
             {
-                this.textBox源.Text = ConfigUtil.CacheManagerFromPath;
-                this.textBox目标.Text = ConfigUtil.CacheManagerToPath;
-                if (ConfigUtil.CacheManagerAutoMerge)
+                this.textBox源.Text = ConfigManager.CacheManagerFromPath;
+                this.textBox目标.Text = ConfigManager.CacheManagerToPath;
+                if (ConfigManager.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }
-            if (CacheUtil.ExistCache())
-                CacheUtil.BackupMyCache(CacheUtil.CacheFilename);
+            if (Cache.ExistCache())
+                Cache.BackupMyCache(Cache.CacheFilename);
         }
 
         private bool CacheChanged { get { return this.CacheTextLength != this.textBox.Text.Replace("\r", "").Replace("\n", "").Length; } }
@@ -138,7 +138,7 @@ namespace 关机助手
 
         private void 移动缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CacheUtil.ExistCache() == false)
+            if (Cache.ExistCache() == false)
             {
                 MessageBox.Show("不存在缓存文件，移动文件失败");
                 return;
@@ -161,7 +161,7 @@ namespace 关机助手
 
         private void 另存为缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CacheUtil.ExistCache() == false)
+            if (Cache.ExistCache() == false)
             {
                 MessageBox.Show("不存在缓存文件，另存为失败");
                 return;
@@ -185,14 +185,14 @@ namespace 关机助手
 
         private void 插入开机缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CacheUtil.AppendCache("INSERT INTO [Table](开机时间) VALUES (GETDATE())"
+            Cache.AppendCache("INSERT INTO [Table](开机时间) VALUES (GETDATE())"
                 .Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'"), false);
             this.Close();
         }
 
         private void 插入关机缓存ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CacheUtil.AppendCache("UPDATE [Table] SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
+            Cache.AppendCache("UPDATE [Table] SET 关机时间 = GETDATE(), 时长 = GETDATE() - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
                 .Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'"), false);
             this.Close();
         }
@@ -206,7 +206,7 @@ namespace 关机助手
             notepadProcess.StartInfo.Arguments = "\"" + new FileInfo("TimeDatabase.cache").FullName + "\"";
             notepadProcess.Start();
             notepadProcess.WaitForExit();
-            this.textBox.Lines = CacheUtil.GetAllLines();
+            this.textBox.Lines = Cache.GetAllLines();
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -219,7 +219,7 @@ namespace 关机助手
         {
             if (this.textBox.Text == "")
                 File.Delete(cache);
-            CacheUtil.SetAllLines(this.textBox.Lines);
+            Cache.SetAllLines(this.textBox.Lines);
             this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
         }
 
@@ -287,13 +287,13 @@ namespace 关机助手
             String[] 目标内容 = null;
             try
             {
-                源内容 = CacheUtil.GetAllLines(this.textBox源.Text);
-                目标内容 = CacheUtil.GetAllLines(this.textBox目标.Text);
+                源内容 = Cache.GetAllLines(this.textBox源.Text);
+                目标内容 = Cache.GetAllLines(this.textBox目标.Text);
             }
             catch
             {
-                if (CacheUtil.ExistCache(this.textBox目标.Text) == false
-                    && CacheUtil.ExistCache(this.textBox源.Text))
+                if (Cache.ExistCache(this.textBox目标.Text) == false
+                    && Cache.ExistCache(this.textBox源.Text))
                     目标内容 = null;
                 else
                 {
@@ -303,7 +303,7 @@ namespace 关机助手
             }
             string[] resultLines = SortStringsByTime(ListAdd(源内容, 目标内容));
             File.Delete(this.textBox目标.Text);
-            CacheUtil.SetAllLines(resultLines, this.textBox目标.Text);
+            Cache.SetAllLines(resultLines, this.textBox目标.Text);
             File.Delete(this.textBox源.Text);
             this.LoadData();
             MessageBox.Show("合并成功！");

@@ -9,10 +9,10 @@ using System.Xml.XPath;
 
 namespace 关机助手.Util
 {
-    class ConfigUtil
+    class ConfigManager
     {
         // 单例使得Config只会读取一次
-        private static readonly ConfigUtil This = new ConfigUtil();
+        private static readonly ConfigManager This = new ConfigManager();
         private const String configName = "关机助手.config"; // Config文件名
         XmlDocument xml = new XmlDocument();
         CacheManagerConfig cacheManagerConfig = new CacheManagerConfig();
@@ -95,10 +95,11 @@ namespace 关机助手.Util
         {
             return parent.SelectSingleNode(childName) != null;
         }
+
         /// <summary>
         /// 加载所有属性
         /// </summary>
-        private ConfigUtil()
+        private ConfigManager()
         {
             try
             {

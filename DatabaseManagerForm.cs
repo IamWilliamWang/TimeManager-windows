@@ -235,7 +235,7 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
-            if (CacheUtil.ExistCache()) 
+            if (Cache.ExistCache()) 
             {
                 MessageBox.Show("检测到缓存清理功能故障，无法继续进行添加操作。请暂时不要改变数据库内数据并与程序员联系！", "严重警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -446,7 +446,7 @@ namespace 关机助手
             string command = Interaction.InputBox("输入命令行指令：", "命令行选项使用");
             if (command == "")
                 return;
-            Util.FastModeUtil.RunConsoleApplication(command.Split(' '));
+            Util.FastModeExecutor.RunConsoleApplication(command.Split(' '));
         }
 
         private void 激活禁止系统休眠ToolStripMenuItem_Click(object sender, EventArgs e)

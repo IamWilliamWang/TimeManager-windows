@@ -103,11 +103,11 @@ namespace 关机助手
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            Util.LogUtil.Log(this.labelInformation.Text, mException);
+            Util.LogError.Log(this.labelInformation.Text, mException);
             MessageBox.Show("日志写入成功！请将日志发送给开发人员", "发送报告", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.buttonSend.Enabled = false;
             String current = System.IO.Directory.GetCurrentDirectory();
-            OpenFolderAndSelectFile(current + "\\" + Util.LogUtil.LogFileName);
+            OpenFolderAndSelectFile(current + "\\" + Util.LogError.LogFileName);
         }
 
         private String FormatCulture(string culture)

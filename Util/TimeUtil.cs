@@ -38,7 +38,7 @@ namespace 关机助手.Util
                 return;
             if (!tokSuccess)
             {
-                LogUtil.Log("Failed to write down login time to db.");
+                LogError.Log("Failed to write down login time to db.");
             }
         }
 

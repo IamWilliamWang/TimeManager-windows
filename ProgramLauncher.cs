@@ -59,7 +59,7 @@ namespace 关机助手
                     Application.Run(mainForm);
                 }
                 else
-                    FastModeUtil.RunConsoleApplication(args);
+                    FastModeExecutor.RunConsoleApplication(args);
             }
             catch(Exception e)
             {

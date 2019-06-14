@@ -3,7 +3,7 @@ using System.IO;
 
 namespace 关机助手.Util
 {
-    class LogUtil
+    class LogError
     {
         public static readonly String LogFileName = "ErrorLog.txt";
         public static bool Log(String logContent, Exception exception = null)

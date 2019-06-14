@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace 关机助手.Util
 {
-    class CacheUtil
+    class Cache
     {
         public static char CacheSpliter { get { return splitChar; } } //缓存分割字符
         public static string CacheFilename { get { return DbFilename; } } //缓存文件名
@@ -42,7 +42,7 @@ namespace 关机助手.Util
         /// <param name="hideFile"></param>
         public static void AppendCache(string sql, bool hideFile = true)
         {
-            AppendCache(sql, CacheUtil.CacheFilename, hideFile);
+            AppendCache(sql, Cache.CacheFilename, hideFile);
         }
 
         /// <summary>

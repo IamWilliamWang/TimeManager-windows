@@ -44,13 +44,13 @@ namespace 关机助手
                 MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。", "欢迎！", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DatabaseManagerForm.needInitialized = true;
             }
-            if (ConfigUtil.MainFormConfigLoaded)
+            if (ConfigManager.MainFormConfigLoaded)
             {
-                if (ConfigUtil.MainFormAutoDarkMode)
+                if (ConfigManager.MainFormAutoDarkMode)
                     darkModeToolStripMenuItem_Click(null, null);
-                if (ConfigUtil.MainFormAutoShutdownSeconds != -1)
+                if (ConfigManager.MainFormAutoShutdownSeconds != -1)
                 {
-                    this.comboBoxTime.Text = (1.0 * ConfigUtil.MainFormAutoShutdownSeconds / 60).ToString();
+                    this.comboBoxTime.Text = (1.0 * ConfigManager.MainFormAutoShutdownSeconds / 60).ToString();
                     button确定_Click(sender, e);
                 }
 
@@ -84,7 +84,7 @@ namespace 关机助手
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             database.CloseConnection();
-            CacheUtil.CleanBackupCache();
+            Cache.CleanBackupCache();
         }
 
         #endregion
@@ -317,7 +317,7 @@ namespace 关机助手
                             再次添加开机记录();
                             break;
                         case "延缓":
-                            FastModeUtil.ShutdownWithSeconds_DelayMode((int)(float.Parse(this.comboBoxTime.Text) * 60));
+                            FastModeExecutor.ShutdownWithSeconds_DelayMode((int)(float.Parse(this.comboBoxTime.Text) * 60));
                             break;
                         case "睡眠":
                             RunSuspendCommand(Mode.睡眠);
