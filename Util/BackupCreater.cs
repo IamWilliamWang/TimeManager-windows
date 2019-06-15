@@ -24,10 +24,11 @@ namespace 关机助手.Util
             {
                 if (Backup文件名 == null)
                     throw new Exception("Backup文件名未被初始化！");
-                int lastDotIndex = Backup文件名.LastIndexOf('.');
-                if (lastDotIndex == -1) return "";
+                string shortFileName = Backup文件名.Substring(Backup文件名.LastIndexOf("\\") + 1);
+                int dotIndex = shortFileName.IndexOf('.'); //可以支持多个dot的备份文件名
+                if (dotIndex == -1) return "";
                 else
-                    return Backup文件名.Substring(lastDotIndex);
+                    return shortFileName.Substring(dotIndex);
             }
             set
             {

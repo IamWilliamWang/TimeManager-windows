@@ -265,6 +265,12 @@ namespace 关机助手
             return result.ToArray();
         }
 
+        /// <summary>
+        /// 两个string[]相加，null参数容错
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
         private string[] ListAdd(string[] list1, string[] list2)
         {
             // 防错处理
@@ -303,7 +309,8 @@ namespace 关机助手
             string[] resultLines = SortStringsByTime(ListAdd(源内容, 目标内容));
             File.Delete(this.textBox目标.Text);
             Cache.SetAllLines(resultLines, this.textBox目标.Text);
-            File.Delete(this.textBox源.Text);
+            if (File.Exists(this.textBox源.Text))
+                File.Delete(this.textBox源.Text);
             this.LoadData();
             MessageBox.Show("合并成功！");
         }

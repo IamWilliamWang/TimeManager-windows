@@ -16,6 +16,7 @@ namespace 关机助手.Util
         private const char splitChar = '鋝';
 
         public static BackupCreater Backup { get; set; }
+         = new BackupCreater(Cache.CacheFilename, 备份后缀名:".cache.backup", interval: int.MaxValue, hideBackup: true);
         /// <summary>
         /// 将'GETDATE()'变成当前时间字符串
         /// </summary>
@@ -114,10 +115,14 @@ namespace 关机助手.Util
         /// 备份一次Cache文件
         /// </summary>
         /// <param name="cacheFilename"></param>
-        public static void BackupMyCache(string cacheFilename)
+        public static bool BackupMyCache(string cacheFilename)
         {
-            Backup = new BackupCreater(cacheFilename, 备份后缀名:".cache.backup", interval: 0, hideBackup: true);
+            if (File.Exists(Cache.Backup.Original文件名) == false)
+                return false;
+            Backup.Original文件名 = cacheFilename;
+            Backup.Backup后缀名 = Backup.Backup后缀名;
             Backup.StartOnce();
+            return true;
         }
 
         /// <summary>
@@ -125,7 +130,8 @@ namespace 关机助手.Util
         /// </summary>
         public static void CleanBackupCache()
         {
-            Backup.DeleteBackup();
+            if (File.Exists(Cache.Backup.Backup文件名))
+                Backup.DeleteBackup();
         }
 
         /// <summary>
