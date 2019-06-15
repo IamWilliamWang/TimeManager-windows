@@ -14,9 +14,8 @@ namespace 关机助手.Util
         
         private const string DbFilename = "TimeDatabase.cache";
         private const char splitChar = '鋝';
-        public static string BackupFilename { get { return DbFilename + ".backup"; } }
-        private static List<FileInfo> tempBackupCaches = new List<FileInfo>();
 
+        public static BackupCreater Backup { get; set; }
         /// <summary>
         /// 将'GETDATE()'变成当前时间字符串
         /// </summary>
@@ -111,17 +110,22 @@ namespace 关机助手.Util
                 File.SetAttributes(cacheFilename, FileAttributes.Hidden);
         }
 
+        /// <summary>
+        /// 备份一次Cache文件
+        /// </summary>
+        /// <param name="cacheFilename"></param>
         public static void BackupMyCache(string cacheFilename)
         {
-            File.Copy(cacheFilename, BackupFilename);
-            File.SetAttributes(BackupFilename, FileAttributes.Hidden);
-            tempBackupCaches.Add(new FileInfo(BackupFilename));
+            Backup = new BackupCreater(cacheFilename, 备份后缀名:".cache.backup", interval: 0, hideBackup: true);
+            Backup.StartOnce();
         }
 
+        /// <summary>
+        /// 清理所有Cache文件
+        /// </summary>
         public static void CleanBackupCache()
         {
-            foreach (FileInfo fileInfo in tempBackupCaches)
-                fileInfo.Delete();
+            Backup.DeleteBackup();
         }
 
         /// <summary>

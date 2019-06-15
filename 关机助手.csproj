@@ -102,6 +102,7 @@
     <Compile Include="ExceptionForm.Designer.cs">
       <DependentUpon>ExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\BackupCreater.cs" />
     <Compile Include="Util\ConfigManager.cs" />
     <Compile Include="Util\HibernateForm.cs">
       <SubType>Form</SubType>

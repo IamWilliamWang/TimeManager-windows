@@ -84,7 +84,6 @@ namespace 关机助手
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             database.CloseConnection();
-            Cache.CleanBackupCache();
         }
 
         #endregion
