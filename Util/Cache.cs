@@ -120,7 +120,6 @@ namespace 关机助手.Util
             if (File.Exists(Cache.Backup.Original文件名) == false)
                 return false;
             Backup.Original文件名 = cacheFilename;
-            Backup.Backup后缀名 = Backup.Backup后缀名;
             Backup.StartOnce();
             return true;
         }
