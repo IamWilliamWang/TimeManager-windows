@@ -523,42 +523,137 @@ namespace 关机助手
             MessageBox.Show("下次开机不会记录开机时间", "成功");
         }
 
+        /// <summary>
+        /// 暗黑模式控制器
+        /// </summary>
+        public bool DarkMode
+        {
+            get
+            {
+                return this.暗黑模式ToolStripMenuItem.Text != "暗黑模式";
+            }
+            set
+            {
+                if (value) //开启暗黑模式
+                {
+                    this.BackColor = SystemColors.WindowFrame;
+                    this.ForeColor = SystemColors.Window;
+                    this.menuStrip.BackColor = SystemColors.WindowFrame;
+                    this.插入ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.插入开机时间ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.插入开机时间ToolStripMenuItem.ForeColor = SystemColors.Menu;
+                    this.插入关机时间ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.插入关机时间ToolStripMenuItem.ForeColor = SystemColors.Menu;
+                    this.数据管理ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.取消指令ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.拓展功能ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.comboBoxTime.BackColor = SystemColors.WindowFrame;
+                    this.comboBoxTime.ForeColor = SystemColors.Menu;
+                    this.comboBoxMode.BackColor = SystemColors.WindowFrame;
+                    this.comboBoxMode.ForeColor = SystemColors.Menu;
+                    this.注册关机事件ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.注册关机事件ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.销毁关机事件ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.销毁关机事件ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.打开启动文件夹ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.打开启动文件夹ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.安全模式ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.安全模式ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.升级日志ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.升级日志ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.源头管理ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.源头管理ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.暗黑模式ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.暗黑模式ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.切断数据库连接ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.切断数据库连接ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.外链数据库ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.外链数据库ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.缓存管理ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.缓存管理ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.获得管理员权限ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.获得管理员权限ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.禁止一次开机记时间ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.附加功能ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.附加功能ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.toolStripComboBox透明度.BackColor = SystemColors.WindowFrame;
+                    this.toolStripComboBox透明度.ForeColor = SystemColors.Window;
+                    this.隐匿ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.隐匿ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.退出ToolStripMenuItem1.BackColor = SystemColors.WindowFrame;
+                    this.退出ToolStripMenuItem1.ForeColor = SystemColors.Window;
+                    this.label3.BackColor = SystemColors.WindowFrame;
+                    this.dateTimePicker1.CalendarMonthBackground = SystemColors.WindowFrame;
+                    this.buttonOK.BackColor = SystemColors.WindowFrame;
+                    this.buttonOK.ForeColor = SystemColors.Window;
+                    this.确定button2.BackColor = SystemColors.WindowFrame;
+                    this.确定button2.ForeColor = SystemColors.Window;
+                    this.暗黑模式ToolStripMenuItem.Text = "关闭暗黑模式";
+                }
+                else //关闭暗黑模式
+                {
+                    this.BackColor = SystemColors.Control;
+                    this.ForeColor = SystemColors.ControlText;
+                    this.menuStrip.BackColor = SystemColors.Control;
+                    this.插入ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.插入开机时间ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.插入开机时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.插入关机时间ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.插入关机时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.数据管理ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.取消指令ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.拓展功能ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.comboBoxTime.BackColor = SystemColors.Window;
+                    this.comboBoxTime.ForeColor = SystemColors.WindowText;
+                    this.comboBoxMode.BackColor = SystemColors.Window;
+                    this.comboBoxMode.ForeColor = SystemColors.WindowText;
+                    this.注册关机事件ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.注册关机事件ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.销毁关机事件ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.销毁关机事件ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.打开启动文件夹ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.打开启动文件夹ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.安全模式ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.安全模式ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.升级日志ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.升级日志ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.源头管理ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.源头管理ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.暗黑模式ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.暗黑模式ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.切断数据库连接ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.切断数据库连接ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.外链数据库ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.外链数据库ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.缓存管理ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.缓存管理ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.获得管理员权限ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.获得管理员权限ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.禁止一次开机记时间ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.附加功能ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.附加功能ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.toolStripComboBox透明度.BackColor = SystemColors.Window;
+                    this.toolStripComboBox透明度.ForeColor = SystemColors.ControlText;
+                    this.隐匿ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.隐匿ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.退出ToolStripMenuItem1.BackColor = SystemColors.Control;
+                    this.退出ToolStripMenuItem1.ForeColor = SystemColors.ControlText;
+                    this.label3.BackColor = SystemColors.Control;
+                    this.dateTimePicker1.CalendarMonthBackground = SystemColors.Window;
+                    this.buttonOK.BackColor = SystemColors.Control;
+                    this.buttonOK.ForeColor = SystemColors.ControlText;
+                    this.确定button2.BackColor = SystemColors.Control;
+                    this.确定button2.ForeColor = SystemColors.ControlText;
+                    this.暗黑模式ToolStripMenuItem.Text = "暗黑模式";
+                }
+            }
+        }
+
         private void darkModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.menuStrip.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.插入ToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Window;
-            this.插入开机时间ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.插入关机时间ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.数据管理ToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Window;
-            this.取消指令ToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Window;
-            this.拓展功能ToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Window;
-            this.comboBoxTime.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.comboBoxTime.ForeColor = System.Drawing.SystemColors.Menu;
-            this.comboBoxMode.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.comboBoxMode.ForeColor = System.Drawing.SystemColors.Menu;
-            //this.buttonOK.ForeColor = System.Drawing.SystemColors.MenuText;
-            this.注册关机事件ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.销毁关机事件ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.打开启动文件夹ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.安全模式ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.升级日志ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.源头管理ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.darkModeToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.切断数据库连接ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.外链数据库ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.缓存管理ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.获得管理员权限ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.禁止一次开机记时间ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.附加功能ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.toolStripComboBox透明度.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.隐匿ToolStripMenuItem.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.退出ToolStripMenuItem1.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.label3.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.dateTimePicker1.CalendarMonthBackground = System.Drawing.SystemColors.WindowFrame;
-            this.确定button2.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.buttonOK.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.ForeColor = System.Drawing.SystemColors.Window;
+            DarkMode = !DarkMode; //切换暗黑模式状态
         }
 
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)

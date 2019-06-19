@@ -10,11 +10,33 @@ namespace 关机助手.Util
         /// <summary>
         /// 备份的源文件名
         /// </summary>
-        public string Original文件名 { get { return original文件名; } set { original文件名 = value; if(Backup文件名!=null)this.Backup后缀名 = this.Backup后缀名;/*同步信息到Backup文件名*/ } }
+        public string Original文件名
+        {
+            get { return original文件名; }
+            set
+            {
+                if (original文件名 == value) //没有修改就不费事了
+                    return;
+                original文件名 = value;
+                /* 不是初始化过程的时候，要用新的Original文件名更新Backup文件名 */
+                if (Backup文件名 != null)
+                {
+                    /* 删除现在的缓存，不然变更后会变成野缓存 */
+                    if (File.Exists(Backup文件名) && original文件名.Contains("\\")) //有缓存且切换目录
+                        this.DeleteBackup();
+                    /* 同步信息到Backup文件名 */
+                    this.Backup后缀名 = this.Backup后缀名;
+                    /* 提取工作路径 */
+                    int directoryEndIndex = original文件名.LastIndexOf('\\');
+                    if (directoryEndIndex != -1)
+                        this.workingDirectory = original文件名.Substring(0, directoryEndIndex);
+                }
+            }
+        }
         /// <summary>
         /// 自动保存Timer.Interval（启动后不可以修改）
         /// </summary>
-        public int Interval { get { return backupFileTimer.Interval; } set { Alert(); backupFileTimer.Interval = value; } }
+        public int Interval { get { return BackupFileTimer.Interval; } set { if (this.ParametersReadOnly) throw new System.FieldAccessException("开始后不可以修改此变量！"); BackupFileTimer.Interval = value; } }
         /// <summary>
         /// 备份文件的后缀名
         /// </summary>
@@ -34,11 +56,11 @@ namespace 关机助手.Util
             {
                 if (value[0] != '.')
                     value = '.' + value;
-                int dotIndex = this.Original文件名.IndexOf('.');
+                int dotIndex = this.original文件名.IndexOf('.');
                 if (dotIndex == -1) //源文件没后缀，直接加
-                    this.Backup文件名 = this.Original文件名 + value;
+                    this.Backup文件名 = this.original文件名 + value;
                 else
-                    this.Backup文件名 = this.Original文件名.Substring(0, dotIndex) + value;
+                    this.Backup文件名 = this.original文件名.Substring(0, dotIndex) + value;
             }
         }
         /// <summary>
@@ -52,13 +74,16 @@ namespace 关机助手.Util
             }
             set
             {
+                if (workingDirectory == value) //没改工作路径就不用费事了
+                    return;
+                /* 删除现在的缓存，不然变更后会变成野缓存 */
+                if (File.Exists(Backup文件名)) //有缓存且切换目录
+                    this.DeleteBackup();
                 workingDirectory = value;
                 string shortOriginalFileName = Original文件名.Substring(Original文件名.LastIndexOf('\\') + 1);
-                string shortBackupFileName = Backup文件名.Substring(Backup文件名.LastIndexOf('\\') + 1);
                 if (workingDirectory.EndsWith("\\")) //统一去掉\
                     workingDirectory = workingDirectory.Substring(0, workingDirectory.Length - 1);
                 Original文件名 = workingDirectory + "\\" + shortOriginalFileName;
-                Backup文件名 = workingDirectory + "\\" + shortBackupFileName;
             }
         }
         /// <summary>
@@ -68,7 +93,7 @@ namespace 关机助手.Util
         /// <summary>
         /// 备份加密算法
         /// </summary>
-        public 加密算法 Encrypt算法 { get { return encrypt算法; } set { Alert(); encrypt算法 = value; } }
+        public 加密算法 Encrypt算法 { get { return encrypt算法; } set { if (this.ParametersReadOnly) throw new System.FieldAccessException("开始后不可以修改此变量！"); encrypt算法 = value; } }
         /// <summary>
         /// 隐藏备份文件
         /// </summary>
@@ -87,9 +112,18 @@ namespace 关机助手.Util
         public delegate void RestoreProcedure();
         #endregion
 
-        private Timer backupFileTimer { get; set; }
+        private Timer BackupFileTimer { get; set; }
         private bool ParametersReadOnly { get; set; } = false;
 
+        /// <summary>
+        /// 生成一个新的BackupCreater
+        /// </summary>
+        /// <param name="备份源文件名">备份源文件名</param>
+        /// <param name="writeFileProcedure">写文件函数（要求唯一的参数为写文件名）</param>
+        /// <param name="interval">备份间隔(毫秒)</param>
+        /// <param name="备份后缀名">备份后缀名</param>
+        /// <param name="hideBackup">是否设置备份为隐藏文件</param>
+        /// <param name="算法">备份算法</param>
         public BackupCreater(string 备份源文件名, WriteProcedure writeFileProcedure = null, int interval = 1000, string 备份后缀名 = ".backup", bool hideBackup = false, 加密算法 算法 = 加密算法.无)
         {
             this.Original文件名 = 备份源文件名;
@@ -104,11 +138,16 @@ namespace 关机助手.Util
             this.Encrypt算法 = 算法;
             this.HiddenBackupFile = hideBackup;
 
-            backupFileTimer = new Timer();
+            BackupFileTimer = new Timer();
             this.Interval = interval;
-            backupFileTimer.Tick += WriteBackupInvoke;
+            BackupFileTimer.Tick += WriteBackupInvoke;
         }
 
+        /// <summary>
+        /// Invoke写备份事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WriteBackupInvoke(object sender, EventArgs e)
         {
             WriteBackupEvent.Invoke(this.Backup文件名);
@@ -144,8 +183,23 @@ namespace 关机助手.Util
         {
             if (WriteBackupEvent.GetInvocationList().Length == 0)
                 throw new System.Exception("BackupCreater未经初始化就强迫开始执行！");
-            this.backupFileTimer.Start();
+            this.BackupFileTimer.Start();
             this.ParametersReadOnly = true;
+        }
+
+        /// <summary>
+        /// 开启自动备份，并返回正在执行的BackupCreater
+        /// </summary>
+        /// <param name="备份源文件名">备份源文件名</param>
+        /// <param name="writeFileProcedure">写文件函数（要求唯一的参数为写文件名）</param>
+        /// <param name="interval">备份间隔(毫秒)</param>
+        /// <param name="备份后缀名">备份后缀名</param>
+        /// <param name="hideBackup">是否设置备份为隐藏文件</param>
+        public static BackupCreater Backup(string 备份源文件名, WriteProcedure writeFileProcedure = null, int interval = 1000, string 备份后缀名 = ".backup", bool hideBackup = false)
+        {
+            var ret = new BackupCreater(备份后缀名, writeFileProcedure, interval, 备份后缀名, hideBackup);
+            ret.Start();
+            return ret;
         }
 
         /// <summary>
@@ -153,7 +207,7 @@ namespace 关机助手.Util
         /// </summary>
         public void Stop()
         {
-            this.backupFileTimer.Stop();
+            this.BackupFileTimer.Stop();
             this.ParametersReadOnly = false;
         }
 
@@ -163,6 +217,19 @@ namespace 关机助手.Util
         public void StartOnce()
         {
             this.WriteBackupInvoke(null, null);
+        }
+        /// <summary>
+        /// 只执行单步备份操作，并返回正在执行的BackupCreater
+        /// </summary>
+        /// <param name="备份源文件名">备份源文件名</param>
+        /// <param name="writeFileProcedure">写文件函数（要求唯一的参数为写文件名）</param>
+        /// <param name="备份后缀名">备份后缀名</param>
+        /// <param name="hideBackup">是否设置备份为隐藏文件</param>
+        public static BackupCreater BackupOnce(string 备份源文件名, WriteProcedure writeFileProcedure = null, string 备份后缀名 = ".backup", bool hideBackup = false)
+        {
+            var ret = new BackupCreater(备份后缀名, writeFileProcedure, int.MaxValue, 备份后缀名, hideBackup);
+            ret.StartOnce();
+            return ret;
         }
 
         /// <summary>
@@ -186,15 +253,6 @@ namespace 关机助手.Util
                 restoreProcedure();
             if (deleteBackupFile)
                 this.DeleteBackup();
-        }
-
-        /// <summary>
-        /// 如果Timer在运行时修改部分变量则会报错
-        /// </summary>
-        private void Alert()
-        {
-            if (this.ParametersReadOnly)
-                throw new System.FieldAccessException("开始后不可以修改此变量！");
         }
     }
 }

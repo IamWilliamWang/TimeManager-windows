@@ -55,7 +55,7 @@
             this.缓存管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.获得管理员权限ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.禁止一次开机记时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.darkModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.暗黑模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.附加功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox透明度 = new System.Windows.Forms.ToolStripComboBox();
             this.隐匿ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,14 +97,14 @@
             // 插入开机时间ToolStripMenuItem
             // 
             this.插入开机时间ToolStripMenuItem.Name = "插入开机时间ToolStripMenuItem";
-            this.插入开机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.插入开机时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.插入开机时间ToolStripMenuItem.Text = "插入开机时间";
             this.插入开机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入开机时间ToolStripMenuItem_Click);
             // 
             // 插入关机时间ToolStripMenuItem
             // 
             this.插入关机时间ToolStripMenuItem.Name = "插入关机时间ToolStripMenuItem";
-            this.插入关机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.插入关机时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.插入关机时间ToolStripMenuItem.Text = "插入关机时间";
             this.插入关机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入关机时间ToolStripMenuItem_Click);
             // 
@@ -227,7 +227,7 @@
             this.缓存管理ToolStripMenuItem,
             this.获得管理员权限ToolStripMenuItem,
             this.禁止一次开机记时间ToolStripMenuItem,
-            this.darkModeToolStripMenuItem,
+            this.暗黑模式ToolStripMenuItem,
             this.附加功能ToolStripMenuItem,
             this.退出ToolStripMenuItem1});
             this.主界面contextMenuStrip.Name = "contextMenuStripMainForm";
@@ -260,14 +260,14 @@
             // 切断数据库连接ToolStripMenuItem
             // 
             this.切断数据库连接ToolStripMenuItem.Name = "切断数据库连接ToolStripMenuItem";
-            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.切断数据库连接ToolStripMenuItem.Text = "切断数据库连接";
             this.切断数据库连接ToolStripMenuItem.Click += new System.EventHandler(this.切断数据库连接ToolStripMenuItem_Click);
             // 
             // 外链数据库ToolStripMenuItem
             // 
             this.外链数据库ToolStripMenuItem.Name = "外链数据库ToolStripMenuItem";
-            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.外链数据库ToolStripMenuItem.Text = "外链数据库";
             this.外链数据库ToolStripMenuItem.Click += new System.EventHandler(this.外链数据库ToolStripMenuItem_Click);
             // 
@@ -294,10 +294,10 @@
             // 
             // darkModeToolStripMenuItem
             // 
-            this.darkModeToolStripMenuItem.Name = "darkModeToolStripMenuItem";
-            this.darkModeToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.darkModeToolStripMenuItem.Text = "Dark Mode";
-            this.darkModeToolStripMenuItem.Click += new System.EventHandler(this.darkModeToolStripMenuItem_Click);
+            this.暗黑模式ToolStripMenuItem.Name = "darkModeToolStripMenuItem";
+            this.暗黑模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.暗黑模式ToolStripMenuItem.Text = "暗黑模式";
+            this.暗黑模式ToolStripMenuItem.Click += new System.EventHandler(this.darkModeToolStripMenuItem_Click);
             // 
             // 附加功能ToolStripMenuItem
             // 
@@ -477,7 +477,7 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox透明度;
         private System.Windows.Forms.ToolStripMenuItem 隐匿ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 缓存管理ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem darkModeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 暗黑模式ToolStripMenuItem;
     }
 }
 

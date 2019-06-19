@@ -328,7 +328,7 @@ namespace 关机助手.Util
 "|-h              |--hibernate                     |休眠电脑(记录关机和下次开机时间)                   |-h",
 "|-sleep          |--sleep                         |睡眠电脑(记录关机和下次开机时间)                   |-sleep",
 "|-db [dbFilename]|--database_filename [dbFilename]|设定数据库文件名(不使用-dc会自动检测对应的缓存文件)|-db D:\\database.mdf",
-"|-dc             |--disable_cache                 |强制禁用使用缓存                                   |-dc",
+"|-dc             |--disable_cache                 |强制禁止使用缓存                                   |-dc",
 "|-offline        |--offline                       |离线模式，不记录任何时间                           |-offline",
 "|-sc             |--show_cache                    |显示缓存文件内容（可指定缓存文件）                 |-sc -db my_cache.cache",
 "|-del            |--delete_cache                  |删除缓存文件（可指定缓存文件）                     |-del -db my_cache.cache"
