@@ -225,6 +225,7 @@ namespace 关机助手
             //backgroundQueryMode = QueryMode.统计结算填补;
             //this.dbBackgroundWorker.RunWorkerAsync(null);
             SqlExecuter.记录结算();
+            this.Focus();
             this.progressBar1.Value = 40;
             this.statusLabel.Text = "正在填补空处";
             backgroundQueryMode = QueryMode.显示后十五条数据;
@@ -727,10 +728,10 @@ namespace 关机助手
             {
                 this.精准查找显示ToolStripMenuItem_Click(sender, e);
             }
-            else if (backgroundQueryMode == QueryMode.统计结算填补)
-            {
-                SqlExecuter.记录结算();
-            }
+            //else if (backgroundQueryMode == QueryMode.统计结算填补)
+            //{
+            //    SqlExecuter.记录结算();
+            //}
             this.progressBar1.Value = 100;
             this.statusLabel.Text = "完成";
             semaphore.Release();

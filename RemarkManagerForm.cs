@@ -45,42 +45,48 @@ namespace 关机助手
 
         #region 数据表加载
         /// <summary>
-        /// 将英文与hex混合字串转换成正常字串
+        /// 将普通英文与UTF8混合字串转换成正常字串
         /// </summary>
-        /// <param name="itemString"></param>
+        /// <param name="混合字符串">英文与UTF8混合字串</param>
         /// <returns></returns>
-        private string Hex2ChiEngString(string itemString)
+        private string Hex2ChiEngString(string 混合字符串)
         {
-            int finishedPointer = 0;
-            int chiStartIndex, chiEndIndex;
-            StringBuilder strResult = new StringBuilder();
-            while (finishedPointer < itemString.Length)
+            int 处理结束所在Index = 0;
+            int 中文字开始Index, 中文字结束Index;
+            StringBuilder result = new StringBuilder(); // 真实字符串
+            // 每次循环优先处理英文，然后在处理中文。以此类推
+            while (处理结束所在Index < 混合字符串.Length)
             {
-                chiStartIndex = itemString.IndexOf("&#x", finishedPointer);
-                if (chiStartIndex == -1)
-                    chiStartIndex = itemString.Length;
-                if (chiStartIndex != finishedPointer) //有不用处理的英文字母直接而放入
+                中文字开始Index = 混合字符串.IndexOf("&#x", 处理结束所在Index);
+                if (中文字开始Index == -1) // 如果接下来没有UTF8字符了
+                    中文字开始Index = 混合字符串.Length; // 使开始Index出界
+                if (中文字开始Index != 处理结束所在Index) // 有不用处理的英文字母直接放入原文
                 {
-                    strResult.Append(itemString.Substring(finishedPointer, chiStartIndex - finishedPointer));
-                    finishedPointer = chiStartIndex;
+                    result.Append(混合字符串.Substring(处理结束所在Index, 中文字开始Index - 处理结束所在Index));
+                    处理结束所在Index = 中文字开始Index;
                 }
-                if (finishedPointer < itemString.Length)
+                if (处理结束所在Index < 混合字符串.Length) // 还没处理完所有的字符串
                 {
-                    chiEndIndex = itemString.IndexOf(";", chiStartIndex) + 1;
+                    中文字结束Index = 混合字符串.IndexOf(";", 中文字开始Index) + 1; // 字符格式是&#x…;
+                    // 循环查找连续的中文字符
                     while (true)
                     {
-                        if (itemString.IndexOf("&#x", chiEndIndex) != chiEndIndex)
+                        // 如果不再是中文字符，就跳出循环
+                        if (混合字符串.IndexOf("&#x", 中文字结束Index) != 中文字结束Index)
                             break;
-                        chiEndIndex = itemString.IndexOf(";", chiEndIndex) + 1;
+                        // 下个字还是中文就接着查找
+                        中文字结束Index = 混合字符串.IndexOf(";", 中文字结束Index) + 1;
                     }
-                    if (chiEndIndex == 0)
+                    if (中文字结束Index == 0)
                         throw new Exception("中文Hex格式错误");
-                    string chinCharacterHex = itemString.Substring(chiStartIndex, chiEndIndex - chiStartIndex).Replace("&#x", "").Replace(";", "");
-                    strResult.Append(UnicodeSaverUtil.GetChsFromHex(chinCharacterHex));
-                    finishedPointer = chiEndIndex;
+                    // 得到所有中文字符的utf8编码
+                    string chinCharacterUtf8编码 = 混合字符串.Substring(中文字开始Index, 中文字结束Index - 中文字开始Index).Replace("&#x", "").Replace(";", "");
+                    // 转化为汉字添加进去
+                    result.Append(UnicodeSaverUtil.GetChsFromHex(chinCharacterUtf8编码));
+                    处理结束所在Index = 中文字结束Index;
                 }
             }
-            return strResult.ToString();
+            return result.ToString();
         }
 
         private void RefreshRemarks()
@@ -119,9 +125,9 @@ namespace 关机助手
             string formatedContent = ""; //只对oldContent中的中文部分进行utf8编码，其他部分不予处理
             foreach (char ch in oldContent.ToCharArray())
             {
-                if (Util.UnicodeSaverUtil.IsChineseChar(ch))
+                if (UnicodeSaverUtil.IsChineseChar(ch) || ch =='\'') //对所有中文或者'进行编码
                 {
-                    formatedContent += Util.UnicodeSaverUtil.GetHexFromChs(ch);
+                    formatedContent += UnicodeSaverUtil.GetHexFromChs(ch);
                 }
                 else
                     formatedContent += ch;
