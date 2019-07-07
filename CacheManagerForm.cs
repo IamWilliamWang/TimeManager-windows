@@ -11,21 +11,115 @@ namespace 关机助手
     public partial class CacheManagerForm : Form
     {
         // 缓存文件名
-        private String cache { get { return Cache.CacheFilename; } }
-        private int CacheTextLength { get; set; } = 0;
+        private String cacheName { get { return Cache.CacheFilename; } }
+        private int CacheSavedTextLength { get; set; } = 0;
+
+        #region 输出显示控制器
+        /// <summary>
+        /// 表示一条Sql，一个最基本的单位
+        /// </summary>
+        private class SqlItem
+        {
+            public readonly bool 记录开机;
+            public string SqlString { get; set; }
+            public string SqlTime
+            {
+                get
+                {
+                    int from = SqlString.IndexOf('\'') + 1;
+                    int to = SqlString.IndexOf('\'', from);
+                    return SqlString.Substring(from, to - from);
+                }
+            }
+
+            public SqlItem(string sqlString)
+            {
+                this.SqlString = sqlString;
+                this.记录开机 = this.SqlString.StartsWith("INSERT", true, System.Globalization.CultureInfo.CurrentCulture);
+            }
+
+            /// <summary>
+            /// 将开机/关机时间：xx:xx:xx转换成可以直接执行的sql字符串
+            /// </summary>
+            /// <param name="displayedItem">显示在屏幕上的单行文字</param>
+            /// <returns></returns>
+            public static SqlItem GetSqlItemFromDisplayedString(string displayedItem)
+            {
+                if (displayedItem.Contains("开机"))
+                {
+                    int index = displayedItem.IndexOf('：');
+                    if (index == -1)
+                        throw new Exception("有条目不包含：");
+                    string time = displayedItem.Substring(index + 1);
+                    string sqlString = "INSERT INTO [Table](开机时间) VALUES ('@time')".Replace("@time", time);
+                    SqlItem item = new SqlItem(sqlString);
+                    return item;
+                }
+                else if (displayedItem.Contains("关机"))
+                {
+                    int index = displayedItem.IndexOf('：');
+                    if (index == -1)
+                        throw new Exception("有条目不包含：");
+                    string time = displayedItem.Substring(index + 1);
+                    string sqlString = "UPDATE [Table] SET 关机时间 = '@time', 时长 = '@time' - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
+                        .Replace("@time", time);
+                    SqlItem item = new SqlItem(sqlString);
+                    return item;
+                }
+                else
+                    throw new ArgumentException("转换字符串无效！");
+            }
+
+            /// <summary>
+            /// 将直接执行的sql字符串转换成开机/关机时间：xx:xx:xx
+            /// </summary>
+            /// <param name="raw_sql">能直接执行的一句sql语句</param>
+            /// <returns></returns>
+            public static string GetDisplayedStringFromSqlString(string raw_sql)
+            {
+                SqlItem sqlItem = new SqlItem(raw_sql);
+                return (sqlItem.记录开机 ? "开机时间：" : "关机时间：") + sqlItem.SqlTime;
+            }
+        }
+
+        /// <summary>
+        /// 获取显示的所有Sql语句，设置需要显示的Sql语句。
+        /// </summary>
         public string CacheText { get {
-                return textBoxCache.Text;
+                // 获取CacheTextLines并连接成Text格式
+                StringBuilder originalSqls = new StringBuilder();
+                foreach (var sql in CacheTextLines)
+                    originalSqls.AppendLine(sql);
+                return originalSqls.ToString();
             } set {
-                textBoxCache.Text = value;
+                // 分割成string[]格式并传递给CacheTextLines
+                CacheTextLines = value.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             } }
-        public string[] CacheTextLines { get { // 制作简单转换调用，主要操作交给CacheText
-                return CacheText.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+        /// <summary>
+        /// 获取显示的所有Sql语句，设置需要显示的Sql语句
+        /// </summary>
+        public string[] CacheTextLines { get {
+                string[] displayedContentLines = this.textBoxCache.Lines;
+                List<String> originalSqlLines = new List<String>();
+                foreach (var dispStr in displayedContentLines)
+                {
+                    if (dispStr == "")
+                        continue;
+                    SqlItem sqlItem = SqlItem.GetSqlItemFromDisplayedString(dispStr);
+                    originalSqlLines.Add(sqlItem.SqlString);
+                }
+                return originalSqlLines.ToArray();
             } set {
-                StringBuilder stringBuilder = new StringBuilder();
-                foreach (var sqlString in value)
-                    stringBuilder.AppendLine(sqlString);
-                CacheText = stringBuilder.ToString();
+                // 分割成一句一句的sql语句
+                string[] sqlStrings = value;
+                List<String> displayedList = new List<String>(); // 最后要显示的内容
+                foreach (var sqlStr in sqlStrings)
+                    displayedList.Add(SqlItem.GetDisplayedStringFromSqlString(sqlStr));
+                this.textBoxCache.Lines = displayedList.ToArray();
             } }
+        #endregion
+
         #region 加载窗口事件
         public CacheManagerForm()
         {
@@ -53,7 +147,7 @@ namespace 关机助手
                 return;
             }
             CacheTextLines = allLines;
-            this.CacheTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
+            this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void AutoScrollBar()
@@ -89,7 +183,7 @@ namespace 关机助手
                 Cache.BackupMyCache(Cache.CacheFilename);
         }
 
-        private bool CacheChanged { get { return this.CacheTextLength != this.CacheText.Replace("\r", "").Replace("\n", "").Length; } }
+        private bool CacheChanged { get { return this.CacheSavedTextLength != this.CacheText.Replace("\r", "").Replace("\n", "").Length; } }
 
         private void CacheManagerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -123,7 +217,7 @@ namespace 关机助手
             if (files.Length != 1)
                 return;
             string dragFilename = files[0];
-            dragFilename = dragFilename.Substring(0, dragFilename.LastIndexOf('\\') + 1) + cache;
+            dragFilename = dragFilename.Substring(0, dragFilename.LastIndexOf('\\') + 1) + cacheName;
             this.textBox源.Text = dragFilename;
         }
 
@@ -133,7 +227,7 @@ namespace 关机助手
             if (files.Length != 1)
                 return;
             string dragFilename = files[0];
-            dragFilename = dragFilename.Substring(0, dragFilename.LastIndexOf('\\') + 1) + cache;
+            dragFilename = dragFilename.Substring(0, dragFilename.LastIndexOf('\\') + 1) + cacheName;
             this.textBox目标.Text = dragFilename;
         }
         #endregion
@@ -143,7 +237,7 @@ namespace 关机助手
         {
             if (MessageBox.Show("删除文件操作不可恢复，是否继续？", "删除警告", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 return;
-            File.Delete(cache);
+            File.Delete(cacheName);
             MessageBox.Show("已删除缓存文件！");
             this.Close();
         }
@@ -158,17 +252,17 @@ namespace 关机助手
             SaveFileDialog fileDialog = new SaveFileDialog
             {
                 DefaultExt = ".cache",
-                FileName = cache,
+                FileName = cacheName,
                 Filter = "缓存文件|TimeDatabase.cache",
                 InitialDirectory = Directory.GetCurrentDirectory(),
                 Title = "移动文件",
                 CheckFileExists = false
             };
             fileDialog.ShowDialog();
-            if (fileDialog.FileName == cache)
+            if (fileDialog.FileName == cacheName)
                 return;
             File.Delete(fileDialog.FileName);
-            File.Move(cache, fileDialog.FileName);
+            File.Move(cacheName, fileDialog.FileName);
         }
 
         private void 另存为缓存ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -181,17 +275,17 @@ namespace 关机助手
             SaveFileDialog fileDialog = new SaveFileDialog
             {
                 DefaultExt = ".cache",
-                FileName = cache,
-                Filter = "缓存文件|" + cache,
+                FileName = cacheName,
+                Filter = "缓存文件|" + cacheName,
                 InitialDirectory = Directory.GetCurrentDirectory(),
                 Title = "另存为",
                 CheckFileExists = false
             };
             fileDialog.ShowDialog();
-            if (fileDialog.FileName == cache)
+            if (fileDialog.FileName == cacheName)
                 return;
             using (StreamWriter writer = new StreamWriter(fileDialog.FileName, false))
-            using (StreamReader reader = new StreamReader(cache))
+            using (StreamReader reader = new StreamReader(cacheName))
                 writer.Write(reader.ReadToEnd());
         }
 
@@ -230,9 +324,9 @@ namespace 关机助手
         private void UpdateCache()
         {
             if (this.CacheText == "")
-                File.Delete(cache);
+                File.Delete(cacheName);
             Cache.SetAllLines(CacheTextLines);
-            this.CacheTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
+            this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -250,50 +344,6 @@ namespace 关机助手
         #endregion
 
         #region 缓存合并
-        private SqlItem getSqlItemFromDisplayedItem(string displayedItem)
-        {
-            if (displayedItem.StartsWith("INSERT", true, System.Globalization.CultureInfo.CurrentCulture))
-            {
-                int index = displayedItem.IndexOf('：');
-                if (index == -1)
-                    throw new Exception("有条目不包含：");
-                string sql = displayedItem.Substring(index + 1);
-                string sqlString = "INSERT INTO [Table](开机时间) VALUES ('@sql')".Replace("@sql", sql);
-                SqlItem item = new SqlItem(sqlString);
-                return item;
-            }
-            else
-            {
-                int index = displayedItem.IndexOf('：');
-                if (index == -1)
-                    throw new Exception("有条目不包含：");
-                string sql = displayedItem.Substring(index + 1);
-                string sqlString = "UPDATE [Table] SET 关机时间 = '@sql', 时长 = '@sql' - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
-                    .Replace("@sql",sql);
-                SqlItem item = new SqlItem(sqlString);
-                return item;
-            }
-        }
-        private class SqlItem
-        {
-            public readonly bool 记录开机;
-            public bool 记录关机 { get { return !记录开机; } }
-            public string SqlString { get; set; }
-            public string SqlTime {
-                get
-                {
-                    int from = SqlString.IndexOf('\'') + 1;
-                    int to = SqlString.IndexOf('\'', from);
-                    return SqlString.Substring(from, to - from);
-                }
-            }
-            public SqlItem(string sqlString)
-            {
-                this.SqlString = sqlString;
-                this.记录开机 = this.SqlString.StartsWith("INSERT", true, System.Globalization.CultureInfo.CurrentCulture);
-            }
-        }
-
         private string[] SortStringsByTime(string[] cacheLines)
         {
             List<SqlItem> list = new List<SqlItem>();
