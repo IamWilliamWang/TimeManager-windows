@@ -13,6 +13,19 @@ namespace 关机助手
         // 缓存文件名
         private String cache { get { return Cache.CacheFilename; } }
         private int CacheTextLength { get; set; } = 0;
+        public string CacheText { get {
+                return textBoxCache.Text;
+            } set {
+                textBoxCache.Text = value;
+            } }
+        public string[] CacheTextLines { get { // 制作简单转换调用，主要操作交给CacheText
+                return CacheText.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            } set {
+                StringBuilder stringBuilder = new StringBuilder();
+                foreach (var sqlString in value)
+                    stringBuilder.AppendLine(sqlString);
+                CacheText = stringBuilder.ToString();
+            } }
         #region 加载窗口事件
         public CacheManagerForm()
         {
@@ -27,7 +40,7 @@ namespace 关机助手
             get
             {
                 double 每行文字实际高度 = 16.65;
-                return (int)(this.textBox.ClientSize.Height / 每行文字实际高度);
+                return (int)(this.textBoxCache.ClientSize.Height / 每行文字实际高度);
             }
         }
 
@@ -39,19 +52,19 @@ namespace 关机助手
                 this.Text += "（未找到缓存文件）";
                 return;
             }
-            this.textBox.Lines = allLines;
-            this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
+            CacheTextLines = allLines;
+            this.CacheTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void AutoScrollBar()
         {
-            int lineCount = this.textBox.GetLineFromCharIndex(this.textBox.Text.Length) + 1;
+            int lineCount = this.textBoxCache.GetLineFromCharIndex(this.CacheText.Length) + 1;
             // 当总行数大于显示，显示ScrollBar
-            if (this.textBox.ScrollBars == ScrollBars.None && lineCount > ShowedTextLines) // 提高执行效率
-                this.textBox.ScrollBars = ScrollBars.Vertical;
+            if (this.textBoxCache.ScrollBars == ScrollBars.None && lineCount > ShowedTextLines) // 提高执行效率
+                this.textBoxCache.ScrollBars = ScrollBars.Vertical;
             // 当总行数小于显示，隐藏ScrollBar
-            if (this.textBox.ScrollBars == ScrollBars.Vertical && lineCount < ShowedTextLines) // 提高执行效率
-                this.textBox.ScrollBars = ScrollBars.None;
+            if (this.textBoxCache.ScrollBars == ScrollBars.Vertical && lineCount < ShowedTextLines) // 提高执行效率
+                this.textBoxCache.ScrollBars = ScrollBars.None;
         }
 
         private void CacheManagerForm_Load(object sender, EventArgs e)
@@ -76,7 +89,7 @@ namespace 关机助手
                 Cache.BackupMyCache(Cache.CacheFilename);
         }
 
-        private bool CacheChanged { get { return this.CacheTextLength != this.textBox.Text.Replace("\r", "").Replace("\n", "").Length; } }
+        private bool CacheChanged { get { return this.CacheTextLength != this.CacheText.Replace("\r", "").Replace("\n", "").Length; } }
 
         private void CacheManagerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -205,7 +218,7 @@ namespace 关机助手
             notepadProcess.StartInfo.Arguments = "\"" + new FileInfo("TimeDatabase.cache").FullName + "\"";
             notepadProcess.Start();
             notepadProcess.WaitForExit();
-            this.textBox.Lines = Cache.GetAllLines();
+            CacheTextLines = Cache.GetAllLines();
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -216,10 +229,10 @@ namespace 关机助手
 
         private void UpdateCache()
         {
-            if (this.textBox.Text == "")
+            if (this.CacheText == "")
                 File.Delete(cache);
-            Cache.SetAllLines(this.textBox.Lines);
-            this.CacheTextLength = this.textBox.Text.Replace("\r", "").Replace("\n", "").Length;
+            Cache.SetAllLines(CacheTextLines);
+            this.CacheTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -237,8 +250,34 @@ namespace 关机助手
         #endregion
 
         #region 缓存合并
+        private SqlItem getSqlItemFromDisplayedItem(string displayedItem)
+        {
+            if (displayedItem.StartsWith("INSERT", true, System.Globalization.CultureInfo.CurrentCulture))
+            {
+                int index = displayedItem.IndexOf('：');
+                if (index == -1)
+                    throw new Exception("有条目不包含：");
+                string sql = displayedItem.Substring(index + 1);
+                string sqlString = "INSERT INTO [Table](开机时间) VALUES ('@sql')".Replace("@sql", sql);
+                SqlItem item = new SqlItem(sqlString);
+                return item;
+            }
+            else
+            {
+                int index = displayedItem.IndexOf('：');
+                if (index == -1)
+                    throw new Exception("有条目不包含：");
+                string sql = displayedItem.Substring(index + 1);
+                string sqlString = "UPDATE [Table] SET 关机时间 = '@sql', 时长 = '@sql' - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
+                    .Replace("@sql",sql);
+                SqlItem item = new SqlItem(sqlString);
+                return item;
+            }
+        }
         private class SqlItem
         {
+            public readonly bool 记录开机;
+            public bool 记录关机 { get { return !记录开机; } }
             public string SqlString { get; set; }
             public string SqlTime {
                 get
@@ -251,8 +290,10 @@ namespace 关机助手
             public SqlItem(string sqlString)
             {
                 this.SqlString = sqlString;
+                this.记录开机 = this.SqlString.StartsWith("INSERT", true, System.Globalization.CultureInfo.CurrentCulture);
             }
         }
+
         private string[] SortStringsByTime(string[] cacheLines)
         {
             List<SqlItem> list = new List<SqlItem>();

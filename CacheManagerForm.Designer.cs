@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox = new System.Windows.Forms.TextBox();
+            this.textBoxCache = new System.Windows.Forms.TextBox();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonClearCache = new System.Windows.Forms.Button();
             this.buttonOpenFile = new System.Windows.Forms.Button();
@@ -51,16 +51,16 @@
             this.groupBox合并.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox
+            // textBoxCache
             // 
-            this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.textBoxCache.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox.Location = new System.Drawing.Point(6, 20);
-            this.textBox.Multiline = true;
-            this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(522, 281);
-            this.textBox.TabIndex = 1;
+            this.textBoxCache.Location = new System.Drawing.Point(6, 20);
+            this.textBoxCache.Multiline = true;
+            this.textBoxCache.Name = "textBoxCache";
+            this.textBoxCache.Size = new System.Drawing.Size(522, 281);
+            this.textBoxCache.TabIndex = 1;
             // 
             // buttonSave
             // 
@@ -158,7 +158,7 @@
             this.groupBox缓存编辑.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox缓存编辑.Controls.Add(this.textBox);
+            this.groupBox缓存编辑.Controls.Add(this.textBoxCache);
             this.groupBox缓存编辑.Controls.Add(this.buttonClearCache);
             this.groupBox缓存编辑.Controls.Add(this.buttonOpenFile);
             this.groupBox缓存编辑.Controls.Add(this.buttonSave);
@@ -269,7 +269,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.TextBox textBox;
+        private System.Windows.Forms.TextBox textBoxCache;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Button buttonClearCache;
         private System.Windows.Forms.Button buttonOpenFile;
