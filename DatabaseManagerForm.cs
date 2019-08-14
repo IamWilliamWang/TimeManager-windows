@@ -512,30 +512,7 @@ namespace 关机助手
                 MessageBox.Show("无损备份文件加载成功！", "加载成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
-
-        private void 导入所有数据旧版ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("本功能为向后兼容数据导入。如果使用4.2及以前版本进行的备份，请点确定，否则点击取消。"
-                , "警告：4.4版本开始将删除本功能", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
-                return;
-            database.ResetConnection();
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "还原文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
-            if (fileDialog.ShowDialog() == DialogResult.OK)
-            {
-                if (EncryptUtil.DecryptFile(fileDialog.FileName))
-                {
-                    if (WinRARUtil.DecompressFile(fileDialog.FileName, Directory.GetCurrentDirectory()))
-                        MessageBox.Show("无损还原数据库成功！", "还原成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    else
-                        MessageBox.Show("还原失败！该操作需要电脑上装有WinRAR软件。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                    MessageBox.Show("还原失败！解密文件时发生未知错误。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            Application.Restart();
-        }
-
+        
         private void 还原数据库_RarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();

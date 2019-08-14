@@ -89,6 +89,8 @@ namespace 关机助手.Util
                 return This.mainConfig.mainAutoShutdownSeconds;
             }
         }
+
+        public static string RawText { get { if (!File.Exists(configName)) return ""; else return File.ReadAllText(configName); } }
         #endregion
 
         private bool Contains(XmlNode parent, string childName)

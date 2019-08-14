@@ -655,6 +655,16 @@ namespace 关机助手
         {
             DarkMode = !DarkMode; //切换暗黑模式状态
         }
+        
+        private void 显示配置文件内容ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(ConfigManager.RawText);
+        }
+
+        private void 配置文件格式ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(Properties.Resources.ConfigHelp);
+        }
 
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)
         {
@@ -782,6 +792,6 @@ namespace 关机助手
             this.安全模式ToolStripMenuItem.Text = enable ? "关闭安全模式" : "启动安全模式";
         }
         #endregion
-        
+
     }
 }

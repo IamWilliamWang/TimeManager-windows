@@ -65,6 +65,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
+            this.配置管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.显示配置文件内容ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.配置文件格式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
@@ -97,14 +100,14 @@
             // 插入开机时间ToolStripMenuItem
             // 
             this.插入开机时间ToolStripMenuItem.Name = "插入开机时间ToolStripMenuItem";
-            this.插入开机时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.插入开机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.插入开机时间ToolStripMenuItem.Text = "插入开机时间";
             this.插入开机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入开机时间ToolStripMenuItem_Click);
             // 
             // 插入关机时间ToolStripMenuItem
             // 
             this.插入关机时间ToolStripMenuItem.Name = "插入关机时间ToolStripMenuItem";
-            this.插入关机时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.插入关机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.插入关机时间ToolStripMenuItem.Text = "插入关机时间";
             this.插入关机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入关机时间ToolStripMenuItem_Click);
             // 
@@ -228,23 +231,24 @@
             this.获得管理员权限ToolStripMenuItem,
             this.禁止一次开机记时间ToolStripMenuItem,
             this.暗黑模式ToolStripMenuItem,
+            this.配置管理ToolStripMenuItem,
             this.附加功能ToolStripMenuItem,
             this.退出ToolStripMenuItem1});
             this.主界面contextMenuStrip.Name = "contextMenuStripMainForm";
-            this.主界面contextMenuStrip.Size = new System.Drawing.Size(180, 202);
+            this.主界面contextMenuStrip.Size = new System.Drawing.Size(181, 246);
             this.主界面contextMenuStrip.Tag = "主页面右击界面";
             // 
             // 安全模式ToolStripMenuItem
             // 
             this.安全模式ToolStripMenuItem.Name = "安全模式ToolStripMenuItem";
-            this.安全模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.安全模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.安全模式ToolStripMenuItem.Text = "启动安全模式";
             this.安全模式ToolStripMenuItem.Click += new System.EventHandler(this.安全模式ToolStripMenuItem_Click);
             // 
             // 升级日志ToolStripMenuItem
             // 
             this.升级日志ToolStripMenuItem.Name = "升级日志ToolStripMenuItem";
-            this.升级日志ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.升级日志ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.升级日志ToolStripMenuItem.Text = "关于&&升级日志";
             this.升级日志ToolStripMenuItem.Click += new System.EventHandler(this.升级日志ToolStripMenuItem_Click);
             // 
@@ -254,48 +258,48 @@
             this.切断数据库连接ToolStripMenuItem,
             this.外链数据库ToolStripMenuItem});
             this.源头管理ToolStripMenuItem.Name = "源头管理ToolStripMenuItem";
-            this.源头管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.源头管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.源头管理ToolStripMenuItem.Text = "源头管理";
             // 
             // 切断数据库连接ToolStripMenuItem
             // 
             this.切断数据库连接ToolStripMenuItem.Name = "切断数据库连接ToolStripMenuItem";
-            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.切断数据库连接ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.切断数据库连接ToolStripMenuItem.Text = "切断数据库连接";
             this.切断数据库连接ToolStripMenuItem.Click += new System.EventHandler(this.切断数据库连接ToolStripMenuItem_Click);
             // 
             // 外链数据库ToolStripMenuItem
             // 
             this.外链数据库ToolStripMenuItem.Name = "外链数据库ToolStripMenuItem";
-            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.外链数据库ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.外链数据库ToolStripMenuItem.Text = "外链数据库";
             this.外链数据库ToolStripMenuItem.Click += new System.EventHandler(this.外链数据库ToolStripMenuItem_Click);
             // 
             // 缓存管理ToolStripMenuItem
             // 
             this.缓存管理ToolStripMenuItem.Name = "缓存管理ToolStripMenuItem";
-            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.缓存管理ToolStripMenuItem.Text = "缓存管理器";
             this.缓存管理ToolStripMenuItem.Click += new System.EventHandler(this.缓存管理ToolStripMenuItem_Click);
             // 
             // 获得管理员权限ToolStripMenuItem
             // 
             this.获得管理员权限ToolStripMenuItem.Name = "获得管理员权限ToolStripMenuItem";
-            this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.获得管理员权限ToolStripMenuItem.Text = "获得管理员权限";
             this.获得管理员权限ToolStripMenuItem.Click += new System.EventHandler(this.获得管理员权限ToolStripMenuItem_Click);
             // 
             // 禁止一次开机记时间ToolStripMenuItem
             // 
             this.禁止一次开机记时间ToolStripMenuItem.Name = "禁止一次开机记时间ToolStripMenuItem";
-            this.禁止一次开机记时间ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.禁止一次开机记时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.禁止一次开机记时间ToolStripMenuItem.Text = "禁止1次开机记时间";
             this.禁止一次开机记时间ToolStripMenuItem.Click += new System.EventHandler(this.禁止一次开机记时间ToolStripMenuItem_Click);
             // 
-            // darkModeToolStripMenuItem
+            // 暗黑模式ToolStripMenuItem
             // 
-            this.暗黑模式ToolStripMenuItem.Name = "darkModeToolStripMenuItem";
-            this.暗黑模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.暗黑模式ToolStripMenuItem.Name = "暗黑模式ToolStripMenuItem";
+            this.暗黑模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.暗黑模式ToolStripMenuItem.Text = "暗黑模式";
             this.暗黑模式ToolStripMenuItem.Click += new System.EventHandler(this.darkModeToolStripMenuItem_Click);
             // 
@@ -305,7 +309,7 @@
             this.toolStripComboBox透明度,
             this.隐匿ToolStripMenuItem});
             this.附加功能ToolStripMenuItem.Name = "附加功能ToolStripMenuItem";
-            this.附加功能ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.附加功能ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.附加功能ToolStripMenuItem.Text = "附加功能";
             // 
             // toolStripComboBox透明度
@@ -347,7 +351,7 @@
             // 退出ToolStripMenuItem1
             // 
             this.退出ToolStripMenuItem1.Name = "退出ToolStripMenuItem1";
-            this.退出ToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
+            this.退出ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.退出ToolStripMenuItem1.Text = "退出";
             this.退出ToolStripMenuItem1.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
@@ -398,6 +402,29 @@
             // 
             this.updateTitleTimer.Interval = 77;
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
+            // 
+            // 配置管理ToolStripMenuItem
+            // 
+            this.配置管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.显示配置文件内容ToolStripMenuItem,
+            this.配置文件格式ToolStripMenuItem});
+            this.配置管理ToolStripMenuItem.Name = "配置管理ToolStripMenuItem";
+            this.配置管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.配置管理ToolStripMenuItem.Text = "配置管理";
+            // 
+            // 显示配置文件内容ToolStripMenuItem
+            // 
+            this.显示配置文件内容ToolStripMenuItem.Name = "显示配置文件内容ToolStripMenuItem";
+            this.显示配置文件内容ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.显示配置文件内容ToolStripMenuItem.Text = "显示配置文件内容";
+            this.显示配置文件内容ToolStripMenuItem.Click += new System.EventHandler(this.显示配置文件内容ToolStripMenuItem_Click);
+            // 
+            // 配置文件格式ToolStripMenuItem
+            // 
+            this.配置文件格式ToolStripMenuItem.Name = "配置文件格式ToolStripMenuItem";
+            this.配置文件格式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.配置文件格式ToolStripMenuItem.Text = "配置文件格式";
+            this.配置文件格式ToolStripMenuItem.Click += new System.EventHandler(this.配置文件格式ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -478,6 +505,9 @@
         private System.Windows.Forms.ToolStripMenuItem 隐匿ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 缓存管理ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 暗黑模式ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 配置管理ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 显示配置文件内容ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 配置文件格式ToolStripMenuItem;
     }
 }
 

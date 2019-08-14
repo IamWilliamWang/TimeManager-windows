@@ -61,6 +61,27 @@ namespace 关机助手.Properties {
         }
         
         /// <summary>
+        ///   查找类似 &lt;!--以下不用的属性可删除--&gt;
+        ///&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+        ///&lt;Config&gt;
+        ///	&lt;CacheManager&gt;
+        ///		&lt;From&gt;（合并源文件名）&lt;/From&gt;
+        ///		&lt;To&gt;（合并目标文件名）&lt;/To&gt;
+        ///		&lt;AutoMerge&gt;（自动执行合并操作，true/false）&lt;/AutoMerge&gt;
+        ///	&lt;/CacheManager&gt;
+        ///	&lt;Main&gt;
+        ///		&lt;DarkNode&gt;（自动开启暗黑模式，true/false）&lt;/DarkNode&gt;
+        ///		&lt;AutoShutdownSeconds&gt;（自动执行几秒后关机）&lt;/AutoShutdownSeconds&gt;
+        ///	&lt;/Main&gt;
+        ///&lt;/Config&gt; 的本地化字符串。
+        /// </summary>
+        internal static string ConfigHelp {
+            get {
+                return ResourceManager.GetString("ConfigHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
         internal static byte[] EmptyDB {
