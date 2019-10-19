@@ -44,8 +44,8 @@
             this.注册关机事件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.销毁关机事件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.打开启动文件夹ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label模式选择 = new System.Windows.Forms.Label();
+            this.label设置倒计时 = new System.Windows.Forms.Label();
             this.主界面contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.安全模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.升级日志ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,18 +56,18 @@
             this.获得管理员权限ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.禁止一次开机记时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.暗黑模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.配置管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.显示配置文件内容ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.配置文件格式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.附加功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox透明度 = new System.Windows.Forms.ToolStripComboBox();
             this.隐匿ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.确定button2 = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label指定时间关机 = new System.Windows.Forms.Label();
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
-            this.配置管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.显示配置文件内容ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.配置文件格式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
@@ -203,23 +203,24 @@
             this.打开启动文件夹ToolStripMenuItem.Text = "打开启动文件夹";
             this.打开启动文件夹ToolStripMenuItem.Click += new System.EventHandler(this.打开启动文件夹ToolStripMenuItem_Click);
             // 
-            // label1
+            // label模式选择
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 39);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 12);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "模式选择：";
+            this.label模式选择.AutoSize = true;
+            this.label模式选择.Location = new System.Drawing.Point(12, 39);
+            this.label模式选择.Name = "label模式选择";
+            this.label模式选择.Size = new System.Drawing.Size(65, 12);
+            this.label模式选择.TabIndex = 4;
+            this.label模式选择.Text = "模式选择：";
             // 
-            // label2
+            // label设置倒计时
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(93, 39);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(113, 12);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "设置倒计时(分钟)：";
+            this.label设置倒计时.AutoSize = true;
+            this.label设置倒计时.Location = new System.Drawing.Point(93, 39);
+            this.label设置倒计时.Name = "label设置倒计时";
+            this.label设置倒计时.Size = new System.Drawing.Size(113, 12);
+            this.label设置倒计时.TabIndex = 5;
+            this.label设置倒计时.Text = "设置倒计时(分钟)：";
+            this.label设置倒计时.Click += new System.EventHandler(this.label设置倒计时_Click);
             // 
             // 主界面contextMenuStrip
             // 
@@ -235,20 +236,20 @@
             this.附加功能ToolStripMenuItem,
             this.退出ToolStripMenuItem1});
             this.主界面contextMenuStrip.Name = "contextMenuStripMainForm";
-            this.主界面contextMenuStrip.Size = new System.Drawing.Size(181, 246);
+            this.主界面contextMenuStrip.Size = new System.Drawing.Size(180, 224);
             this.主界面contextMenuStrip.Tag = "主页面右击界面";
             // 
             // 安全模式ToolStripMenuItem
             // 
             this.安全模式ToolStripMenuItem.Name = "安全模式ToolStripMenuItem";
-            this.安全模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.安全模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.安全模式ToolStripMenuItem.Text = "启动安全模式";
             this.安全模式ToolStripMenuItem.Click += new System.EventHandler(this.安全模式ToolStripMenuItem_Click);
             // 
             // 升级日志ToolStripMenuItem
             // 
             this.升级日志ToolStripMenuItem.Name = "升级日志ToolStripMenuItem";
-            this.升级日志ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.升级日志ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.升级日志ToolStripMenuItem.Text = "关于&&升级日志";
             this.升级日志ToolStripMenuItem.Click += new System.EventHandler(this.升级日志ToolStripMenuItem_Click);
             // 
@@ -258,7 +259,7 @@
             this.切断数据库连接ToolStripMenuItem,
             this.外链数据库ToolStripMenuItem});
             this.源头管理ToolStripMenuItem.Name = "源头管理ToolStripMenuItem";
-            this.源头管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.源头管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.源头管理ToolStripMenuItem.Text = "源头管理";
             // 
             // 切断数据库连接ToolStripMenuItem
@@ -278,30 +279,53 @@
             // 缓存管理ToolStripMenuItem
             // 
             this.缓存管理ToolStripMenuItem.Name = "缓存管理ToolStripMenuItem";
-            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.缓存管理ToolStripMenuItem.Text = "缓存管理器";
             this.缓存管理ToolStripMenuItem.Click += new System.EventHandler(this.缓存管理ToolStripMenuItem_Click);
             // 
             // 获得管理员权限ToolStripMenuItem
             // 
             this.获得管理员权限ToolStripMenuItem.Name = "获得管理员权限ToolStripMenuItem";
-            this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.获得管理员权限ToolStripMenuItem.Text = "获得管理员权限";
             this.获得管理员权限ToolStripMenuItem.Click += new System.EventHandler(this.获得管理员权限ToolStripMenuItem_Click);
             // 
             // 禁止一次开机记时间ToolStripMenuItem
             // 
             this.禁止一次开机记时间ToolStripMenuItem.Name = "禁止一次开机记时间ToolStripMenuItem";
-            this.禁止一次开机记时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.禁止一次开机记时间ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.禁止一次开机记时间ToolStripMenuItem.Text = "禁止1次开机记时间";
             this.禁止一次开机记时间ToolStripMenuItem.Click += new System.EventHandler(this.禁止一次开机记时间ToolStripMenuItem_Click);
             // 
             // 暗黑模式ToolStripMenuItem
             // 
             this.暗黑模式ToolStripMenuItem.Name = "暗黑模式ToolStripMenuItem";
-            this.暗黑模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.暗黑模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.暗黑模式ToolStripMenuItem.Text = "暗黑模式";
             this.暗黑模式ToolStripMenuItem.Click += new System.EventHandler(this.darkModeToolStripMenuItem_Click);
+            // 
+            // 配置管理ToolStripMenuItem
+            // 
+            this.配置管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.显示配置文件内容ToolStripMenuItem,
+            this.配置文件格式ToolStripMenuItem});
+            this.配置管理ToolStripMenuItem.Name = "配置管理ToolStripMenuItem";
+            this.配置管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.配置管理ToolStripMenuItem.Text = "配置管理";
+            // 
+            // 显示配置文件内容ToolStripMenuItem
+            // 
+            this.显示配置文件内容ToolStripMenuItem.Name = "显示配置文件内容ToolStripMenuItem";
+            this.显示配置文件内容ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.显示配置文件内容ToolStripMenuItem.Text = "显示配置文件内容";
+            this.显示配置文件内容ToolStripMenuItem.Click += new System.EventHandler(this.显示配置文件内容ToolStripMenuItem_Click);
+            // 
+            // 配置文件格式ToolStripMenuItem
+            // 
+            this.配置文件格式ToolStripMenuItem.Name = "配置文件格式ToolStripMenuItem";
+            this.配置文件格式ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.配置文件格式ToolStripMenuItem.Text = "配置文件格式";
+            this.配置文件格式ToolStripMenuItem.Click += new System.EventHandler(this.配置文件格式ToolStripMenuItem_Click);
             // 
             // 附加功能ToolStripMenuItem
             // 
@@ -309,7 +333,7 @@
             this.toolStripComboBox透明度,
             this.隐匿ToolStripMenuItem});
             this.附加功能ToolStripMenuItem.Name = "附加功能ToolStripMenuItem";
-            this.附加功能ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.附加功能ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.附加功能ToolStripMenuItem.Text = "附加功能";
             // 
             // toolStripComboBox透明度
@@ -351,7 +375,7 @@
             // 退出ToolStripMenuItem1
             // 
             this.退出ToolStripMenuItem1.Name = "退出ToolStripMenuItem1";
-            this.退出ToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.退出ToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
             this.退出ToolStripMenuItem1.Text = "退出";
             this.退出ToolStripMenuItem1.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
@@ -377,14 +401,14 @@
             this.确定button2.UseVisualStyleBackColor = true;
             this.确定button2.Click += new System.EventHandler(this.button确认2_Click);
             // 
-            // label3
+            // label指定时间关机
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 105);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 12);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "指定时间关机";
+            this.label指定时间关机.AutoSize = true;
+            this.label指定时间关机.Location = new System.Drawing.Point(11, 105);
+            this.label指定时间关机.Name = "label指定时间关机";
+            this.label指定时间关机.Size = new System.Drawing.Size(77, 12);
+            this.label指定时间关机.TabIndex = 8;
+            this.label指定时间关机.Text = "指定时间关机";
             // 
             // 记录关机时间checkBox
             // 
@@ -403,29 +427,6 @@
             this.updateTitleTimer.Interval = 77;
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
             // 
-            // 配置管理ToolStripMenuItem
-            // 
-            this.配置管理ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.显示配置文件内容ToolStripMenuItem,
-            this.配置文件格式ToolStripMenuItem});
-            this.配置管理ToolStripMenuItem.Name = "配置管理ToolStripMenuItem";
-            this.配置管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.配置管理ToolStripMenuItem.Text = "配置管理";
-            // 
-            // 显示配置文件内容ToolStripMenuItem
-            // 
-            this.显示配置文件内容ToolStripMenuItem.Name = "显示配置文件内容ToolStripMenuItem";
-            this.显示配置文件内容ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.显示配置文件内容ToolStripMenuItem.Text = "显示配置文件内容";
-            this.显示配置文件内容ToolStripMenuItem.Click += new System.EventHandler(this.显示配置文件内容ToolStripMenuItem_Click);
-            // 
-            // 配置文件格式ToolStripMenuItem
-            // 
-            this.配置文件格式ToolStripMenuItem.Name = "配置文件格式ToolStripMenuItem";
-            this.配置文件格式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.配置文件格式ToolStripMenuItem.Text = "配置文件格式";
-            this.配置文件格式ToolStripMenuItem.Click += new System.EventHandler(this.配置文件格式ToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -435,11 +436,11 @@
             this.ClientSize = new System.Drawing.Size(302, 97);
             this.ContextMenuStrip = this.主界面contextMenuStrip;
             this.Controls.Add(this.记录关机时间checkBox);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label指定时间关机);
             this.Controls.Add(this.确定button2);
             this.Controls.Add(this.dateTimePicker1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label设置倒计时);
+            this.Controls.Add(this.label模式选择);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.comboBoxMode);
             this.Controls.Add(this.comboBoxTime);
@@ -476,8 +477,8 @@
         private System.Windows.Forms.ComboBox comboBoxTime;
         private System.Windows.Forms.ComboBox comboBoxMode;
         private System.Windows.Forms.Button buttonOK;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label模式选择;
+        private System.Windows.Forms.Label label设置倒计时;
         private System.Windows.Forms.ContextMenuStrip 确认按钮contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem 注册关机事件ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 销毁关机事件ToolStripMenuItem;
@@ -486,7 +487,7 @@
         private System.Windows.Forms.ToolStripMenuItem 打开启动文件夹ToolStripMenuItem;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Button 确定button2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label指定时间关机;
         private System.Windows.Forms.ToolStripMenuItem 升级日志ToolStripMenuItem;
         private System.Windows.Forms.CheckBox 记录关机时间checkBox;
         private System.Windows.Forms.ToolStripMenuItem 数据管理ToolStripMenuItem;

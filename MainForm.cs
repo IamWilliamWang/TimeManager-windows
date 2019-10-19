@@ -182,11 +182,19 @@ namespace 关机助手
             if (this.comboBoxMode.Text == "重启")
                 this.记录关机时间checkBox.Checked = false;
         }
+
+        private void label设置倒计时_Click(object sender, EventArgs e)
+        {
+            if (this.label设置倒计时.Text.Contains("分钟"))
+                this.label设置倒计时.Text = this.label设置倒计时.Text.Replace("分钟", "小时");
+            else
+                this.label设置倒计时.Text = this.label设置倒计时.Text.Replace("小时", "分钟");
+        }
         #endregion
         /****************************/
 
         #region 菜单栏
-            #region 插入
+        #region 插入
         private void 插入开机时间ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SqlExecuter.记录开机事件("[Table]"))
@@ -279,7 +287,10 @@ namespace 关机助手
                 if (this.记录关机时间checkBox.Checked && this.comboBoxMode.Text != "延缓") 
                     SqlExecuter.记录关机事件();
 
-                if (float.Parse(this.comboBoxTime.Text) < 0)
+                float comboBoxTimeNumber = float.Parse(this.comboBoxTime.Text);
+                if (this.label设置倒计时.Text.Contains("小时"))
+                    comboBoxTimeNumber *= 60;
+                if (comboBoxTimeNumber < 0)
                     return;
 
                 if (this.comboBoxMode.Text == "休眠" || this.comboBoxMode.Text == "睡眠") 
@@ -287,7 +298,7 @@ namespace 关机助手
                     this.Hide();
                     try
                     {
-                        Thread.Sleep((int)(float.Parse(this.comboBoxTime.Text) * 60000));
+                        Thread.Sleep((int)(comboBoxTimeNumber * 60000));
                     }
                     catch(ArgumentOutOfRangeException)
                     {
@@ -303,20 +314,20 @@ namespace 关机助手
                     switch (this.comboBoxMode.Text)
                     {
                         case "关机":
-                            float seconds = float.Parse(this.comboBoxTime.Text) * 60;
+                            float seconds = comboBoxTimeNumber * 60;
                             RunShutdownCommand(Mode.关机, seconds);
                             break;
                         case "重启":
 	                        if (!this.记录关机时间checkBox.Checked)
 	                            File.CreateText(@"C:\Users\"+ProgramLauncher.SystemUserName+@"\DONOTWRITEDATA").Close();
-                            RunShutdownCommand(Mode.重启, float.Parse(this.comboBoxTime.Text) * 60);
+                            RunShutdownCommand(Mode.重启, comboBoxTimeNumber * 60);
                             break;
                         case "休眠":
                             RunSuspendCommand(Mode.休眠);
                             再次添加开机记录();
                             break;
                         case "延缓":
-                            FastModeExecutor.ShutdownWithSeconds_DelayMode((int)(float.Parse(this.comboBoxTime.Text) * 60));
+                            FastModeExecutor.ShutdownWithSeconds_DelayMode((int)(comboBoxTimeNumber * 60));
                             break;
                         case "睡眠":
                             RunSuspendCommand(Mode.睡眠);
@@ -575,6 +586,12 @@ namespace 关机助手
                     this.获得管理员权限ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.禁止一次开机记时间ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.配置管理ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.配置管理ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.附加功能ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.toolStripComboBox透明度.BackColor = SystemColors.WindowFrame;
@@ -583,7 +600,7 @@ namespace 关机助手
                     this.隐匿ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.WindowFrame;
                     this.退出ToolStripMenuItem1.ForeColor = SystemColors.Window;
-                    this.label3.BackColor = SystemColors.WindowFrame;
+                    this.label指定时间关机.BackColor = SystemColors.WindowFrame;
                     this.dateTimePicker1.CalendarMonthBackground = SystemColors.WindowFrame;
                     this.buttonOK.BackColor = SystemColors.WindowFrame;
                     this.buttonOK.ForeColor = SystemColors.Window;
@@ -632,15 +649,21 @@ namespace 关机助手
                     this.获得管理员权限ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.禁止一次开机记时间ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.配置管理ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.配置管理ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.附加功能ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    this.toolStripComboBox透明度.BackColor = SystemColors.Window;
+                    this.toolStripComboBox透明度.BackColor = SystemColors.Control;
                     this.toolStripComboBox透明度.ForeColor = SystemColors.ControlText;
                     this.隐匿ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.隐匿ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.Control;
                     this.退出ToolStripMenuItem1.ForeColor = SystemColors.ControlText;
-                    this.label3.BackColor = SystemColors.Control;
+                    this.label指定时间关机.BackColor = SystemColors.Control;
                     this.dateTimePicker1.CalendarMonthBackground = SystemColors.Window;
                     this.buttonOK.BackColor = SystemColors.Control;
                     this.buttonOK.ForeColor = SystemColors.ControlText;
@@ -792,6 +815,6 @@ namespace 关机助手
             this.安全模式ToolStripMenuItem.Text = enable ? "关闭安全模式" : "启动安全模式";
         }
         #endregion
-
+        
     }
 }
