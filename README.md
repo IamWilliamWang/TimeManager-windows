@@ -79,6 +79,10 @@
 > * 主界面双击激活开发者动作
 > * 确定键右击注册、销毁定时关机行为（每次开机启用该关机倒计时，实现防沉迷功能）。
 
+免安装版软件下载（需要预装.NET framework 4.6.1及以上版本）：
+
+[点击这里下载](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.4.2/TimeManager.exe)
+
 <br>
 当前版本：4.4.2(Form版本) + 2.0.1(命令行版本)
 
