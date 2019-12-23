@@ -324,14 +324,16 @@ namespace 关机助手
                             break;
                         case "休眠":
                             RunSuspendCommand(Mode.休眠);
-                            再次添加开机记录();
+                            if (this.记录关机时间checkBox.Checked) 
+                                再次添加开机记录();
                             break;
                         case "延缓":
                             FastModeExecutor.ShutdownWithSeconds_DelayMode((int)(comboBoxTimeNumber * 60));
                             break;
                         case "睡眠":
                             RunSuspendCommand(Mode.睡眠);
-                            再次添加开机记录();
+                            if (this.记录关机时间checkBox.Checked)
+                                再次添加开机记录();
                             break;
                     }
                 }
@@ -410,8 +412,7 @@ namespace 关机助手
             {
                 File.WriteAllText(Properties.Resources.RecorderShellFullFilename,
                         "chcp 65001\r\n" //先切换cmd的字符编码为UTF-8（注意一定要使用CRLF否则第二行会被吃字）
-                        + @"C:\Users\{1}\Desktop\关机助手.exe -k"
-                            .Replace("{1}", ProgramLauncher.SystemUserName),
+                        + Application.ExecutablePath + " -k",
                         new System.Text.UTF8Encoding(false)); //保存为无BOM的UTF-8文件
             }
             catch (UnauthorizedAccessException)

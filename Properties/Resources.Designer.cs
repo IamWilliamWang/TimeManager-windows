@@ -82,6 +82,33 @@ namespace 关机助手.Properties {
         }
         
         /// <summary>
+        ///   查找类似 ::::::::::::::::::::::::::::::::::::::::::::
+        ///:: Elevate.cmd - Version 4
+        ///:: Automatically check &amp; get admin rights
+        ///::::::::::::::::::::::::::::::::::::::::::::
+        /// @echo off
+        /// CLS
+        /// ECHO.
+        /// ECHO =============================
+        /// ECHO Running Admin shell
+        /// ECHO =============================
+        ///
+        ///:init
+        /// setlocal DisableDelayedExpansion
+        /// set cmdInvoke=1
+        /// set winSysFolder=System32
+        /// set &quot;batchPath=%~0&quot;
+        /// for %%k in (%0) do set batchName=%%~nk
+        /// set &quot;vbsGetPrivileges=%temp%\OEgetPriv_%batchName%.vbs&quot;
+        /// setlocal E [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string ElevatedCmd {
+            get {
+                return ResourceManager.GetString("ElevatedCmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
         internal static byte[] EmptyDB {

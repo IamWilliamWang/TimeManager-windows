@@ -208,9 +208,7 @@ namespace 关机助手.Util
             if (cache文件 == null)
             {
                 // 设置程序运行的文件夹为CurrentDirectory
-                var executablePath = System.Windows.Forms.Application.ExecutablePath;
-                executablePath = executablePath.Substring(0, executablePath.LastIndexOf("\\"));
-                System.IO.Directory.SetCurrentDirectory(executablePath);
+                System.IO.Directory.SetCurrentDirectory(System.Windows.Forms.Application.StartupPath);
             }
             else
             {
