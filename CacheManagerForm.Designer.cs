@@ -46,6 +46,10 @@
             this.textBox源 = new System.Windows.Forms.TextBox();
             this.label目标 = new System.Windows.Forms.Label();
             this.label源 = new System.Windows.Forms.Label();
+            this.显示模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.直观模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.经典模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.原始模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.groupBox缓存编辑.SuspendLayout();
             this.groupBox合并.SuspendLayout();
@@ -102,7 +106,8 @@
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
             this.插入开机缓存ToolStripMenuItem,
-            this.插入关机缓存ToolStripMenuItem});
+            this.插入关机缓存ToolStripMenuItem,
+            this.显示模式ToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(558, 25);
@@ -243,6 +248,34 @@
             this.label源.TabIndex = 7;
             this.label源.Text = "源文件：";
             // 
+            // 显示模式ToolStripMenuItem
+            // 
+            this.显示模式ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.直观模式ToolStripMenuItem,
+            this.经典模式ToolStripMenuItem,
+            this.原始模式ToolStripMenuItem});
+            this.显示模式ToolStripMenuItem.Name = "显示模式ToolStripMenuItem";
+            this.显示模式ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.显示模式ToolStripMenuItem.Text = "显示模式";
+            // 
+            // 直观模式ToolStripMenuItem
+            // 
+            this.直观模式ToolStripMenuItem.Name = "直观模式ToolStripMenuItem";
+            this.直观模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.直观模式ToolStripMenuItem.Text = "直观模式";
+            // 
+            // 经典模式ToolStripMenuItem
+            // 
+            this.经典模式ToolStripMenuItem.Name = "经典模式ToolStripMenuItem";
+            this.经典模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.经典模式ToolStripMenuItem.Text = "经典模式";
+            // 
+            // 原始模式ToolStripMenuItem
+            // 
+            this.原始模式ToolStripMenuItem.Name = "原始模式ToolStripMenuItem";
+            this.原始模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.原始模式ToolStripMenuItem.Text = "原始模式";
+            // 
             // CacheManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -289,5 +322,9 @@
         private System.Windows.Forms.ToolStripMenuItem 删除缓存ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 移动缓存ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 另存为缓存ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 显示模式ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 直观模式ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 经典模式ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 原始模式ToolStripMenuItem;
     }
 }

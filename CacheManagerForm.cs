@@ -13,11 +13,10 @@ namespace 关机助手
         // 缓存文件名
         private String cacheName { get { return Cache.CacheFilename; } }
         private BackupCreater backup;
-        //private int CacheSavedTextLength { get; set; } = 0;
 
         #region 输出显示控制器
         /// <summary>
-        /// 表示一条Sql，一个最基本的单位
+        /// 表示一条Sql，包含
         /// </summary>
         private class SqlItem
         {
@@ -82,6 +81,37 @@ namespace 关机助手
                 return (sqlItem.记录开机 ? "开机时间：" : "关机时间：") + sqlItem.SqlTime;
             }
         }
+        
+        /// <summary>
+        /// 转换所有sql语句至显示的strings
+        /// </summary>
+        /// <param name="sqls"></param>
+        /// <returns></returns>
+        private List<String> ConvertSqls2Strings(String[] sqls)
+        {
+            List<String> result = new List<String>();
+            foreach (var sqlStr in sqls)
+                result.Add(SqlItem.GetDisplayedStringFromSqlString(sqlStr));
+            return result;
+        }
+
+        /// <summary>
+        /// 转换所有显示的strings到sql语句
+        /// </summary>
+        /// <param name="strings"></param>
+        /// <returns></returns>
+        private List<String> ConvertStrings2Sqls(String[] strings)
+        {
+            List<String> result = new List<String>();
+            foreach (var dispStr in strings)
+            {
+                if (dispStr == "")
+                    continue;
+                SqlItem sqlItem = SqlItem.GetSqlItemFromDisplayedString(dispStr);
+                result.Add(sqlItem.SqlString);
+            }
+            return result;
+        }
 
         /// <summary>
         /// 获取显示的所有Sql语句，设置需要显示的Sql语句。
@@ -98,25 +128,16 @@ namespace 关机助手
             } }
 
         /// <summary>
-        /// 获取显示的所有Sql语句，设置需要显示的Sql语句
+        /// 获取显示的所有Sql语句，设置需要显示的Sql语句。（控制器）
         /// </summary>
-        public string[] CacheTextLines { get {
+        public string[] CacheTextLines { get { // 获取，转换，返回
                 string[] displayedContentLines = this.textBoxCache.Lines;
-                List<String> originalSqlLines = new List<String>();
-                foreach (var dispStr in displayedContentLines)
-                {
-                    if (dispStr == "")
-                        continue;
-                    SqlItem sqlItem = SqlItem.GetSqlItemFromDisplayedString(dispStr);
-                    originalSqlLines.Add(sqlItem.SqlString);
-                }
+                List<String> originalSqlLines = ConvertStrings2Sqls(displayedContentLines);
                 return originalSqlLines.ToArray();
-            } set {
-                // 分割成一句一句的sql语句
+            } set { // 显示内容
+                // 转换，显示
                 string[] sqlStrings = value;
-                List<String> displayedList = new List<String>(); // 最后要显示的内容
-                foreach (var sqlStr in sqlStrings)
-                    displayedList.Add(SqlItem.GetDisplayedStringFromSqlString(sqlStr));
+                List<String> displayedList = ConvertSqls2Strings(sqlStrings); // 最后要显示的内容
                 this.textBoxCache.Lines = displayedList.ToArray();
             } }
         #endregion
@@ -183,11 +204,8 @@ namespace 关机助手
                 if (ConfigManager.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }
-            //if (Cache.ExistCache())
-            //    Cache.BackupMyCache(Cache.CacheFilename);
         }
 
-        //private bool CacheChanged { get { return this.CacheSavedTextLength != this.CacheText.Replace("\r", "").Replace("\n", "").Length; } }
         private bool cacheChanged = false;
 
         private void CacheManagerForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -334,7 +352,6 @@ namespace 关机助手
             if (this.CacheText == "")
                 File.Delete(cacheName);
             Cache.SetAllLines(CacheTextLines);
-            //this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void buttonClear_Click(object sender, EventArgs e)

@@ -15,10 +15,7 @@ namespace 关机助手.Util
         /// <param name="countdownSeconds">关机倒计时（按秒计）</param>
         public static void ShutdownWithSeconds(int countdownSeconds)
         {
-            //TimeLogUtil.Tik();
             SqlExecuter.记录关机事件();
-            //TimeLogUtil.Tok(writeErrorLog:true);
-
             ShutdownUtil.CancelShutdownCommand();
             ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, countdownSeconds);
         }
@@ -26,7 +23,6 @@ namespace 关机助手.Util
         public static void ShutdownWithSeconds_DelayMode(int delaySeconds)
         {
             SqlExecuter.记录延迟关机事件(delaySeconds);
-
             ShutdownUtil.CancelShutdownCommand();
             ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, delaySeconds);
         }
@@ -130,10 +126,6 @@ namespace 关机助手.Util
                                 mdf文件 = args[++i];
                                 cache文件 = mdf文件.Replace(".mdf", ".cache");
                             }
-                            //string insertSql = "INSERT INTO [Table](开机时间) VALUES ('GETDATE()')".Replace("GETDATE()",
-                            //DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                            //File.AppendAllText(mdf文件.Replace(".mdf", ".cache"), insertSql + CacheUtil.CacheSpliter);
-                            //File.SetAttributes(mdf文件.Replace(".mdf", ".cache"), FileAttributes.Hidden);
                             break;
                         case "-h":case "/h":
                         case "--hibernate":
@@ -233,19 +225,9 @@ namespace 关机助手.Util
             {
                 if (离线模式) //离线模式优先
                     ConsoleWriter.WriteLine("离线模式下记录开机时间已被禁止。");
-                if (禁用缓存)
-                    SqlExecuter.记录开机事件(); //未指定数据库时的默认调用。（调用数据库或缓存由内部处理）
                 else
                 {
-                    if (cache文件 == null)
-                        SqlExecuter.记录开机事件();
-                    else if (cache文件.Contains(".cache")) //指定缓存文件需要单独处理
-                    {
-                        //String insertSql = SqlExecuter.UsefulSqlExpressions.InsertPowerOnTimeSQL();
-                        //Cache.AppendCache(insertSql, cache文件);
-                        SqlExecuter.记录开机事件();
-                    }
-                    else
+                    if (!SqlExecuter.记录开机事件("[Table]")) //未指定数据库时的默认调用。（调用数据库或缓存由内部处理）
                         失败后弹出的字符串 = "错误！未能记录开机时间！";
                 }
             }
@@ -254,38 +236,16 @@ namespace 关机助手.Util
             {
                 if (离线模式)
                     ShutdownUtil.RunShutdownCommand(ShutdownUtil.Mode.关机, 关机倒计时秒 ?? 0);
-                if (禁用缓存)
-                    FastModeExecutor.ShutdownWithSeconds(关机倒计时秒 ?? 0); //内部实现自动处理是否调用缓存
                 else
-                {
-                    if (cache文件 == null)
-                        FastModeExecutor.ShutdownWithSeconds(关机倒计时秒 ?? 0);
-                    else
-                    {
-                        //String shutdownSql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL();
-                        //Cache.AppendCache(shutdownSql, cache文件);
-                        FastModeExecutor.ShutdownWithSeconds(关机倒计时秒 ?? 0);
-                    }
-                }
+                    FastModeExecutor.ShutdownWithSeconds(关机倒计时秒 ?? 0); //内部实现自动处理是否调用缓存
             }
             // 检查延迟时间
             if (delay时间秒 != null)
             {
                 if (离线模式)
                     ConsoleWriter.WriteLine("暂不支持离线模式下的延迟时间，请使用窗体版本。");
-                if (禁用缓存)
-                    ShutdownWithSeconds_DelayMode(delay时间秒 ?? 0); //内部实现自动处理是否调用缓存
                 else
-                {
-                    if (cache文件 == null)
-                        ShutdownWithSeconds_DelayMode(delay时间秒 ?? 0);
-                    else
-                    {
-                        //String delaySql = SqlExecuter.UsefulSqlExpressions.UpdateShutdownTimeSQL(delay时间秒 ?? 0);
-                        //Cache.AppendCache(delaySql, cache文件);
-                        ShutdownWithSeconds_DelayMode(delay时间秒 ?? 0);
-                    }
-                }
+                    ShutdownWithSeconds_DelayMode(delay时间秒 ?? 0); //内部实现自动处理是否调用缓存
             }
             // 检查是否取消关机，与上方连续使用可以做到记录时间却不调用系统关机的目的
             if (取消关机 == true)
