@@ -28,44 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listBoxName = new System.Windows.Forms.ListBox();
+            this.listBoxValue = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
-            // listBox1
+            // listBoxName
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 12;
-            this.listBox1.Location = new System.Drawing.Point(225, 192);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(120, 88);
-            this.listBox1.TabIndex = 0;
+            this.listBoxName.FormattingEnabled = true;
+            this.listBoxName.ItemHeight = 12;
+            this.listBoxName.Location = new System.Drawing.Point(12, 12);
+            this.listBoxName.Name = "listBoxName";
+            this.listBoxName.Size = new System.Drawing.Size(172, 256);
+            this.listBoxName.TabIndex = 0;
             // 
-            // listView1
+            // listBoxValue
             // 
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(431, 207);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(121, 97);
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listBoxValue.FormattingEnabled = true;
+            this.listBoxValue.ItemHeight = 12;
+            this.listBoxValue.Location = new System.Drawing.Point(190, 12);
+            this.listBoxValue.Name = "listBoxValue";
+            this.listBoxValue.Size = new System.Drawing.Size(182, 256);
+            this.listBoxValue.TabIndex = 1;
             // 
             // ConfigurationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.listView1);
-            this.Controls.Add(this.listBox1);
+            this.ClientSize = new System.Drawing.Size(387, 281);
+            this.Controls.Add(this.listBoxValue);
+            this.Controls.Add(this.listBoxName);
             this.Name = "ConfigurationForm";
-            this.Text = "配置文件修改";
+            this.Text = "配置文件显示";
+            this.Load += new System.EventHandler(this.ConfigurationForm_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListBox listBoxName;
+        private System.Windows.Forms.ListBox listBoxValue;
     }
 }

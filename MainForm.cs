@@ -410,10 +410,14 @@ namespace 关机助手
         {
             try
             {
-                File.WriteAllText(Properties.Resources.RecorderShellFullFilename,
-                        "chcp 65001\r\n" //先切换cmd的字符编码为UTF-8（注意一定要使用CRLF否则第二行会被吃字）
-                        + Application.ExecutablePath + " -k",
-                        new System.Text.UTF8Encoding(false)); //保存为无BOM的UTF-8文件
+                //File.WriteAllText(Properties.Resources.RecorderShellFullFilename,
+                //        "chcp 65001\r\n" //先切换cmd的字符编码为UTF-8（注意一定要使用CRLF否则第二行会被吃字）
+                //        + Application.ExecutablePath + " -k",
+                //        new System.Text.UTF8Encoding(false)); //保存为无BOM的UTF-8文件
+                string batContent = "chcp 65001\r\n" + Properties.Resources.ElevatedCmd + "\r\n";
+                batContent += "echo chcp 65001 > \"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\autoshutdown.cmd\"\r\n";
+                batContent += Application.ExecutablePath + " -k";
+                SystemCommandUtil.ExecuteCommand(batContent);
             }
             catch (UnauthorizedAccessException)
             {
@@ -682,7 +686,8 @@ namespace 关机助手
         
         private void 显示配置文件内容ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(ConfigManager.RawText);
+            //MessageBox.Show(ConfigManager.RawText);
+            new ConfigurationForm().ShowDialog();
         }
 
         private void 配置文件格式ToolStripMenuItem_Click(object sender, EventArgs e)
