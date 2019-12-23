@@ -125,14 +125,10 @@ namespace 关机助手.Util
                         case "-k":case "/k":
                         case "--start":
                             记录开机时间 = true;
-                            if (i < args.Length - 1)
-                            {
-                                char nextFirstChar = args[i + 1][0];
-                                if (nextFirstChar != '-' && nextFirstChar != '/')
-                                { //有自定义数据库文件完整路径的参数
-                                    mdf文件 = args[++i];
-                                    cache文件 = mdf文件.Replace(".mdf", ".cache");
-                                }
+                            if (HasNext(args, i)) 
+                            { //有自定义数据库文件完整路径的参数
+                                mdf文件 = args[++i];
+                                cache文件 = mdf文件.Replace(".mdf", ".cache");
                             }
                             //string insertSql = "INSERT INTO [Table](开机时间) VALUES ('GETDATE()')".Replace("GETDATE()",
                             //DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
@@ -149,8 +145,16 @@ namespace 关机助手.Util
                             break;
                         case "-db":case "/db":
                         case "--database_filename":
-                            mdf文件 = args[++i];
-                            cache文件 = mdf文件.Replace(".mdf", ".cache");
+                            if (HasNext(args, i)) 
+                            {
+                                mdf文件 = args[++i];
+                                cache文件 = mdf文件.Replace(".mdf", ".cache");
+                            }
+                            break;
+                        case "-ca":case "/ca":
+                        case "--cache":case "/cache":
+                            if (HasNext(args, i))
+                                cache文件 = args[++i];
                             break;
                         case "-dc":case "/dc":
                         case "--disable_cache":
@@ -195,7 +199,20 @@ namespace 关机助手.Util
                 else
                     dbAgency.OpenConnection();
             }
-            // 设置WorkingDirectory
+            // 传入的是文件夹，添加完整文件名
+            if (!mdf文件.EndsWith(".mdf", true, null))  
+            {
+                if (!mdf文件.EndsWith("\\"))
+                    mdf文件 += "\\";
+                mdf文件 += "TimeDatabase.mdf";
+            }
+            if (!cache文件.EndsWith(".cache", true, null)) 
+            {
+                if (!cache文件.EndsWith("\\"))
+                    cache文件 += "\\";
+                cache文件 += "TimeDatabase.cache";
+            }
+            // 调整工作路径、修改cache文件名
             if (cache文件 == null)
             {
                 // 设置程序运行的文件夹为CurrentDirectory
@@ -349,6 +366,17 @@ namespace 关机助手.Util
             SqlExecuter.记录开机事件();
         }
 
+        private static bool HasNext(String[] args, int i)
+        {
+            if (i < args.Length - 1)
+            {
+                char nextFirstChar = args[i + 1][0];
+                if (nextFirstChar != '-' && nextFirstChar != '/')
+                    return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// 输出程序帮助
         /// </summary>
@@ -356,7 +384,7 @@ namespace 关机助手.Util
         {
             String[] infos =
             {
-"关机助手(终端版 v2.0.1)","使用说明：",
+"关机助手(终端版 v2.0.2)","使用说明：",
 "|       选项     |             完整选项           |         含义                                      |    示例",
 "|-s [sec/min]s/m |--shutdown_seconds [sec/min]s/m |倒计时关机(秒)                                     |-s 60s or -s 1m",
 "|-d [sec/min]s/m |--shutdown_delay [sec/min]s/m   |记录被delay后的关机时间                            |-d 30s or -d 0.5m ",
@@ -367,6 +395,7 @@ namespace 关机助手.Util
 "|-h              |--hibernate                     |休眠电脑(记录关机和下次开机时间)                   |-h",
 "|-sleep          |--sleep                         |睡眠电脑(记录关机和下次开机时间)                   |-sleep",
 "|-db [dbFilename]|--database_filename [dbFilename]|设定数据库文件名(不使用-dc会自动检测对应的缓存文件)|-db D:\\database.mdf",
+"|-ca [cachename] |--cache [cachename]             |设定数据库缓存文件名                               |-ca D:\\database.cache",
 "|-dc             |--disable_cache                 |强制禁止使用缓存                                   |-dc",
 "|-offline        |--offline                       |离线模式，不记录任何时间                           |-offline",
 "|-sc             |--show_cache                    |显示缓存文件内容（可指定缓存文件）                 |-sc -db my_cache.cache",

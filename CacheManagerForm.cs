@@ -12,6 +12,7 @@ namespace 关机助手
     {
         // 缓存文件名
         private String cacheName { get { return Cache.CacheFilename; } }
+        private BackupCreater backup;
         //private int CacheSavedTextLength { get; set; } = 0;
 
         #region 输出显示控制器
@@ -124,6 +125,7 @@ namespace 关机助手
         public CacheManagerForm()
         {
             InitializeComponent();
+            backup = new BackupCreater(cacheName, interval: 30000);
         }
 
         /// <summary>
@@ -165,6 +167,8 @@ namespace 关机助手
         {
             if (MainForm.DatabaseOffline)
                 this.buttonClearCache.Enabled = false;
+            else
+                backup.Start();
             if (File.Exists(Cache.Backup.Backup文件名))
             {
                 if (DialogResult.Yes == MessageBox.Show("检测到上次执行缓存时程序崩溃，是否恢复原来的缓存文件？", "程序崩溃后的自动恢复", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
@@ -179,8 +183,8 @@ namespace 关机助手
                 if (ConfigManager.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }
-            if (Cache.ExistCache())
-                Cache.BackupMyCache(Cache.CacheFilename);
+            //if (Cache.ExistCache())
+            //    Cache.BackupMyCache(Cache.CacheFilename);
         }
 
         //private bool CacheChanged { get { return this.CacheSavedTextLength != this.CacheText.Replace("\r", "").Replace("\n", "").Length; } }
@@ -196,8 +200,6 @@ namespace 关机助手
                 else if(DialogResult.Cancel == result)
                     e.Cancel = true;
             }
-
-            Cache.CleanBackupCache();
         }
         #endregion
 
@@ -421,6 +423,12 @@ namespace 关机助手
         private void textBoxCache_TextChanged(object sender, EventArgs e)
         {
             cacheChanged = true;
+        }
+
+        private void CacheManagerForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            backup.Stop();
+            backup.DeleteBackup();
         }
     }
 }

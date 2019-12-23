@@ -8,7 +8,7 @@ namespace 关机助手.Util
     {
         #region 保存的属性
         /// <summary>
-        /// 备份的源文件名
+        /// 备份的源文件名。（赋值会同步更新后缀名和备份文件名；可以使用绝对路径或者相对路径，如果使用绝对路径会更新工作路径）
         /// </summary>
         public string Original文件名
         {
@@ -38,7 +38,7 @@ namespace 关机助手.Util
         /// </summary>
         public int Interval { get { return BackupFileTimer.Interval; } set { if (this.ParametersReadOnly) throw new System.FieldAccessException("开始后不可以修改此变量！"); BackupFileTimer.Interval = value; } }
         /// <summary>
-        /// 备份文件的后缀名
+        /// 备份文件的后缀名（如果文件名含多个拓展名，会取得多个拓展名而不是最后一个；赋值会同步更新备份文件名）
         /// </summary>
         public string Backup后缀名
         {
@@ -46,11 +46,12 @@ namespace 关机助手.Util
             {
                 if (Backup文件名 == null)
                     throw new Exception("Backup文件名未被初始化！");
-                string shortFileName = Backup文件名.Substring(Backup文件名.LastIndexOf("\\") + 1);
-                int dotIndex = shortFileName.IndexOf('.'); //可以支持多个dot的备份文件名
+                // 找到文件名的StartIndex，并提取出来
+                string fileName = Backup文件名.Substring(Backup文件名.LastIndexOf("\\") + 1);
+                int dotIndex = fileName.IndexOf('.'); // 找到第一个.
                 if (dotIndex == -1) return "";
                 else
-                    return shortFileName.Substring(dotIndex);
+                    return fileName.Substring(dotIndex); // 返回.开始的字符串
             }
             set
             {
@@ -81,7 +82,7 @@ namespace 关机助手.Util
                     this.DeleteBackup();
                 workingDirectory = value;
                 string shortOriginalFileName = Original文件名.Substring(Original文件名.LastIndexOf('\\') + 1);
-                if (workingDirectory.EndsWith("\\")) //统一去掉\
+                if (workingDirectory.EndsWith("\\")) //统一去掉最后的\
                     workingDirectory = workingDirectory.Substring(0, workingDirectory.Length - 1);
                 Original文件名 = workingDirectory + "\\" + shortOriginalFileName;
             }
@@ -114,6 +115,7 @@ namespace 关机助手.Util
 
         private Timer BackupFileTimer { get; set; }
         private bool ParametersReadOnly { get; set; } = false;
+        public bool IsBusy { get { return this.BackupFileTimer.Enabled; } }
 
         /// <summary>
         /// 生成一个新的BackupCreater
@@ -126,18 +128,26 @@ namespace 关机助手.Util
         /// <param name="算法">备份算法</param>
         public BackupCreater(string 备份源文件名, WriteProcedure writeFileProcedure = null, int interval = 1000, string 备份后缀名 = ".backup", bool hideBackup = false, 加密算法 算法 = 加密算法.无)
         {
-            this.Original文件名 = 备份源文件名;
-            if (writeFileProcedure != null)
+            this.Original文件名 = 备份源文件名; // 设置源文件名
+            if (writeFileProcedure != null) // 注册备份函数
                 this.WriteBackupEvent += writeFileProcedure;
             else
                 this.WriteBackupEvent += DefaultBackupFunction;
-            if (备份后缀名.StartsWith(".") == false)
+            if (备份后缀名.StartsWith(".") == false) // 后缀名加.
                 this.Backup后缀名 = "." + 备份后缀名;
             else
                 this.Backup后缀名 = 备份后缀名;
-            this.Encrypt算法 = 算法;
-            this.HiddenBackupFile = hideBackup;
-
+            this.Encrypt算法 = 算法; // 设置加密算法
+            this.HiddenBackupFile = hideBackup; // 设置隐藏备份
+            if (备份源文件名.Contains(":"))
+            {
+                // 如果含有:号说明是绝对路径，由于在Original文件名第二次设置开始才会同步workingDirectory。
+                // 在这里调用是为了同步workingDirectory
+                int directoryEndIndex = original文件名.LastIndexOf('\\');
+                if (directoryEndIndex != -1)
+                    this.workingDirectory = original文件名.Substring(0, directoryEndIndex);
+            }
+            /* 内部操作设置 */
             BackupFileTimer = new Timer();
             this.Interval = interval;
             BackupFileTimer.Tick += WriteBackupInvoke;
@@ -235,9 +245,17 @@ namespace 关机助手.Util
         /// <summary>
         /// 删除备份文件
         /// </summary>
-        public void DeleteBackup()
+        public bool DeleteBackup()
         {
-            File.Delete(this.Backup文件名);
+            try
+            {
+                File.Delete(this.Backup文件名);
+                return true;
+            }
+            catch(IOException)
+            {
+                return false;
+            }
         }
 
         /// <summary>

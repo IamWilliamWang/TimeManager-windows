@@ -255,6 +255,7 @@
             this.Name = "CacheManagerForm";
             this.Text = "缓存管理器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CacheManagerForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CacheManagerForm_FormClosed);
             this.Load += new System.EventHandler(this.CacheManagerForm_Load);
             this.DoubleClick += new System.EventHandler(this.CacheManagerForm_DoubleClick);
             this.Resize += new System.EventHandler(this.CacheManagerForm_Resize);
