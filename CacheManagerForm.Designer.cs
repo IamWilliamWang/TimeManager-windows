@@ -263,18 +263,21 @@
             this.直观模式ToolStripMenuItem.Name = "直观模式ToolStripMenuItem";
             this.直观模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.直观模式ToolStripMenuItem.Text = "直观模式";
+            this.直观模式ToolStripMenuItem.Click += new System.EventHandler(this.直观模式ToolStripMenuItem_Click);
             // 
             // 经典模式ToolStripMenuItem
             // 
             this.经典模式ToolStripMenuItem.Name = "经典模式ToolStripMenuItem";
             this.经典模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.经典模式ToolStripMenuItem.Text = "经典模式";
+            this.经典模式ToolStripMenuItem.Click += new System.EventHandler(this.经典模式ToolStripMenuItem_Click);
             // 
             // 原始模式ToolStripMenuItem
             // 
             this.原始模式ToolStripMenuItem.Name = "原始模式ToolStripMenuItem";
             this.原始模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.原始模式ToolStripMenuItem.Text = "原始模式";
+            this.原始模式ToolStripMenuItem.Click += new System.EventHandler(this.原始模式ToolStripMenuItem_Click);
             // 
             // CacheManagerForm
             // 

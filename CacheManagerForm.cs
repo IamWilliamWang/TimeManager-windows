@@ -13,15 +13,23 @@ namespace 关机助手
         // 缓存文件名
         private String cacheName { get { return Cache.CacheFilename; } }
         private BackupCreater backup;
+        private enum OutputState { ORIGINAL, TRADITIONAL, MODERN};
+        private OutputState opState = OutputState.MODERN;
 
         #region 输出显示控制器
         /// <summary>
-        /// 表示一条Sql，包含
+        /// 表示一条Sql
         /// </summary>
         private class SqlItem
         {
             public readonly bool 记录开机;
+            /// <summary>
+            /// 整条sql语句
+            /// </summary>
             public string SqlString { get; set; }
+            /// <summary>
+            /// sql语句中包含时间的部分
+            /// </summary>
             public string SqlTime
             {
                 get
@@ -37,13 +45,34 @@ namespace 关机助手
                 this.SqlString = sqlString;
                 this.记录开机 = this.SqlString.StartsWith("INSERT", true, System.Globalization.CultureInfo.CurrentCulture);
             }
+        }
 
-            /// <summary>
-            /// 将开机/关机时间：xx:xx:xx转换成可以直接执行的sql字符串
-            /// </summary>
-            /// <param name="displayedItem">显示在屏幕上的单行文字</param>
-            /// <returns></returns>
-            public static SqlItem GetSqlItemFromDisplayedString(string displayedItem)
+        /// <summary>
+        /// 将开机/关机时间：xx:xx:xx转换成可以直接执行的sql字符串
+        /// </summary>
+        /// <param name="displayedItem">显示在屏幕上的单行文字</param>
+        /// <returns></returns>
+        private SqlItem GetSqlItemFromDisplayedString(string displayedItem)
+        {
+            if (opState == OutputState.MODERN)
+            {
+                if (displayedItem.Contains(" -- "))
+                {
+                    string time = displayedItem.Replace(" -- ", "");
+                    string sqlString = "INSERT INTO [Table](开机时间) VALUES ('@time')".Replace("@time", time);
+                    SqlItem item = new SqlItem(sqlString);
+                    return item;
+                }
+                else
+                {
+                    string time = displayedItem;
+                    string sqlString = "UPDATE [Table] SET 关机时间 = '@time', 时长 = '@time' - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
+                        .Replace("@time", time);
+                    SqlItem item = new SqlItem(sqlString);
+                    return item;
+                }
+            }
+            else if (opState == OutputState.TRADITIONAL)
             {
                 if (displayedItem.Contains("开机"))
                 {
@@ -69,19 +98,36 @@ namespace 关机助手
                 else
                     throw new ArgumentException("转换字符串无效！");
             }
+            else if (opState == OutputState.ORIGINAL)
+                return new SqlItem(displayedItem);
+            return null;
+        }
 
-            /// <summary>
-            /// 将直接执行的sql字符串转换成开机/关机时间：xx:xx:xx
-            /// </summary>
-            /// <param name="raw_sql">能直接执行的一句sql语句</param>
-            /// <returns></returns>
-            public static string GetDisplayedStringFromSqlString(string raw_sql)
+        /// <summary>
+        /// 将直接执行的sql字符串转换成开机/关机时间：xx:xx:xx
+        /// </summary>
+        /// <param name="raw_sql">能直接执行的一句sql语句</param>
+        /// <returns></returns>
+        private string GetDisplayedStringFromSqlString(string raw_sql)
+        {
+            if (opState == OutputState.MODERN)
+            {
+                SqlItem sqlItem = new SqlItem(raw_sql);
+                if (sqlItem.记录开机)
+                    return sqlItem.SqlTime + " -- ";
+                else
+                    return sqlItem.SqlTime;
+            }
+            else if (opState == OutputState.TRADITIONAL)
             {
                 SqlItem sqlItem = new SqlItem(raw_sql);
                 return (sqlItem.记录开机 ? "开机时间：" : "关机时间：") + sqlItem.SqlTime;
             }
+            else if (opState == OutputState.ORIGINAL)
+                return raw_sql;
+            return null;
         }
-        
+
         /// <summary>
         /// 转换所有sql语句至显示的strings
         /// </summary>
@@ -91,7 +137,7 @@ namespace 关机助手
         {
             List<String> result = new List<String>();
             foreach (var sqlStr in sqls)
-                result.Add(SqlItem.GetDisplayedStringFromSqlString(sqlStr));
+                result.Add(GetDisplayedStringFromSqlString(sqlStr));
             return result;
         }
 
@@ -107,7 +153,7 @@ namespace 关机助手
             {
                 if (dispStr == "")
                     continue;
-                SqlItem sqlItem = SqlItem.GetSqlItemFromDisplayedString(dispStr);
+                SqlItem sqlItem = GetSqlItemFromDisplayedString(dispStr);
                 result.Add(sqlItem.SqlString);
             }
             return result;
@@ -131,13 +177,25 @@ namespace 关机助手
         /// 获取显示的所有Sql语句，设置需要显示的Sql语句。（控制器）
         /// </summary>
         public string[] CacheTextLines { get { // 获取，转换，返回
-                string[] displayedContentLines = this.textBoxCache.Lines;
+                string text = this.textBoxCache.Text;
+                if (opState == OutputState.MODERN)
+                    text = text.Replace(" -- ", " -- \r\n");
+                string[] displayedContentLines = text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 List<String> originalSqlLines = ConvertStrings2Sqls(displayedContentLines);
                 return originalSqlLines.ToArray();
             } set { // 显示内容
                 // 转换，显示
                 string[] sqlStrings = value;
                 List<String> displayedList = ConvertSqls2Strings(sqlStrings); // 最后要显示的内容
+                if (opState == OutputState.MODERN)
+                {
+                    StringBuilder displayStr = new StringBuilder();
+                    foreach (String str in displayedList)
+                        displayStr.AppendLine(str);
+                    displayStr.Replace(" -- \r\n", " -- ");
+                    this.textBoxCache.Text = displayStr.ToString();
+                    return;
+                }
                 this.textBoxCache.Lines = displayedList.ToArray();
             } }
         #endregion
@@ -218,6 +276,12 @@ namespace 关机助手
                 else if(DialogResult.Cancel == result)
                     e.Cancel = true;
             }
+        }
+
+        private void CacheManagerForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            backup.Stop();
+            backup.DeleteBackup();
         }
         #endregion
 
@@ -442,10 +506,25 @@ namespace 关机助手
             cacheChanged = true;
         }
 
-        private void CacheManagerForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void 直观模式ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            backup.Stop();
-            backup.DeleteBackup();
+            if (opState != OutputState.MODERN)
+                opState = OutputState.MODERN;
+            LoadData();
+        }
+
+        private void 经典模式ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (opState != OutputState.TRADITIONAL)
+                opState = OutputState.TRADITIONAL;
+            LoadData();
+        }
+
+        private void 原始模式ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (opState != OutputState.ORIGINAL)
+                opState = OutputState.ORIGINAL;
+            LoadData();
         }
     }
 }
