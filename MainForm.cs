@@ -410,7 +410,7 @@ namespace 关机助手
             {
                 File.WriteAllText(Properties.Resources.RecorderShellFullFilename,
                         "chcp 65001\r\n" //先切换cmd的字符编码为UTF-8（注意一定要使用CRLF否则第二行会被吃字）
-                        + @"C:\Users\{1}\Desktop\关机助手.exe -k C:\Users\{1}\Desktop\TimeDatabase.cache"
+                        + @"C:\Users\{1}\Desktop\关机助手.exe -k"
                             .Replace("{1}", ProgramLauncher.SystemUserName),
                         new System.Text.UTF8Encoding(false)); //保存为无BOM的UTF-8文件
             }

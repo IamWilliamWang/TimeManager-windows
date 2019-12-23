@@ -61,6 +61,7 @@
             this.textBoxCache.Name = "textBoxCache";
             this.textBoxCache.Size = new System.Drawing.Size(522, 281);
             this.textBoxCache.TabIndex = 1;
+            this.textBoxCache.TextChanged += new System.EventHandler(this.textBoxCache_TextChanged);
             // 
             // buttonSave
             // 

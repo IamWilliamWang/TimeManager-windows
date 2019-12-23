@@ -12,7 +12,7 @@ namespace 关机助手
     {
         // 缓存文件名
         private String cacheName { get { return Cache.CacheFilename; } }
-        private int CacheSavedTextLength { get; set; } = 0;
+        //private int CacheSavedTextLength { get; set; } = 0;
 
         #region 输出显示控制器
         /// <summary>
@@ -120,7 +120,7 @@ namespace 关机助手
             } }
         #endregion
 
-        #region 加载窗口事件
+        #region 加载与关闭窗口
         public CacheManagerForm()
         {
             InitializeComponent();
@@ -147,7 +147,7 @@ namespace 关机助手
                 return;
             }
             CacheTextLines = allLines;
-            this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
+            //this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void AutoScrollBar()
@@ -183,13 +183,19 @@ namespace 关机助手
                 Cache.BackupMyCache(Cache.CacheFilename);
         }
 
-        private bool CacheChanged { get { return this.CacheSavedTextLength != this.CacheText.Replace("\r", "").Replace("\n", "").Length; } }
+        //private bool CacheChanged { get { return this.CacheSavedTextLength != this.CacheText.Replace("\r", "").Replace("\n", "").Length; } }
+        private bool cacheChanged = false;
 
         private void CacheManagerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (CacheChanged)
-                if (DialogResult.Yes == MessageBox.Show("检测到有未保存的内容，是否对缓存内容进行保存？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Information)) 
+            if (cacheChanged)
+            {
+                var result = MessageBox.Show("检测到有未保存的内容，是否对缓存内容进行保存？", "警告", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                if (DialogResult.Yes == result)
                     UpdateCache();
+                else if(DialogResult.Cancel == result)
+                    e.Cancel = true;
+            }
 
             Cache.CleanBackupCache();
         }
@@ -326,7 +332,7 @@ namespace 关机助手
             if (this.CacheText == "")
                 File.Delete(cacheName);
             Cache.SetAllLines(CacheTextLines);
-            this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
+            //this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -410,6 +416,11 @@ namespace 关机助手
         private void CacheManagerForm_Resize(object sender, EventArgs e)
         {
             AutoScrollBar();
+        }
+
+        private void textBoxCache_TextChanged(object sender, EventArgs e)
+        {
+            cacheChanged = true;
         }
     }
 }

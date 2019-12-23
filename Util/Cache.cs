@@ -10,9 +10,12 @@ namespace 关机助手.Util
     class Cache
     {
         public static char CacheSpliter { get { return splitChar; } } //缓存分割字符
-        public static string CacheFilename { get { return DbFilename; } } //缓存文件名
+        public static string CacheFilename { get { return dbFilename; } set {
+                if (value.Contains("\\")) dbFilename = value.Substring(value.LastIndexOf("\\") + 1);
+                else dbFilename = value;
+            } } //缓存文件名
         
-        private const string DbFilename = "TimeDatabase.cache";
+        private static string dbFilename = "TimeDatabase.cache";
         private const char splitChar = '鋝';
 
         public static BackupCreater Backup { get; set; }
@@ -30,7 +33,7 @@ namespace 关机助手.Util
             return originalSql.Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd") + " " + DateTime.Now.ToLongTimeString() + "'");
         }
 
-        public static bool ExistCache(string cacheFileName = DbFilename)
+        public static bool ExistCache(string cacheFileName = "TimeDatabase.cache")
         {
             return File.Exists(cacheFileName);
         }
