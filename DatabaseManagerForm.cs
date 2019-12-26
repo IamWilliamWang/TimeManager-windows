@@ -13,7 +13,7 @@ namespace 关机助手
         #region 常量定义
         public readonly static String TableName = "[Table]";
         private Semaphore semaphore = new Semaphore(initialCount:1, maximumCount:3);
-        enum QueryMode { 显示所有数据, 显示后十五条数据, 精准查找, 统计结算填补 };
+        enum QueryMode { 显示所有数据, 显示后十五条数据, 显示后n条是数据, 精准查找, 统计结算填补 };
         #endregion
 
         #region 变量定义
@@ -121,12 +121,12 @@ namespace 关机助手
             else
                 ShowTotalTable();
         }
-
+        
         private void 显示后15条ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
-            if(this.Width==710)
+            if (this.Width == 710)
                 this.Width = 702;
             // 数据库已连接与未连接都可以处理
             if (!database.ConnectionOpenned())
@@ -143,6 +143,37 @@ namespace 关机助手
                     "select * from " + 
                     TableName + 
                     " where 序号>((select max(序号) from " + TableName + ")-14)");
+                this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+            }
+        }
+
+        private void 显示后n条数据ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AlertBusy())
+                return;
+            if (this.Width == 710)
+                this.Width = 702;
+            string inputn = Interaction.InputBox("需要显示后几条数据？");
+            if (inputn == "")
+                return;
+            int n = int.Parse(inputn);
+            if (n < 1)
+                return;
+            // 数据库已连接与未连接都可以处理
+            if (!database.ConnectionOpenned())
+            {
+                this.progressBar1.Value = 40;
+                this.statusLabel.Text = "正在加载数据";
+                backgroundQueryMode = QueryMode.显示后n条是数据;
+                this.dbBackgroundWorker.RunWorkerAsync(n);
+            }
+            else
+            {
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = database.ExecuteQuery(
+                    "select * from " +
+                    TableName +
+                    " where 序号>((select max(序号) from " + TableName + ")-"+n+")");
                 this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
             }
         }
@@ -460,16 +491,19 @@ namespace 关机助手
         #region 必要插件安装
         private void 安装写入开机记录时间插件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                //File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\" + ProgramLauncher.SystemUserName + @"\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
-                MainForm.WritePowerOnShellInStartUpFolder();
-                MessageBox.Show("已经安装！", "成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                MainForm.restartWithAdminRight();
-            }
+            //try
+            //{
+            //File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\" + ProgramLauncher.SystemUserName + @"\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
+            if (MainForm.WritePowerOnShellInStartUpFolderBat())
+                MessageBox.Show("插件已经安装！", "安装成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("操作已取消！", "取消操作", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            //}
+            //catch (UnauthorizedAccessException)
+            //{
+            //    MainForm.restartWithAdminRight();
+            //}
+            File.Delete("write_bat.bat");
         }
 
         private void 卸载写入开机记录时间插件ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -477,7 +511,7 @@ namespace 关机助手
             try
             {
                 File.Delete(Properties.Resources.RecorderShellFullFilename);
-                MessageBox.Show("已经卸载", "成功！");
+                MessageBox.Show("插件已经卸载", "成功！");
             }
             catch (Exception e1)
             {
@@ -705,6 +739,8 @@ namespace 关机助手
             {
                 this.精准查找显示ToolStripMenuItem_Click(sender, e);
             }
+            else
+                this.显示后n条数据ToolStripMenuItem_Click(sender, e);
             //else if (backgroundQueryMode == QueryMode.统计结算填补)
             //{
             //    SqlExecuter.记录结算();
@@ -769,8 +805,7 @@ namespace 关机助手
             MainForm.DatabaseOffline = false; //取消主页安全模式状态
             高级选项ToolStripMenuItem.DropDownItems.RemoveByKey("停用安全模式ToolStripMenuItem"); //删除停用安全模式按钮
         }
-        #endregion
 
-        
+        #endregion
     }
 }

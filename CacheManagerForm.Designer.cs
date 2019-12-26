@@ -39,6 +39,10 @@
             this.另存为缓存ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.插入开机缓存ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.插入关机缓存ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.显示模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.直观模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.经典模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.原始模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox缓存编辑 = new System.Windows.Forms.GroupBox();
             this.groupBox合并 = new System.Windows.Forms.GroupBox();
             this.button合并 = new System.Windows.Forms.Button();
@@ -46,10 +50,6 @@
             this.textBox源 = new System.Windows.Forms.TextBox();
             this.label目标 = new System.Windows.Forms.Label();
             this.label源 = new System.Windows.Forms.Label();
-            this.显示模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.直观模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.经典模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.原始模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.groupBox缓存编辑.SuspendLayout();
             this.groupBox合并.SuspendLayout();
@@ -65,7 +65,6 @@
             this.textBoxCache.Name = "textBoxCache";
             this.textBoxCache.Size = new System.Drawing.Size(522, 281);
             this.textBoxCache.TabIndex = 1;
-            this.textBoxCache.TextChanged += new System.EventHandler(this.textBoxCache_TextChanged);
             // 
             // buttonSave
             // 
@@ -159,6 +158,37 @@
             this.插入关机缓存ToolStripMenuItem.Text = "插入关机缓存";
             this.插入关机缓存ToolStripMenuItem.Click += new System.EventHandler(this.插入关机缓存ToolStripMenuItem_Click);
             // 
+            // 显示模式ToolStripMenuItem
+            // 
+            this.显示模式ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.直观模式ToolStripMenuItem,
+            this.经典模式ToolStripMenuItem,
+            this.原始模式ToolStripMenuItem});
+            this.显示模式ToolStripMenuItem.Name = "显示模式ToolStripMenuItem";
+            this.显示模式ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.显示模式ToolStripMenuItem.Text = "显示模式";
+            // 
+            // 直观模式ToolStripMenuItem
+            // 
+            this.直观模式ToolStripMenuItem.Name = "直观模式ToolStripMenuItem";
+            this.直观模式ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.直观模式ToolStripMenuItem.Text = "直观模式";
+            this.直观模式ToolStripMenuItem.Click += new System.EventHandler(this.直观模式ToolStripMenuItem_Click);
+            // 
+            // 经典模式ToolStripMenuItem
+            // 
+            this.经典模式ToolStripMenuItem.Name = "经典模式ToolStripMenuItem";
+            this.经典模式ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.经典模式ToolStripMenuItem.Text = "经典模式";
+            this.经典模式ToolStripMenuItem.Click += new System.EventHandler(this.经典模式ToolStripMenuItem_Click);
+            // 
+            // 原始模式ToolStripMenuItem
+            // 
+            this.原始模式ToolStripMenuItem.Name = "原始模式ToolStripMenuItem";
+            this.原始模式ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.原始模式ToolStripMenuItem.Text = "原始模式";
+            this.原始模式ToolStripMenuItem.Click += new System.EventHandler(this.原始模式ToolStripMenuItem_Click);
+            // 
             // groupBox缓存编辑
             // 
             this.groupBox缓存编辑.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -247,37 +277,6 @@
             this.label源.Size = new System.Drawing.Size(53, 12);
             this.label源.TabIndex = 7;
             this.label源.Text = "源文件：";
-            // 
-            // 显示模式ToolStripMenuItem
-            // 
-            this.显示模式ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.直观模式ToolStripMenuItem,
-            this.经典模式ToolStripMenuItem,
-            this.原始模式ToolStripMenuItem});
-            this.显示模式ToolStripMenuItem.Name = "显示模式ToolStripMenuItem";
-            this.显示模式ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
-            this.显示模式ToolStripMenuItem.Text = "显示模式";
-            // 
-            // 直观模式ToolStripMenuItem
-            // 
-            this.直观模式ToolStripMenuItem.Name = "直观模式ToolStripMenuItem";
-            this.直观模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.直观模式ToolStripMenuItem.Text = "直观模式";
-            this.直观模式ToolStripMenuItem.Click += new System.EventHandler(this.直观模式ToolStripMenuItem_Click);
-            // 
-            // 经典模式ToolStripMenuItem
-            // 
-            this.经典模式ToolStripMenuItem.Name = "经典模式ToolStripMenuItem";
-            this.经典模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.经典模式ToolStripMenuItem.Text = "经典模式";
-            this.经典模式ToolStripMenuItem.Click += new System.EventHandler(this.经典模式ToolStripMenuItem_Click);
-            // 
-            // 原始模式ToolStripMenuItem
-            // 
-            this.原始模式ToolStripMenuItem.Name = "原始模式ToolStripMenuItem";
-            this.原始模式ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.原始模式ToolStripMenuItem.Text = "原始模式";
-            this.原始模式ToolStripMenuItem.Click += new System.EventHandler(this.原始模式ToolStripMenuItem_Click);
             // 
             // CacheManagerForm
             // 

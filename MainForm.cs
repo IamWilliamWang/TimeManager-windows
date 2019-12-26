@@ -410,14 +410,10 @@ namespace 关机助手
         {
             try
             {
-                //File.WriteAllText(Properties.Resources.RecorderShellFullFilename,
-                //        "chcp 65001\r\n" //先切换cmd的字符编码为UTF-8（注意一定要使用CRLF否则第二行会被吃字）
-                //        + Application.ExecutablePath + " -k",
-                //        new System.Text.UTF8Encoding(false)); //保存为无BOM的UTF-8文件
-                string batContent = "chcp 65001\r\n" + Properties.Resources.ElevatedCmd + "\r\n";
-                batContent += "echo chcp 65001 > \"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\autoshutdown.cmd\"\r\n";
-                batContent += Application.ExecutablePath + " -k";
-                SystemCommandUtil.ExecuteCommand(batContent);
+                File.WriteAllText(Properties.Resources.RecorderShellFullFilename,
+                        "chcp 65001\r\n" //先切换cmd的字符编码为UTF-8（注意一定要使用CRLF否则第二行会被吃字）
+                        + Application.ExecutablePath + " -k",
+                        new System.Text.UTF8Encoding(false)); //保存为无BOM的UTF-8文件
             }
             catch (UnauthorizedAccessException)
             {
@@ -425,9 +421,27 @@ namespace 关机助手
             }
         }
 
+        public static bool WritePowerOnShellInStartUpFolderBat()
+        {
+            string batContent = "chcp 65001\r\n@echo chcp 65001 > \"" + Properties.Resources.RecorderShellFullFilename + "\"\r\n";
+            batContent += "@echo " + Application.ExecutablePath + " -k >> \"" + Properties.Resources.RecorderShellFullFilename + "\"";
+            File.WriteAllText("write_bat.bat", batContent, new System.Text.UTF8Encoding(false));
+            // 使用powershell命令进行runAs（C#方式尝试，宣告失败）
+            Process process = new Process();
+            process.StartInfo.FileName = "powershell.exe";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardInput = true;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.Arguments = "Start-Process .\\write_bat.bat -Verb runAs";
+            process.Start();
+            process.WaitForExit(); // powershell用于启动管理员权限的cmd，此句无意义
+            return process.StandardError.ReadToEnd() == "";
+        }
+
         private void 注册关机事件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             float? minutes = null;
             try
             {

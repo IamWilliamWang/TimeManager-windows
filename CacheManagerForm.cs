@@ -16,9 +16,9 @@ namespace 关机助手
         private enum OutputState { ORIGINAL, TRADITIONAL, MODERN};
         private OutputState opState = OutputState.MODERN;
 
-        #region 输出显示控制器
+        #region 控制器
         /// <summary>
-        /// 表示一条Sql
+        /// 储存一条sql语句。是数据类型
         /// </summary>
         private class SqlItem
         {
@@ -48,30 +48,36 @@ namespace 关机助手
         }
 
         /// <summary>
-        /// 将开机/关机时间：xx:xx:xx转换成可以直接执行的sql字符串
+        /// 将显示的一条转换成可以直接执行的sql字符串
         /// </summary>
         /// <param name="displayedItem">显示在屏幕上的单行文字</param>
         /// <returns></returns>
         private SqlItem GetSqlItemFromDisplayedString(string displayedItem)
         {
+            ///直观模式的每条格式
+            ///开机时间：2019-12-26 21:31:16.410
+            ///关机时间： -- 2019-12-26 21:31:16.410
             if (opState == OutputState.MODERN)
             {
-                if (displayedItem.Contains(" -- "))
+                if (displayedItem.Contains(" -- ") == false) //开机
                 {
-                    string time = displayedItem.Replace(" -- ", "");
+                    string time = displayedItem;
                     string sqlString = "INSERT INTO [Table](开机时间) VALUES ('@time')".Replace("@time", time);
                     SqlItem item = new SqlItem(sqlString);
                     return item;
                 }
-                else
+                else // 关机
                 {
-                    string time = displayedItem;
+                    string time = displayedItem.Replace(" -- ", "");
                     string sqlString = "UPDATE [Table] SET 关机时间 = '@time', 时长 = '@time' - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
                         .Replace("@time", time);
                     SqlItem item = new SqlItem(sqlString);
                     return item;
                 }
             }
+            ///经典模式的每条格式
+            ///开机时间：2019-12-26 21:31:16.410
+            ///关机时间：2019-12-26 21:31:16.410
             else if (opState == OutputState.TRADITIONAL)
             {
                 if (displayedItem.Contains("开机"))
@@ -104,20 +110,26 @@ namespace 关机助手
         }
 
         /// <summary>
-        /// 将直接执行的sql字符串转换成开机/关机时间：xx:xx:xx
+        /// 将直接执行的sql字符串转换成一条显示数据
         /// </summary>
         /// <param name="raw_sql">能直接执行的一句sql语句</param>
         /// <returns></returns>
         private string GetDisplayedStringFromSqlString(string raw_sql)
         {
+            ///直观模式的每条格式
+            ///开机时间：2019-12-26 21:31:16.410
+            ///关机时间： -- 2019-12-26 21:31:16.410
             if (opState == OutputState.MODERN)
             {
                 SqlItem sqlItem = new SqlItem(raw_sql);
                 if (sqlItem.记录开机)
-                    return sqlItem.SqlTime + " -- ";
-                else
                     return sqlItem.SqlTime;
+                else
+                    return " -- " + sqlItem.SqlTime;
             }
+            ///经典模式的每条格式
+            ///开机时间：2019-12-26 21:31:16.410
+            ///关机时间：2019-12-26 21:31:16.410
             else if (opState == OutputState.TRADITIONAL)
             {
                 SqlItem sqlItem = new SqlItem(raw_sql);
@@ -129,7 +141,7 @@ namespace 关机助手
         }
 
         /// <summary>
-        /// 转换所有sql语句至显示的strings
+        /// 批量转换sql语句到输出显示条目
         /// </summary>
         /// <param name="sqls"></param>
         /// <returns></returns>
@@ -142,7 +154,7 @@ namespace 关机助手
         }
 
         /// <summary>
-        /// 转换所有显示的strings到sql语句
+        /// 批量转换输出显示条目到sql语句
         /// </summary>
         /// <param name="strings"></param>
         /// <returns></returns>
@@ -160,7 +172,7 @@ namespace 关机助手
         }
 
         /// <summary>
-        /// 获取显示的所有Sql语句，设置需要显示的Sql语句。
+        /// 获取显示的所有Sql语句，设置需要显示的Sql语句。（控制器）
         /// </summary>
         public string CacheText { get {
                 // 获取CacheTextLines并连接成Text格式
@@ -178,8 +190,8 @@ namespace 关机助手
         /// </summary>
         public string[] CacheTextLines { get { // 获取，转换，返回
                 string text = this.textBoxCache.Text;
-                if (opState == OutputState.MODERN)
-                    text = text.Replace(" -- ", " -- \r\n");
+                if (opState == OutputState.MODERN) 
+                    text = text.Replace(" -- ", "\r\n -- "); // 关机记录移到开机记录下面。使得一行只包含一条数据
                 string[] displayedContentLines = text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 List<String> originalSqlLines = ConvertStrings2Sqls(displayedContentLines);
                 return originalSqlLines.ToArray();
@@ -192,7 +204,7 @@ namespace 关机助手
                     StringBuilder displayStr = new StringBuilder();
                     foreach (String str in displayedList)
                         displayStr.AppendLine(str);
-                    displayStr.Replace(" -- \r\n", " -- ");
+                    displayStr.Replace("\r\n -- ", " -- "); // 关机记录移到开机记录后面。使得一行包含多条数据
                     this.textBoxCache.Text = displayStr.ToString();
                     return;
                 }
@@ -262,13 +274,13 @@ namespace 关机助手
                 if (ConfigManager.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }
+            this.储存的缓存内容 = this.CacheText;
         }
 
-        private bool cacheChanged = false;
-
+        private string 储存的缓存内容 { get; set; }
         private void CacheManagerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (cacheChanged)
+            if (this.CacheText != this.储存的缓存内容) 
             {
                 var result = MessageBox.Show("检测到有未保存的内容，是否对缓存内容进行保存？", "警告", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                 if (DialogResult.Yes == result)
@@ -408,6 +420,7 @@ namespace 关机助手
         private void buttonSave_Click(object sender, EventArgs e)
         {
             UpdateCache();
+            this.储存的缓存内容 = this.CacheText;
             MessageBox.Show("保存成功！");
         }
 
@@ -428,6 +441,7 @@ namespace 关机助手
                 MessageBox.Show("无需提交，因为缓存为空。", "提示");
             else
                 MessageBox.Show("操作成功，已经清除缓存并提交到数据库中。", "提示");
+            this.储存的缓存内容 = this.CacheText;
             this.Close();
         }
         #endregion
@@ -496,16 +510,7 @@ namespace 关机助手
         }
         #endregion
 
-        private void CacheManagerForm_Resize(object sender, EventArgs e)
-        {
-            AutoScrollBar();
-        }
-
-        private void textBoxCache_TextChanged(object sender, EventArgs e)
-        {
-            cacheChanged = true;
-        }
-
+        #region 模式切换
         private void 直观模式ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (opState != OutputState.MODERN)
@@ -525,6 +530,12 @@ namespace 关机助手
             if (opState != OutputState.ORIGINAL)
                 opState = OutputState.ORIGINAL;
             LoadData();
+        }
+        #endregion
+        
+        private void CacheManagerForm_Resize(object sender, EventArgs e)
+        {
+            AutoScrollBar();
         }
     }
 }

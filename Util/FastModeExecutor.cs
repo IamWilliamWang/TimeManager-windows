@@ -121,11 +121,15 @@ namespace 关机助手.Util
                         case "-k":case "/k":
                         case "--start":
                             记录开机时间 = true;
-                            if (HasNext(args, i)) 
-                            { //有自定义数据库文件完整路径的参数
-                                mdf文件 = args[++i];
-                                cache文件 = mdf文件.Replace(".mdf", ".cache");
+                            if (HasNext(args, i))
+                            {
+                                失败后弹出的字符串 = "此功能已被废弃，请使用-db或-ca！";
+                                i = args.Length; //强制跳出大循环
                             }
+                            //{ //有自定义数据库文件完整路径的参数
+                            //    mdf文件 = args[++i];
+                            //    cache文件 = mdf文件.Replace(".mdf", ".cache");
+                            //}
                             break;
                         case "-h":case "/h":
                         case "--hibernate":
@@ -349,7 +353,6 @@ namespace 关机助手.Util
 "|-c [string]     |--comment [string]              |执行成功后弹出的字符串(换行请使用\\n表达)                     |-s 2.5m -c 150秒后将关机",
 "|-a              |--cancel_all                    |销毁所有倒计时                                     |-a",
 "|-k              |--start                         |记录当前的开机时间                                 |-k",
-"|-k [dbFilename] |--start [dbFilename]            |指定数据库记录当前的开机时间(弃用，推荐使用--db)   |-k D:\\database.mdf",
 "|-h              |--hibernate                     |休眠电脑(记录关机和下次开机时间)                   |-h",
 "|-sleep          |--sleep                         |睡眠电脑(记录关机和下次开机时间)                   |-sleep",
 "|-db [dbFilename]|--database_filename [dbFilename]|设定数据库文件名(不使用-dc会自动检测对应的缓存文件)|-db D:\\database.mdf",

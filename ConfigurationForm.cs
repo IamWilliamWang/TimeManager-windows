@@ -34,7 +34,7 @@ namespace 关机助手
             else
                 this.listBoxValue.Items.Add("未设置");
             // CacheManagerToPath
-            this.listBoxName.Items.Add("日志管理器默认合并源文件");
+            this.listBoxName.Items.Add("日志管理器默认合并目标文件");
             if (Util.ConfigManager.CacheManagerConfigLoaded)
                 this.listBoxValue.Items.Add(Util.ConfigManager.CacheManagerToPath == "" ? "未设置" : Util.ConfigManager.CacheManagerToPath);
             else
@@ -42,7 +42,7 @@ namespace 关机助手
             // CacheManagerAutoMerge
             this.listBoxName.Items.Add("日志管理器自动执行合并");
             if (Util.ConfigManager.CacheManagerConfigLoaded)
-                this.listBoxValue.Items.Add(Util.ConfigManager.CacheManagerAutoMerge);
+                this.listBoxValue.Items.Add(Util.ConfigManager.CacheManagerAutoMerge ? "是" : "否");
             else
                 this.listBoxValue.Items.Add("未设置");
         }
