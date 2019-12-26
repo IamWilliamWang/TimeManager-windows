@@ -45,7 +45,7 @@
 > * 系统休眠管理    
 部分用户尚未开启系统休眠可使用该功能一键开启
 > * 缓存管理    
-可对本程序的缓存进行添加、修改、删除、合并、清理、另存为、移动操作
+可对本程序的缓存进行添加、修改、删除、合并、清理、另存为、移动、备份等操作
 
 日志管理内可以查看每次使用软件的记录以及每次执行数据库操作所用的时长，下方得出平均时长，如果检测到执行时间普遍过长，程序会弹出相应的改善建议；注释管理器中用户可以对已有的记录进行备注，并可以查看以前添加的所有备注内容和添加日期，使得记录的内容丰富多样起来。
 
@@ -55,19 +55,19 @@
 
 |选项|完整选项|含义|示例|
 |---|-|:-:|-|
-|-s [sec/min]s/m|--shutdown_seconds [sec/min]s/m|倒计时关机(秒)|-s 60s or -s 1m|
-|-d [sec/min]s/m|--shutdown_delay [sec/min]s/m|记录被delay后的关机时间|-d 30s or -d 0.5m| 
-|-c [string]|--comment [string]|执行成功后弹出的字符串(支持\n)|-s 2.5m -c 150秒后将关机|
-|-a|--cancel_all|销毁所有倒计时|-a|
-|-k|--start|记录当前的开机时间|-k|
-|-k [dbFilename]|--start [dbFilename]|指定数据库记录当前的开机时间(Deprecated，推荐使用--db)|-k D:\\database.mdf|
-|-h|--hibernate|休眠电脑(记录关机和下次开机时间)|-h|
-|-sleep|--sleep|睡眠电脑(记录关机和下次开机时间)|-sleep|
-|-db [dbFilename]|--database_filename [dbFilename]|设定数据库文件名（不使用-dc时会自动切换至对应的缓存文件）|-db D:\\database.mdf|
-|-dc|--disable_cache|强制禁用使用缓存|-dc|
-|-offline|--offline|离线模式，不记录任何时间|-offline|
-|-sc|--show_cache|显示缓存文件内容（可指定缓存文件）|-sc -db my_cache.cache|
-|-del|--delete_cache|删除缓存文件（可指定缓存文件）|-del -db my_cache.cache|
+|-s [sec/min]s/m |--shutdown_seconds [sec/min]s/m |倒计时关机(秒)                                     |-s 60s or -s 1m
+|-d [sec/min]s/m |--shutdown_delay [sec/min]s/m   |记录被delay后的关机时间                            |-d 30s or -d 0.5m 
+|-c [string]     |--comment [string]              |执行成功后弹出的字符串(换行请使用\\n表达)                     |-s 2.5m -c 150秒后将关机
+|-a              |--cancel_all                    |销毁所有倒计时                                     |-a
+|-k              |--start                         |记录当前的开机时间                                 |-k
+|-h              |--hibernate                     |休眠电脑(记录关机和下次开机时间)                   |-h
+|-sleep          |--sleep                         |睡眠电脑(记录关机和下次开机时间)                   |-sleep
+|-db [dbFilename]|--database_filename [dbFilename]|设定数据库文件名(不使用-dc会自动检测对应的缓存文件)|-db D:\\database.mdf
+|-ca [cachename] |--cache [cachename]             |设定数据库缓存文件名                               |-ca D:\\database.cache
+|-dc             |--disable_cache                 |强制禁止使用缓存                                   |-dc
+|-offline        |--offline                       |离线模式，不记录任何时间                           |-offline
+|-sc             |--show_cache                    |显示缓存文件内容（可指定缓存文件）                 |-sc -ca my_cache.cache
+|-del            |--delete_cache                  |删除缓存文件（可指定缓存文件）                     |-del -ca my_cache.cache
 
 注：
 * -c -a -k -dc指令不会引起系统的关机或者休眠
@@ -81,10 +81,10 @@
 
 <font size=5>**免安装版软件下载**</font>（需要预装.NET framework 4.6.1及以上版本）：
 
-[点击这里下载](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.4.2/TimeManager.exe)
+[点击这里下载](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.5/TimeManager.exe)
 
 <br>
-当前版本：4.4.3(Form版本) + 2.0.2(命令行版本)
+当前版本：4.5(Form版本) + 2.0.2(命令行版本)
 
 更新日志：
 
