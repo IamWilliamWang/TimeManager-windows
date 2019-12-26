@@ -236,11 +236,10 @@ namespace 关机助手
             string[] allLines = Cache.GetAllLines();
             if (allLines == null)
             {
-                this.Text += "（未找到缓存文件）";
+                this.Text = "缓存管理器（未找到缓存文件）";
                 return;
             }
             CacheTextLines = allLines;
-            //this.CacheSavedTextLength = this.CacheText.Replace("\r", "").Replace("\n", "").Length;
         }
 
         private void AutoScrollBar()
