@@ -192,13 +192,13 @@ namespace 关机助手.Util
                     dbAgency.OpenConnection();
             }
             // 传入的是文件夹，添加完整文件名
-            if (!mdf文件.EndsWith(".mdf", true, null))  
+            if (mdf文件 != null && !mdf文件.EndsWith(".mdf", true, null)) 
             {
                 if (!mdf文件.EndsWith("\\"))
                     mdf文件 += "\\";
                 mdf文件 += "TimeDatabase.mdf";
             }
-            if (!cache文件.EndsWith(".cache", true, null)) 
+            if (cache文件 != null && !cache文件.EndsWith(".cache", true, null)) 
             {
                 if (!cache文件.EndsWith("\\"))
                     cache文件 += "\\";
@@ -210,14 +210,14 @@ namespace 关机助手.Util
                 // 设置程序运行的文件夹为CurrentDirectory
                 System.IO.Directory.SetCurrentDirectory(System.Windows.Forms.Application.StartupPath);
             }
-            else
+            // 设置cache所在文件夹为CurrentDirectory
+            else if (cache文件.Contains("\\"))
             {
-                // 设置cache所在文件夹为CurrentDirectory
                 System.IO.Directory.SetCurrentDirectory(cache文件.Substring(0, cache文件.LastIndexOf("\\")));
-                // 如果cache名称不是默认值，则修改Cache类的名称
-                if (Cache.CacheFilename != cache文件)
-                    Cache.CacheFilename = cache文件;
             }
+            // 如果cache名称不是默认值，则修改Cache的名称
+            if (cache文件 != null && cache文件 != "" && Cache.CacheFilename != cache文件) 
+                Cache.CacheFilename = cache文件;
             // 检查开机时间
             if (记录开机时间 == true)
             {
@@ -346,7 +346,7 @@ namespace 关机助手.Util
 "|       选项     |             完整选项           |         含义                                      |    示例",
 "|-s [sec/min]s/m |--shutdown_seconds [sec/min]s/m |倒计时关机(秒)                                     |-s 60s or -s 1m",
 "|-d [sec/min]s/m |--shutdown_delay [sec/min]s/m   |记录被delay后的关机时间                            |-d 30s or -d 0.5m ",
-"|-c [string]     |--comment [string]              |执行成功后弹出的字符串(支持\\n)                     |-s 2.5m -c 150秒后将关机",
+"|-c [string]     |--comment [string]              |执行成功后弹出的字符串(换行请使用\\n表达)                     |-s 2.5m -c 150秒后将关机",
 "|-a              |--cancel_all                    |销毁所有倒计时                                     |-a",
 "|-k              |--start                         |记录当前的开机时间                                 |-k",
 "|-k [dbFilename] |--start [dbFilename]            |指定数据库记录当前的开机时间(弃用，推荐使用--db)   |-k D:\\database.mdf",
@@ -356,8 +356,8 @@ namespace 关机助手.Util
 "|-ca [cachename] |--cache [cachename]             |设定数据库缓存文件名                               |-ca D:\\database.cache",
 "|-dc             |--disable_cache                 |强制禁止使用缓存                                   |-dc",
 "|-offline        |--offline                       |离线模式，不记录任何时间                           |-offline",
-"|-sc             |--show_cache                    |显示缓存文件内容（可指定缓存文件）                 |-sc -db my_cache.cache",
-"|-del            |--delete_cache                  |删除缓存文件（可指定缓存文件）                     |-del -db my_cache.cache"
+"|-sc             |--show_cache                    |显示缓存文件内容（可指定缓存文件）                 |-sc -ca my_cache.cache",
+"|-del            |--delete_cache                  |删除缓存文件（可指定缓存文件）                     |-del -ca my_cache.cache"
             };
 
             Util.ConsoleWriter.WriteLines(infos);

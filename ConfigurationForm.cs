@@ -23,7 +23,7 @@ namespace 关机助手
             if (Util.ConfigManager.MainFormConfigLoaded)
             {
                 int seconds = Util.ConfigManager.MainFormAutoShutdownSeconds;
-                this.listBoxValue.Items.Add(seconds == -1 ? "未设置" : seconds);
+                this.listBoxValue.Items.Add(seconds == -1 ? "未设置" : seconds.ToString());
             }
             else
                 this.listBoxValue.Items.Add("未设置");

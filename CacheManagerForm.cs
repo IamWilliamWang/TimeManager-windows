@@ -204,7 +204,7 @@ namespace 关机助手
         public CacheManagerForm()
         {
             InitializeComponent();
-            backup = new BackupCreater(cacheName, interval: 30000);
+            backup = new BackupCreater(cacheName, interval: 30000, 备份后缀名: ".autobackup", hideBackup: true);
         }
 
         /// <summary>

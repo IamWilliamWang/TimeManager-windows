@@ -11,8 +11,8 @@ namespace 关机助手.Util
     {
         public static char CacheSpliter { get { return splitChar; } } //缓存分割字符
         public static string CacheFilename { get { return dbFilename; } set {
-                if (value.Contains("\\")) dbFilename = value.Substring(value.LastIndexOf("\\") + 1);
-                else dbFilename = value;
+                //if (value.Contains("\\")) dbFilename = value.Substring(value.LastIndexOf("\\") + 1);
+                dbFilename = value;
             } } //缓存文件名
         
         private static string dbFilename = "TimeDatabase.cache";

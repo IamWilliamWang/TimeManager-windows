@@ -109,16 +109,16 @@ namespace 关机助手
         #region 主窗体双击
         private void Form1_DoubleClick(object sender, EventArgs e)
         {
-            this.应用AppToolStripMenuItem_Click(new object(), new EventArgs());
+            RunDevProc();
         }
 
-        private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new Thread(RunDevProc).Start();
+        //private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    new Thread(RunDevProc).Start();
 
-            MessageBox.Show("尝试完成", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            Environment.Exit(0);
-        }
+        //    MessageBox.Show("尝试完成", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        //    Environment.Exit(0);
+        //}
 
         private void RunDevProc()
         {
