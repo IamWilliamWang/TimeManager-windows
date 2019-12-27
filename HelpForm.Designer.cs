@@ -85,7 +85,7 @@ namespace 关机助手
             this.labelVersions.Name = "labelVersions";
             this.labelVersions.Size = new System.Drawing.Size(217, 93);
             this.labelVersions.TabIndex = 3;
-            this.labelVersions.Text = "关机助手:\r\n窗体版 v{Version}\r\n终端版 v2.0.1";
+            this.labelVersions.Text = "关机助手:\r\n窗体版 v{Version}\r\n终端版 v2.0.2";
             // 
             // textBoxUpdateLogCommandVersion
             // 

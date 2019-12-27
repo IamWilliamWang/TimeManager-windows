@@ -419,7 +419,6 @@ namespace 关机助手
         private void buttonSave_Click(object sender, EventArgs e)
         {
             UpdateCache();
-            this.储存的缓存内容 = this.CacheText;
             MessageBox.Show("保存成功！");
         }
 
@@ -428,6 +427,7 @@ namespace 关机助手
             if (this.CacheText == "")
                 File.Delete(cacheName);
             Cache.SetAllLines(CacheTextLines);
+            this.储存的缓存内容 = this.CacheText;
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -440,7 +440,6 @@ namespace 关机助手
                 MessageBox.Show("无需提交，因为缓存为空。", "提示");
             else
                 MessageBox.Show("操作成功，已经清除缓存并提交到数据库中。", "提示");
-            this.储存的缓存内容 = this.CacheText;
             this.Close();
         }
         #endregion
