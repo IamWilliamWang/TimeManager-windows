@@ -12,7 +12,7 @@ namespace 关机助手
     {
         #region 常量定义
         public readonly static String TableName = "[Table]";
-        private Semaphore semaphore = new Semaphore(initialCount:1, maximumCount:3);
+        private Semaphore semaphore = new Semaphore(initialCount: 1, maximumCount: 3);
         enum QueryMode { 显示所有数据, 显示后十五条数据, 显示后n条是数据, 精准查找, 统计结算填补 };
         #endregion
 
@@ -46,8 +46,8 @@ namespace 关机助手
         {
             InitializeComponent();
         }
-        
-        private void SqlServerResult_Load(object sender, EventArgs e)
+
+        private void DatabaseManagerForm_Load(object sender, EventArgs e)
         {
             //处理非UI线程异常，激活全局错误弹窗
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -57,6 +57,7 @@ namespace 关机助手
                 return;
             }
             this.progressBar1.Value = 10;
+            this.dataGridView1.RowHeadersWidth = GetRowHeaderWidth(1000);
             this.clearCacheBackgroundWorker.RunWorkerAsync();
 
             //显示后五条ToolStripMenuItem_Click(sender, e);
@@ -94,21 +95,32 @@ namespace 关机助手
 
         #region 数据显示模块
         /// <summary>
+        /// 获得多少条查询结果对应的行号宽度
+        /// </summary>
+        /// <param name="rowsCount"></param>
+        /// <returns></returns>
+        private int GetRowHeaderWidth(int rowsCount)
+        {
+            return 46 + 6 * Math.Max(0, ((int)Math.Log10(rowsCount) - 1));
+        }
+
+        /// <summary>
         /// 输出[Table]所有内容
         /// </summary>
         private void ShowTotalTable()
         {
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = database.ExecuteQuery("select * from " + TableName);
-            this.dataGridView1.RowHeadersWidth = 53;
+            var queryResult = database.ExecuteQuery("select * from " + TableName);
+            dataGridView1.DataSource = queryResult;
             this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+            this.dataGridView1.RowHeadersWidth = GetRowHeaderWidth(queryResult.Rows.Count);
         }
         
         private void 展示所有数据ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
-            if(this.Width==702)
+            if (this.Width == 702)
                 this.Width = 710;
             // 数据库已连接与未连接都可以处理
             if (database.ConnectionState == ConnectionState.Closed)
@@ -139,11 +151,13 @@ namespace 关机助手
             else
             {
                 dataGridView1.DataSource = null;
-                dataGridView1.DataSource = database.ExecuteQuery(
+                var queryResult = database.ExecuteQuery(
                     "select * from " + 
                     TableName + 
                     " where 序号>((select max(序号) from " + TableName + ")-14)");
+                dataGridView1.DataSource = queryResult;
                 this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+                this.dataGridView1.RowHeadersWidth = GetRowHeaderWidth(queryResult.Rows.Count);
             }
         }
 
@@ -170,11 +184,13 @@ namespace 关机助手
             else
             {
                 dataGridView1.DataSource = null;
-                dataGridView1.DataSource = database.ExecuteQuery(
+                var queryResult = database.ExecuteQuery(
                     "select * from " +
                     TableName +
                     " where 序号>((select max(序号) from " + TableName + ")-"+n+")");
+                dataGridView1.DataSource = queryResult;
                 this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+                this.dataGridView1.RowHeadersWidth = GetRowHeaderWidth(queryResult.Rows.Count);
             }
         }
 

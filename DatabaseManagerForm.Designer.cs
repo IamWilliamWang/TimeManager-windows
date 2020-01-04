@@ -555,7 +555,7 @@ namespace 关机助手
             this.Name = "DatabaseManagerForm";
             this.Text = "开关机时间记录 管理主窗口";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DatabaseManagerForm_FormClosed);
-            this.Load += new System.EventHandler(this.SqlServerResult_Load);
+            this.Load += new System.EventHandler(this.DatabaseManagerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource1)).EndInit();
