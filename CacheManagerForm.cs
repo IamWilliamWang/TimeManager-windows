@@ -68,7 +68,7 @@ namespace 关机助手
                 }
                 else // 关机
                 {
-                    string time = displayedItem.Replace(" -- ", "");
+                    string time = displayedItem.Replace(" -- ", "").TrimEnd();
                     string sqlString = "UPDATE [Table] SET 关机时间 = '@time', 时长 = '@time' - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
                         .Replace("@time", time);
                     SqlItem item = new SqlItem(sqlString);
@@ -505,6 +505,7 @@ namespace 关机助手
                 File.Delete(this.textBox源.Text);
             this.LoadData();
             MessageBox.Show("合并成功！");
+            this.储存的缓存内容 = this.CacheText;
         }
         #endregion
 
