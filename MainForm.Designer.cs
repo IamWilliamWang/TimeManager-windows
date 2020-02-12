@@ -68,6 +68,7 @@
             this.label指定时间关机 = new System.Windows.Forms.Label();
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
@@ -427,6 +428,13 @@
             this.updateTitleTimer.Interval = 77;
             this.updateTitleTimer.Tick += new System.EventHandler(this.updateTitleTimer_Tick);
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.ContextMenuStrip = this.主界面contextMenuStrip;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "notifyIcon";
+            this.notifyIcon.Visible = true;
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -509,6 +517,7 @@
         private System.Windows.Forms.ToolStripMenuItem 配置管理ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 显示配置文件内容ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 配置文件格式ToolStripMenuItem;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 

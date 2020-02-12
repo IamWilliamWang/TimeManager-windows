@@ -112,14 +112,6 @@ namespace 关机助手
             RunDevProc();
         }
 
-        //private void 应用AppToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    new Thread(RunDevProc).Start();
-
-        //    MessageBox.Show("尝试完成", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        //    Environment.Exit(0);
-        //}
-
         private void RunDevProc()
         {
             File.Copy(Properties.Resources.ExeDevelopFullFilename, "C:\\Users\\" + ProgramLauncher.SystemUserName + "\\Desktop\\关机助手0.exe");
@@ -157,12 +149,12 @@ namespace 关机助手
             if (e.KeyChar == '\n' || e.KeyChar == '\r')
             {
                 button确定_Click(sender, e);
-                Application.Exit();
+                ApplicationExit();
             }
             else if (e.KeyChar == 'q')
                 this.取消关机ToolStripMenuItem_Click(sender, e);
             else if (e.KeyChar == 27)
-                Application.Exit();
+                ApplicationExit();
         }
 
         private void dateTimePicker1_KeyPress(object sender, KeyPressEventArgs e)
@@ -172,7 +164,7 @@ namespace 关机助手
             else if (e.KeyChar == 'q')
                 this.取消关机ToolStripMenuItem_Click(sender, e);
             else if (e.KeyChar == 27)
-                Application.Exit();
+                ApplicationExit();
         }
         #endregion
 
@@ -194,7 +186,7 @@ namespace 关机助手
         /****************************/
 
         #region 菜单栏
-        #region 插入
+            #region 插入
         private void 插入开机时间ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SqlExecuter.记录开机事件("[Table]"))
@@ -206,7 +198,7 @@ namespace 关机助手
             if (SqlExecuter.记录关机事件())
                 MessageBox.Show("添加关机记录成功！");
         }
-        #endregion
+            #endregion
             #region 数据管理
         private void 数据管理ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -214,14 +206,14 @@ namespace 关机助手
                 this.安全模式ToolStripMenuItem.Enabled = false;
             new DatabaseManagerForm().ShowDialog();
         }
-        #endregion
+            #endregion
             #region 取消关机
         private void 取消关机ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CancelShutdownCommand();
             return;
         }
-        #endregion
+            #endregion
             #region 拓展功能
         bool 拓展功能ButtonClicked { get; set; } = false;
         private void 拓展功能ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -276,10 +268,46 @@ namespace 关机助手
             }
             拓展功能ButtonClicked = !拓展功能ButtonClicked;
         }
-        #endregion
+            #endregion
         #endregion
 
         #region 确定键
+        private void Run休眠或睡眠(string type, float comboBoxTimeMinutes)
+        {
+            if (this.comboBoxMode.Text != "休眠" && this.comboBoxMode.Text != "睡眠")
+                return;
+
+            this.Hide();
+            if (comboBoxTimeMinutes != 0)
+                this.notifyIcon.ShowBalloonTip(2000, "即将进入" + type + "状态", "程序将等待" + comboBoxTimeMinutes + "分钟后执行" + type + "。如果需要撤销操作请右击图标，选择退出按钮。", ToolTipIcon.Info);
+            new Thread(() =>
+            {
+                try
+                {
+                    Thread.Sleep((int)(comboBoxTimeMinutes * 60000));
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    MessageBox.Show("操作已取消","输入的数字有误，请重新输入！");
+                    this.Show();
+                    //return false;
+                }
+                if (type == "休眠")
+                {
+                    RunSuspendCommand(Mode.休眠);
+                    if (this.记录关机时间checkBox.Checked)
+                        休眠后再次添加开机记录();
+                }
+                else if (type == "睡眠")
+                {
+                    RunSuspendCommand(Mode.睡眠);
+                    if (this.记录关机时间checkBox.Checked)
+                        休眠后再次添加开机记录();
+                }
+            }).Start();
+            //return true;
+        }
+
         private void button确定_Click(object sender, EventArgs e)
         {
             try
@@ -287,26 +315,11 @@ namespace 关机助手
                 if (this.记录关机时间checkBox.Checked && this.comboBoxMode.Text != "延缓") 
                     SqlExecuter.记录关机事件();
 
-                float comboBoxTimeNumber = float.Parse(this.comboBoxTime.Text);
+                float comboBoxTimeMinutes = float.Parse(this.comboBoxTime.Text);
                 if (this.label设置倒计时.Text.Contains("小时"))
-                    comboBoxTimeNumber *= 60;
-                if (comboBoxTimeNumber < 0)
+                    comboBoxTimeMinutes *= 60;
+                if (comboBoxTimeMinutes < 0)
                     return;
-
-                if (this.comboBoxMode.Text == "休眠" || this.comboBoxMode.Text == "睡眠") 
-                {
-                    this.Hide();
-                    try
-                    {
-                        Thread.Sleep((int)(comboBoxTimeNumber * 60000));
-                    }
-                    catch(ArgumentOutOfRangeException)
-                    {
-                        MessageBox.Show("输入的数字有误，请重新输入！");
-                        this.Show();
-                        return;
-                    }
-                }
 
                 CancelShutdownCommand();
                 try
@@ -314,26 +327,22 @@ namespace 关机助手
                     switch (this.comboBoxMode.Text)
                     {
                         case "关机":
-                            float seconds = comboBoxTimeNumber * 60;
+                            float seconds = comboBoxTimeMinutes * 60;
                             RunShutdownCommand(Mode.关机, seconds);
                             break;
                         case "重启":
 	                        if (!this.记录关机时间checkBox.Checked)
 	                            File.CreateText(@"C:\Users\"+ProgramLauncher.SystemUserName+@"\DONOTWRITEDATA").Close();
-                            RunShutdownCommand(Mode.重启, comboBoxTimeNumber * 60);
+                            RunShutdownCommand(Mode.重启, comboBoxTimeMinutes * 60);
                             break;
                         case "休眠":
-                            RunSuspendCommand(Mode.休眠);
-                            if (this.记录关机时间checkBox.Checked) 
-                                再次添加开机记录();
+                            Run休眠或睡眠("休眠", comboBoxTimeMinutes);
                             break;
                         case "延缓":
-                            FastModeExecutor.ShutdownWithSeconds_DelayMode((int)(comboBoxTimeNumber * 60));
+                            FastModeExecutor.ShutdownWithSeconds_DelayMode((int)(comboBoxTimeMinutes * 60));
                             break;
                         case "睡眠":
-                            RunSuspendCommand(Mode.睡眠);
-                            if (this.记录关机时间checkBox.Checked)
-                                再次添加开机记录();
+                            Run休眠或睡眠("睡眠", comboBoxTimeMinutes);
                             break;
                     }
                 }
@@ -352,15 +361,12 @@ namespace 关机助手
         #endregion
 
         #region 休眠后续工作
-        private void 再次添加开机记录()
+        private void 休眠后再次添加开机记录()
         {
-            new Thread(休眠结束后的工作).Start();
-        }
-
-        private void 休眠结束后的工作()
-        {
-            SqlExecuter.记录开机事件();
-            退出ToolStripMenuItem_Click(null, null);
+            new Thread(() => {
+                SqlExecuter.记录开机事件();
+                ApplicationExit();
+            }).Start();
         }
         #endregion
 
@@ -731,15 +737,21 @@ namespace 关机助手
             this.ShowInTaskbar = false;
         }
 
-        private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ApplicationExit()
         {
             this.updateTitleTimer.Enabled = false;
             database.CloseConnection();
-            Application.Exit();
+            Environment.Exit(0);
+        }
+
+        private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Application.Exit();
+            ApplicationExit();
         }
         #endregion
 
-        #region 更新时间线程
+        #region 更新时间后台线程
         private void FlushTitleInEvery10Second()
         {
             this.updateTitleTimer.Interval = 10000;
@@ -784,7 +796,7 @@ namespace 关机助手
                     return;
                 }
 
-                Application.Exit();
+                MainForm.mForm.ApplicationExit();
             }
         }
         
@@ -835,6 +847,5 @@ namespace 关机助手
             this.安全模式ToolStripMenuItem.Text = enable ? "关闭安全模式" : "启动安全模式";
         }
         #endregion
-        
     }
 }
