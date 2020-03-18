@@ -432,8 +432,9 @@
             // 
             this.notifyIcon.ContextMenuStrip = this.主界面contextMenuStrip;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "notifyIcon";
+            this.notifyIcon.Text = "关机助手";
             this.notifyIcon.Visible = true;
+            this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
             // MainForm
             // 

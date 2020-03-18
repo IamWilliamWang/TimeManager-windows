@@ -149,7 +149,8 @@ namespace 关机助手
             if (e.KeyChar == '\n' || e.KeyChar == '\r')
             {
                 button确定_Click(sender, e);
-                ApplicationExit();
+                if (this.comboBoxMode.Text != "休眠" && this.comboBoxMode.Text != "睡眠") 
+                    ApplicationExit();
             }
             else if (e.KeyChar == 'q')
                 this.取消关机ToolStripMenuItem_Click(sender, e);
@@ -740,6 +741,7 @@ namespace 关机助手
         private void ApplicationExit()
         {
             this.updateTitleTimer.Enabled = false;
+            this.notifyIcon.Visible = false;
             database.CloseConnection();
             Environment.Exit(0);
         }
@@ -748,6 +750,14 @@ namespace 关机助手
         {
             //Application.Exit();
             ApplicationExit();
+        }
+        #endregion
+
+        #region 通知图标
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            MainForm.mForm.Show();
+            MainForm.mForm.Activate();
         }
         #endregion
 
