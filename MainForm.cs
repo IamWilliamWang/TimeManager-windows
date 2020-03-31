@@ -44,16 +44,29 @@ namespace 关机助手
                 MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。", "欢迎！", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DatabaseManagerForm.needInitialized = true;
             }
+            // 加载配置文件，执行相应的操作（调用已有的事件函数，不自主处理过程）
             if (ConfigManager.MainFormConfigLoaded)
             {
                 if (ConfigManager.MainFormAutoDarkMode)
                     darkModeToolStripMenuItem_Click(null, null);
                 if (ConfigManager.MainFormAutoShutdownSeconds != -1)
                 {
-                    this.comboBoxTime.Text = (1.0 * ConfigManager.MainFormAutoShutdownSeconds / 60).ToString();
+                    if (this.label设置倒计时.Text.Contains("分钟"))
+                        this.comboBoxTime.Text = ((double)ConfigManager.MainFormAutoShutdownSeconds / 60).ToString();
+                    else
+                        this.comboBoxTime.Text = ConfigManager.MainFormAutoShutdownSeconds.ToString();
                     button确定_Click(sender, e);
                 }
-
+                if (ConfigManager.MainFormOpacity != -1)
+                {
+                    //this.Opacity = 0.01 * ConfigManager.MainFormOpacity;
+                    this.toolStripComboBox透明度.Text = ConfigManager.MainFormOpacity.ToString();
+                    this.toolStripComboBox透明度_TextChanged(null, null);
+                }
+                if (ConfigManager.MainFormHideInTaskbar)
+                    任务栏隐匿ToolStripMenuItem_Click(null, null);
+                if (ConfigManager.MainFormHideNotifyIcon)
+                    隐藏右下角图标ToolStripMenuItem_Click(null, null);
             }
             // 获取版本号并替换标题
             this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version());
@@ -622,8 +635,8 @@ namespace 关机助手
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.toolStripComboBox透明度.BackColor = SystemColors.WindowFrame;
                     this.toolStripComboBox透明度.ForeColor = SystemColors.Window;
-                    this.隐匿ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
-                    this.隐匿ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.任务栏隐匿ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.任务栏隐匿ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.WindowFrame;
                     this.退出ToolStripMenuItem1.ForeColor = SystemColors.Window;
                     this.label指定时间关机.BackColor = SystemColors.WindowFrame;
@@ -685,8 +698,8 @@ namespace 关机助手
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.toolStripComboBox透明度.BackColor = SystemColors.Control;
                     this.toolStripComboBox透明度.ForeColor = SystemColors.ControlText;
-                    this.隐匿ToolStripMenuItem.BackColor = SystemColors.Control;
-                    this.隐匿ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.任务栏隐匿ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.任务栏隐匿ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.Control;
                     this.退出ToolStripMenuItem1.ForeColor = SystemColors.ControlText;
                     this.label指定时间关机.BackColor = SystemColors.Control;
@@ -738,6 +751,11 @@ namespace 关机助手
             this.ShowInTaskbar = false;
         }
 
+        private void 隐藏右下角图标ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.notifyIcon.Visible = false;
+        }
+
         private void ApplicationExit()
         {
             this.updateTitleTimer.Enabled = false;
@@ -754,7 +772,7 @@ namespace 关机助手
         #endregion
 
         #region 通知图标
-        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        private void notifyIcon_Click(object sender, EventArgs e)
         {
             MainForm.mForm.Show();
             MainForm.mForm.Activate();

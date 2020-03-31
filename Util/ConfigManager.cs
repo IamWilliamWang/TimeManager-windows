@@ -21,16 +21,19 @@ namespace 关机助手.Util
         #region 内部数据变量
         private class CacheManagerConfig
         {
-            public bool configLoaded = false;
-            public String cacheFromPath = "";
-            public String cacheToPath = "";
-            public bool cacheAutoMerge = false;
+            internal bool configLoaded = false;
+            internal String cacheFromPath = "";
+            internal String cacheToPath = "";
+            internal bool cacheAutoMerge = false;
         }
         private class MainConfig
         {
-            public bool configLoaded = false;
-            public bool mainDark = false;
-            public int mainAutoShutdownSeconds = -1;
+            internal bool configLoaded = false;
+            internal bool mainDark = false;
+            internal bool mainHideInTaskbar = false;
+            internal bool mainHideNotifyIcon = false;
+            internal int mainAutoShutdownSeconds = -1;
+            internal int mainOpacity = -1;
         }
         #endregion
 
@@ -89,7 +92,36 @@ namespace 关机助手.Util
                 return This.mainConfig.mainAutoShutdownSeconds;
             }
         }
-
+        /// <summary>
+        /// MainForm的透明度，如果未找到相关配置则返回-1
+        /// </summary>
+        public static int MainFormOpacity {
+            get {
+                if (!This.mainConfig.configLoaded) throw new MethodAccessException("Please check configLoaded before call of this function!");
+                return This.mainConfig.mainOpacity;
+            }
+        }
+        /// <summary>
+        /// MainForm是否隐藏在任务栏中的图标
+        /// </summary>
+        public static bool MainFormHideInTaskbar {
+            get {
+                if (!This.mainConfig.configLoaded) throw new MethodAccessException("Please check configLoaded before call of this function!");
+                return This.mainConfig.mainHideInTaskbar;
+            }
+        }
+        /// <summary>
+        /// MainForm是否隐藏在右下角的图标
+        /// </summary>
+        public static bool MainFormHideNotifyIcon {
+            get {
+                if (!This.mainConfig.configLoaded) throw new MethodAccessException("Please check configLoaded before call of this function!");
+                return This.mainConfig.mainHideNotifyIcon;
+            }
+        }
+        /// <summary>
+        /// 获得配置文件的原文
+        /// </summary>
         public static string RawText { get { if (!File.Exists(configName)) return ""; else return File.ReadAllText(configName); } }
         #endregion
 
@@ -152,6 +184,21 @@ namespace 关机助手.Util
                         this.mainConfig.mainAutoShutdownSeconds = (int)float.Parse(mainNode["AutoShutdownSeconds"].InnerText);
                         emptyConfig = false;
                     }
+                    if (Contains(mainNode, "Opacity"))
+                    {
+                        this.mainConfig.mainOpacity = (int)float.Parse(mainNode["Opacity"].InnerText);
+                        emptyConfig = false;
+                    }
+                    if (Contains(mainNode, "HideInTaskbar"))
+                    {
+                        this.mainConfig.mainHideInTaskbar = mainNode["HideInTaskbar"].InnerText == "true";
+                        emptyConfig = false;
+                    }
+                    if (Contains(mainNode, "HideNotifyIcon"))
+                    {
+                        this.mainConfig.mainHideNotifyIcon = mainNode["HideNotifyIcon"].InnerText == "true";
+                        emptyConfig = false;
+                    }
                     this.mainConfig.configLoaded = !emptyConfig;
                 }
             }
@@ -161,7 +208,7 @@ namespace 关机助手.Util
             }
         }
 
-        #region 属性操作
+        #region 属性操作(未实现)
         /// <summary>
         /// 添加属性
         /// </summary>

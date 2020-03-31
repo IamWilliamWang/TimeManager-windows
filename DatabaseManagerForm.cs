@@ -452,7 +452,7 @@ namespace 关机助手
 
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Sql文件|*.sql";
-            fileDialog.Title = "请输入脚本带完整路径文件名";
+            fileDialog.Title = "请选择脚本文件";
             fileDialog.ShowDialog();
             if (fileDialog.FileName == "")
                 return;

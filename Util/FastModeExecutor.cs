@@ -346,7 +346,7 @@ namespace 关机助手.Util
         {
             String[] infos =
             {
-"关机助手(终端版 v2.0.2)","使用说明：",
+"关机助手(终端版 v2.1)","使用说明：",
 "|       选项     |             完整选项           |         含义                                      |    示例",
 "|-s [sec/min]s/m |--shutdown_seconds [sec/min]s/m |倒计时关机(秒)                                     |-s 60s or -s 1m",
 "|-d [sec/min]s/m |--shutdown_delay [sec/min]s/m   |记录被delay后的关机时间                            |-d 30s or -d 0.5m ",

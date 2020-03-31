@@ -71,6 +71,8 @@ namespace 关机助手.Properties {
         ///	&lt;/CacheManager&gt;
         ///	&lt;Main&gt;
         ///		&lt;DarkNode&gt;（自动开启暗黑模式，true/false）&lt;/DarkNode&gt;
+        ///		&lt;HideInTaskbar&gt;（是否脱离任务栏控制，true/false）&lt;/HideInTaskbar&gt;
+        ///		&lt;HideNotifyIcon&gt;（是否隐藏右下角图标，true/false）&lt;/HideNotifyIcon&gt;
         ///		&lt;AutoShutdownSeconds&gt;（自动执行几秒后关机）&lt;/AutoShutdownSeconds&gt;
         ///	&lt;/Main&gt;
         ///&lt;/Config&gt; 的本地化字符串。

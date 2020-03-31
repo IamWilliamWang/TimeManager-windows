@@ -12,12 +12,24 @@ namespace 关机助手
 
         private void ConfigurationForm_Load(object sender, EventArgs e)
         {
-            // AutoDarkMode
+            // MainFormAutoDarkMode
             this.listBoxName.Items.Add("主界面自动开启黑暗模式");
             if (Util.ConfigManager.MainFormConfigLoaded)
-                this.listBoxValue.Items.Add(Util.ConfigManager.MainFormAutoDarkMode ? "是" : "否");
+                this.listBoxValue.Items.Add(Util.ConfigManager.MainFormAutoDarkMode ? "自动开启" : "不自动开启");
             else
-                this.listBoxValue.Items.Add("否");
+                this.listBoxValue.Items.Add("不自动开启");
+            // MainFormHideInTaskbar
+            this.listBoxName.Items.Add("主界面自动脱离任务栏控制");
+            if (Util.ConfigManager.MainFormConfigLoaded)
+                this.listBoxValue.Items.Add(Util.ConfigManager.MainFormHideInTaskbar ? "自动脱离" : "不自动脱离");
+            else
+                this.listBoxValue.Items.Add("不自动脱离");
+            // MainFormHideNotifyIcon
+            this.listBoxName.Items.Add("主界面自动隐藏右下角图标");
+            if (Util.ConfigManager.MainFormConfigLoaded)
+                this.listBoxValue.Items.Add(Util.ConfigManager.MainFormHideNotifyIcon ? "自动隐藏" : "不自动隐藏");
+            else
+                this.listBoxValue.Items.Add("不自动隐藏");
             // AutoShutdownSeconds
             this.listBoxName.Items.Add("启动程序后几秒后执行关机");
             if (Util.ConfigManager.MainFormConfigLoaded)

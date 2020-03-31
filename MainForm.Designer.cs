@@ -61,7 +61,7 @@
             this.配置文件格式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.附加功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox透明度 = new System.Windows.Forms.ToolStripComboBox();
-            this.隐匿ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.任务栏隐匿ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.确定button2 = new System.Windows.Forms.Button();
@@ -69,6 +69,7 @@
             this.记录关机时间checkBox = new System.Windows.Forms.CheckBox();
             this.updateTitleTimer = new System.Windows.Forms.Timer(this.components);
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.隐藏右下角图标ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.确认按钮contextMenuStrip.SuspendLayout();
             this.主界面contextMenuStrip.SuspendLayout();
@@ -332,7 +333,8 @@
             // 
             this.附加功能ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBox透明度,
-            this.隐匿ToolStripMenuItem});
+            this.任务栏隐匿ToolStripMenuItem,
+            this.隐藏右下角图标ToolStripMenuItem});
             this.附加功能ToolStripMenuItem.Name = "附加功能ToolStripMenuItem";
             this.附加功能ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.附加功能ToolStripMenuItem.Text = "附加功能";
@@ -366,12 +368,12 @@
             this.toolStripComboBox透明度.Text = "透明度";
             this.toolStripComboBox透明度.TextChanged += new System.EventHandler(this.toolStripComboBox透明度_TextChanged);
             // 
-            // 隐匿ToolStripMenuItem
+            // 任务栏隐匿ToolStripMenuItem
             // 
-            this.隐匿ToolStripMenuItem.Name = "隐匿ToolStripMenuItem";
-            this.隐匿ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.隐匿ToolStripMenuItem.Text = "任务栏隐匿";
-            this.隐匿ToolStripMenuItem.Click += new System.EventHandler(this.任务栏隐匿ToolStripMenuItem_Click);
+            this.任务栏隐匿ToolStripMenuItem.Name = "任务栏隐匿ToolStripMenuItem";
+            this.任务栏隐匿ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.任务栏隐匿ToolStripMenuItem.Text = "脱离任务栏控制";
+            this.任务栏隐匿ToolStripMenuItem.Click += new System.EventHandler(this.任务栏隐匿ToolStripMenuItem_Click);
             // 
             // 退出ToolStripMenuItem1
             // 
@@ -434,7 +436,14 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "关机助手";
             this.notifyIcon.Visible = true;
-            this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
+            this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
+            // 
+            // 隐藏右下角图标ToolStripMenuItem
+            // 
+            this.隐藏右下角图标ToolStripMenuItem.Name = "隐藏右下角图标ToolStripMenuItem";
+            this.隐藏右下角图标ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.隐藏右下角图标ToolStripMenuItem.Text = "隐藏右下角图标";
+            this.隐藏右下角图标ToolStripMenuItem.Click += new System.EventHandler(this.隐藏右下角图标ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -512,13 +521,14 @@
         private System.Windows.Forms.ToolStripMenuItem 获得管理员权限ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 附加功能ToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox透明度;
-        private System.Windows.Forms.ToolStripMenuItem 隐匿ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 任务栏隐匿ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 缓存管理ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 暗黑模式ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 配置管理ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 显示配置文件内容ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 配置文件格式ToolStripMenuItem;
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ToolStripMenuItem 隐藏右下角图标ToolStripMenuItem;
     }
 }
 
