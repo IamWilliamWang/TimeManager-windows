@@ -61,7 +61,7 @@ namespace 关机助手
                 {
                     //this.Opacity = 0.01 * ConfigManager.MainFormOpacity;
                     this.toolStripComboBox透明度.Text = ConfigManager.MainFormOpacity.ToString();
-                    this.toolStripComboBox透明度_TextChanged(null, null);
+                    //this.toolStripComboBox透明度_TextChanged(null, null);
                 }
                 if (ConfigManager.MainFormHideInTaskbar)
                     任务栏隐匿ToolStripMenuItem_Click(null, null);
@@ -627,10 +627,10 @@ namespace 关机助手
                     this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.配置管理ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.配置管理ToolStripMenuItem.ForeColor = SystemColors.Window;
-                    this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
-                    this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.Window;
-                    this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
-                    this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    //this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    //this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    //this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    //this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.附加功能ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.toolStripComboBox透明度.BackColor = SystemColors.WindowFrame;
@@ -690,10 +690,10 @@ namespace 关机助手
                     this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.配置管理ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.配置管理ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.Control;
-                    this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.Control;
-                    this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    //this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.Control;
+                    //this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    //this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.Control;
+                    //this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.附加功能ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.toolStripComboBox透明度.BackColor = SystemColors.Control;
@@ -722,11 +722,6 @@ namespace 关机助手
         {
             //MessageBox.Show(ConfigManager.RawText);
             new ConfigurationForm().ShowDialog();
-        }
-
-        private void 配置文件格式ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(Properties.Resources.ConfigHelp);
         }
 
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)

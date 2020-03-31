@@ -61,8 +61,8 @@ namespace 关机助手.Properties {
         }
         
         /// <summary>
-        ///   查找类似 &lt;!--以下不用的属性可删除--&gt;
-        ///&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+        ///&lt;!--填充所有括号，不用的属性行可删除--&gt;
         ///&lt;Config&gt;
         ///	&lt;CacheManager&gt;
         ///		&lt;From&gt;（合并源文件名）&lt;/From&gt;
@@ -70,16 +70,17 @@ namespace 关机助手.Properties {
         ///		&lt;AutoMerge&gt;（自动执行合并操作，true/false）&lt;/AutoMerge&gt;
         ///	&lt;/CacheManager&gt;
         ///	&lt;Main&gt;
-        ///		&lt;DarkNode&gt;（自动开启暗黑模式，true/false）&lt;/DarkNode&gt;
+        ///		&lt;DarkMode&gt;（自动开启暗黑模式，true/false）&lt;/DarkMode&gt;
         ///		&lt;HideInTaskbar&gt;（是否脱离任务栏控制，true/false）&lt;/HideInTaskbar&gt;
         ///		&lt;HideNotifyIcon&gt;（是否隐藏右下角图标，true/false）&lt;/HideNotifyIcon&gt;
+        ///		&lt;Opacity&gt;（主界面的透明度）&lt;/Opacity&gt;
         ///		&lt;AutoShutdownSeconds&gt;（自动执行几秒后关机）&lt;/AutoShutdownSeconds&gt;
         ///	&lt;/Main&gt;
         ///&lt;/Config&gt; 的本地化字符串。
         /// </summary>
-        internal static string ConfigHelp {
+        internal static string ConfigExample {
             get {
-                return ResourceManager.GetString("ConfigHelp", resourceCulture);
+                return ResourceManager.GetString("ConfigExample", resourceCulture);
             }
         }
         

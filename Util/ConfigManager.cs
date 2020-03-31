@@ -120,7 +120,7 @@ namespace 关机助手.Util
             }
         }
         /// <summary>
-        /// 获得配置文件的原文
+        /// 获得配置文件的原文，无配置文件则返回""
         /// </summary>
         public static string RawText { get { if (!File.Exists(configName)) return ""; else return File.ReadAllText(configName); } }
         #endregion
@@ -128,6 +128,16 @@ namespace 关机助手.Util
         private bool Contains(XmlNode parent, string childName)
         {
             return parent.SelectSingleNode(childName) != null;
+        }
+
+        /// <summary>
+        /// 初始化配置文件（范例）
+        /// </summary>
+        /// <returns></returns>
+        public static bool InitConfigFile()
+        {
+            File.WriteAllText(configName, Properties.Resources.ConfigExample);
+            return true;
         }
 
         /// <summary>
@@ -174,19 +184,25 @@ namespace 关机助手.Util
                 {
                     bool emptyConfig = true;
                     XmlNode mainNode = root["Main"];
-                    if (Contains(mainNode, "DarkNode"))
+                    if (Contains(mainNode, "DarkMode"))
                     {
                         this.mainConfig.mainDark = mainNode["DarkMode"].InnerText == "true";
                         emptyConfig = false;
                     }
                     if (Contains(mainNode, "AutoShutdownSeconds"))
                     {
-                        this.mainConfig.mainAutoShutdownSeconds = (int)float.Parse(mainNode["AutoShutdownSeconds"].InnerText);
+                        try {
+                            this.mainConfig.mainAutoShutdownSeconds = (int)float.Parse(mainNode["AutoShutdownSeconds"].InnerText);
+                        }
+                        catch { this.mainConfig.mainAutoShutdownSeconds = -1; }
                         emptyConfig = false;
                     }
                     if (Contains(mainNode, "Opacity"))
                     {
-                        this.mainConfig.mainOpacity = (int)float.Parse(mainNode["Opacity"].InnerText);
+                        try {
+                            this.mainConfig.mainOpacity = (int)float.Parse(mainNode["Opacity"].InnerText);
+                        }
+                        catch { this.mainConfig.mainOpacity = -1; }
                         emptyConfig = false;
                     }
                     if (Contains(mainNode, "HideInTaskbar"))
