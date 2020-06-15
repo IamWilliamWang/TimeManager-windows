@@ -1,4 +1,4 @@
-# 关机助手 v4.5.3
+# 关机助手 v4.6
 
 ## 功能概述：
 基础功能支持
@@ -80,17 +80,19 @@
 > * 确定键右击注册、销毁定时关机行为（每次开机启用该关机倒计时，实现防沉迷功能）。
 
 ## 免安装版软件下载
-[点击这里下载最新版本](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.5.3/TimeManager.exe)（需要预装.NET framework 4.6.1及以上版本）
+[点击这里下载最新版本](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.6/TimeManager.exe)（需要预装.NET framework 4.6.1及以上版本）
 
 [点击这里下载3.12稳定版](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.0.0/TimeManager_v3.12.exe)
 
 ## 更新内容
-当前版本号：**4.5.3**(主程序版本) + **2.1**(命令行版本)
+当前版本号：**4.6**(主程序版本) + **2.1**(命令行版本)
 
 ### 主程序更新日志：
 |版本号|新功能|调整与修改|修复问题|
 |:-:|:-|:-|:-|
-|[4.5.3](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.5.3/TimeManager.exe)|README添加每个版本的下载链接。主界面右菜单添加隐藏右下角徽标按钮。配置文件添加了透明度设置、自动隐藏于任务栏、自动隐藏右下角徽标并同步至显示配置文件、配置文件格式。单击右下角徽标可以显示窗口。|README大整理，调整结构，将更新日志改成表格更加直观。显示配置文件的说明文字修改。|修复notifyIcon的残留和休眠卡死问题
+|[4.6](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.6/TimeManager.exe)|主界面支持了取消休眠/睡眠，取消的同时会杀相同程序的后台。配置文件增加了默认的模式选择。取消后增加BallonTip交互。定时休眠增加了提前10、3、1分钟提醒BallonTip|主管理窗口默认显示15条改为20条。主管理窗口菜单栏选项、主界面文字、配置文件显示微调。主界面的指定时间关机功能改为指定时间，第二个确定只作为委托|修复了日志管理器自动备份报错问题
+|[4.5.4](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.6/TimeManager_v4.5.4.exe)|检测没有配置文件会生成范例|将配置格式显示移入配置窗体|修正了范例格式和ConfigManager内部可能导致的所有加载错误
+|[4.5.3](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.5.3/TimeManager.exe)|README添加每个版本的下载链接。主界面右菜单添加隐藏右下角徽标按钮。配置文件添加了透明度设置、自动隐藏于任务栏、自动隐藏右下角徽标并同步至显示配置文件、配置文件格式。单击右下角徽标可以显示窗口|README大整理，调整结构，将更新日志改成表格更加直观。显示配置文件的说明文字修改|修复notifyIcon的残留和休眠卡死问题
 |[4.5.2](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.5.2/TimeManager.exe)|增加了右下角徽标和徽标的右键菜单，定时休眠和睡眠会有通知提示，也可以取消定时||修复了软件定时休/睡眠情况下进程残留的问题
 |[4.5.1](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.5.1/TimeManager.exe)|||修复了缓存管理的切换模式时标题混乱、点击合并后仍然提示需保存修改的问题。修复了主窗口因行数过多导致行号被遮挡的问题
 |[4.5](https://github.com/IamWilliamWang/TimeManager-windows/releases/download/v4.5/TimeManager.exe)|缓存管理器升级内核并重构，支持自动备份，增添了显示模式菜单以及新的直观模式。主窗体新增显示后n条数据功能。命令行版本更新至2.0.2|安装插件无需重启程序，菜单栏文字调整。睡/休眠时不打勾不会记录开机。显示配置文件独立出窗体|修复了修改检测的问题

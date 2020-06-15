@@ -34,6 +34,7 @@ namespace 关机助手.Util
             internal bool mainHideNotifyIcon = false;
             internal int mainAutoShutdownSeconds = -1;
             internal int mainOpacity = -1;
+            internal int mainDefaultComboBoxIndex = -1;
         }
         #endregion
 
@@ -99,6 +100,15 @@ namespace 关机助手.Util
             get {
                 if (!This.mainConfig.configLoaded) throw new MethodAccessException("Please check configLoaded before call of this function!");
                 return This.mainConfig.mainOpacity;
+            }
+        }
+        /// <summary>
+        /// MainForm默认的comboBox选项，如果未找到相关配置则返回-1
+        /// </summary>
+        public static int MainDefaultComboBoxIndex {
+            get {
+                if (!This.mainConfig.configLoaded) throw new MethodAccessException("Please check configLoaded before call of this function!");
+                return This.mainConfig.mainDefaultComboBoxIndex;
             }
         }
         /// <summary>
@@ -203,6 +213,14 @@ namespace 关机助手.Util
                             this.mainConfig.mainOpacity = (int)float.Parse(mainNode["Opacity"].InnerText);
                         }
                         catch { this.mainConfig.mainOpacity = -1; }
+                        emptyConfig = false;
+                    }
+                    if (Contains(mainNode, "DefaultComboBoxIndex"))
+                    {
+                        try {
+                            this.mainConfig.mainDefaultComboBoxIndex = (int)float.Parse(mainNode["DefaultComboBoxIndex"].InnerText) - 1;
+                        }
+                        catch { this.mainConfig.mainDefaultComboBoxIndex = -1; }
                         emptyConfig = false;
                     }
                     if (Contains(mainNode, "HideInTaskbar"))

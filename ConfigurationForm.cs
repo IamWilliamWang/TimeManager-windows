@@ -35,12 +35,12 @@ namespace 关机助手
                 this.listBoxValue.Items.Add(Util.ConfigManager.MainFormHideNotifyIcon ? "自动隐藏" : "不自动隐藏");
             else
                 this.listBoxValue.Items.Add("不自动隐藏");
-            // MainFormAutoShutdownSeconds
-            this.listBoxName.Items.Add("启动程序后几秒后执行关机");
+            // MainDefaultComboBoxIndex
+            this.listBoxName.Items.Add("首页的模式选择默认为第几个");
             if (Util.ConfigManager.MainFormConfigLoaded)
             {
-                int seconds = Util.ConfigManager.MainFormAutoShutdownSeconds;
-                this.listBoxValue.Items.Add(seconds == -1 ? "未设置" : seconds.ToString());
+                int index = Util.ConfigManager.MainDefaultComboBoxIndex;
+                this.listBoxValue.Items.Add(index == -1 ? "未设置" : (index + 1).ToString());
             }
             else
                 this.listBoxValue.Items.Add("未设置");
@@ -50,6 +50,15 @@ namespace 关机助手
             {
                 int opacity = Util.ConfigManager.MainFormOpacity;
                 this.listBoxValue.Items.Add(opacity == -1 ? "未设置" : opacity.ToString());
+            }
+            else
+                this.listBoxValue.Items.Add("未设置");
+            // MainFormAutoShutdownSeconds
+            this.listBoxName.Items.Add("启动程序后几秒后执行关机");
+            if (Util.ConfigManager.MainFormConfigLoaded)
+            {
+                int seconds = Util.ConfigManager.MainFormAutoShutdownSeconds;
+                this.listBoxValue.Items.Add(seconds == -1 ? "未设置" : seconds.ToString());
             }
             else
                 this.listBoxValue.Items.Add("未设置");
@@ -68,7 +77,7 @@ namespace 关机助手
             // CacheManagerAutoMerge
             this.listBoxName.Items.Add("日志管理器自动执行合并");
             if (Util.ConfigManager.CacheManagerConfigLoaded)
-                this.listBoxValue.Items.Add(Util.ConfigManager.CacheManagerAutoMerge ? "是" : "否");
+                this.listBoxValue.Items.Add(Util.ConfigManager.CacheManagerAutoMerge ? "自动合并" : "不自动合并");
             else
                 this.listBoxValue.Items.Add("未设置");
         }

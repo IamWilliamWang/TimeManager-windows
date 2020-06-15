@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -12,14 +13,13 @@ namespace 关机助手
     public partial class MainForm : Form
     {
         private static MainForm mForm = null;
-        // SqlServer连接代理
-        private DatabaseAgency database { get; set; } = new DatabaseAgency();
-        
+        private DatabaseAgency database { get; set; } = new DatabaseAgency(); // 数据库连接代理
+        private List<Thread> threadPool = new List<Thread>(); // 保存休眠/睡眠的线程列表
+
         #region 窗体加载关闭事件
         public MainForm()
         {
             InitializeComponent();
-            comboBoxMode.SelectedIndex = 0;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -27,15 +27,14 @@ namespace 关机助手
             if (this.需要重复开启软件检查)
             {
                 // 检测后台是否运行同一程序
-                Process[] processes = Process.GetProcessesByName("关机助手"); 
+                Process[] processes = Process.GetProcessesByName("关机助手");
                 if (processes.Length > 1)
                 {
                     MessageBox.Show("检测到后台已经启动本程序，强烈建议只开启一个本程序，否则可能会导致意外后果。", "警告");
                 }
             }
-
-            //检测数据库文件是否存在，不存在则解压缩空数据库
-            if (!File.Exists(Properties.Resources.MdfFilename)) 
+            // 检测数据库文件是否存在，不存在则解压缩空数据库
+            if (!File.Exists(Properties.Resources.MdfFilename))
             {
                 BinaryWriterUtil.WriteFileToDisk(
                     GZipUtil.DecompressBytes(Properties.Resources.EmptyDB),
@@ -44,7 +43,8 @@ namespace 关机助手
                 MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。", "欢迎！", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DatabaseManagerForm.needInitialized = true;
             }
-            // 加载配置文件，执行相应的操作（调用已有的事件函数，不自主处理过程）
+            comboBoxMode.SelectedIndex = 0;
+            // 加载配置文件，执行相应的操作（调用已有的事件函数，不自主处理过程，以免造成与显示不同步的问题）
             if (ConfigManager.MainFormConfigLoaded)
             {
                 if (ConfigManager.MainFormAutoDarkMode)
@@ -58,11 +58,9 @@ namespace 关机助手
                     button确定_Click(sender, e);
                 }
                 if (ConfigManager.MainFormOpacity != -1)
-                {
-                    //this.Opacity = 0.01 * ConfigManager.MainFormOpacity;
                     this.toolStripComboBox透明度.Text = ConfigManager.MainFormOpacity.ToString();
-                    //this.toolStripComboBox透明度_TextChanged(null, null);
-                }
+                if (ConfigManager.MainDefaultComboBoxIndex != -1)
+                    this.comboBoxMode.SelectedIndex = ConfigManager.MainDefaultComboBoxIndex;
                 if (ConfigManager.MainFormHideInTaskbar)
                     任务栏隐匿ToolStripMenuItem_Click(null, null);
                 if (ConfigManager.MainFormHideNotifyIcon)
@@ -96,9 +94,8 @@ namespace 关机助手
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            database.CloseConnection();
+            //Environment.Exit(0);
         }
-
         #endregion
         /******** 主窗体事件 *********/
         #region 鼠标滚动
@@ -109,12 +106,12 @@ namespace 关机助手
             catch { return; }
 
             if (e.Delta > 0)
-                this.comboBoxTime.Text = ( nowNumber + 1 ).ToString();
+                this.comboBoxTime.Text = (nowNumber + 1).ToString();
             else if (e.Delta < 0)
             {
                 if (nowNumber == 0)
                     nowNumber += 60;
-                this.comboBoxTime.Text = ( nowNumber - 1 ).ToString();
+                this.comboBoxTime.Text = (nowNumber - 1).ToString();
             }
         }
         #endregion
@@ -162,7 +159,7 @@ namespace 关机助手
             if (e.KeyChar == '\n' || e.KeyChar == '\r')
             {
                 button确定_Click(sender, e);
-                if (this.comboBoxMode.Text != "休眠" && this.comboBoxMode.Text != "睡眠") 
+                if (this.comboBoxMode.Text != "休眠" && this.comboBoxMode.Text != "睡眠")
                     ApplicationExit();
             }
             else if (e.KeyChar == 'q')
@@ -212,7 +209,7 @@ namespace 关机助手
             if (SqlExecuter.记录关机事件())
                 MessageBox.Show("添加关机记录成功！");
         }
-            #endregion
+        #endregion
             #region 数据管理
         private void 数据管理ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -220,14 +217,38 @@ namespace 关机助手
                 this.安全模式ToolStripMenuItem.Enabled = false;
             new DatabaseManagerForm().ShowDialog();
         }
-            #endregion
+        #endregion
             #region 取消关机
         private void 取消关机ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CancelShutdownCommand();
-            return;
         }
-            #endregion
+
+        private void 取消休眠睡眠ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process[] processes = Process.GetProcessesByName("关机助手");
+            var nowId = Process.GetCurrentProcess().Id;
+            foreach (var process in processes)
+            {
+                if (process.Id == nowId)
+                    continue;
+                process.Kill();
+            }
+            if (this.threadPool.Count == 0)
+            {
+                this.notifyIcon.ShowBalloonTip(2000, "无操作", "没有需要被取消的定时休眠/睡眠。", ToolTipIcon.Info);
+                return;
+            }
+            this.AbordSubThreads();
+            this.notifyIcon.ShowBalloonTip(2000, "取消成功", "定时休眠/睡眠已经取消。", ToolTipIcon.Info);
+        }
+
+        private void 全部取消ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            取消关机ToolStripMenuItem_Click(null, null);
+            取消休眠睡眠ToolStripMenuItem_Click(null, null);
+        }
+        #endregion
             #region 拓展功能
         bool 拓展功能ButtonClicked { get; set; } = false;
         private void 拓展功能ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -235,54 +256,54 @@ namespace 关机助手
             if (拓展功能ButtonClicked == false)
             {
                 int waitMilisecond = 25;
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 10);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 10);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 5);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 5);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 4);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 4);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 4);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 3);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 3);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 2);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 2);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 2);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 2);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 1);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 1);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height + 1);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 1);
                 this.拓展功能ToolStripMenuItem.Text = "精简功能";
             }
             else
             {
                 int waitMilisecond = 50;
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 10);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 10);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 5);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 5);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 4);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 4);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 4);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 3);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 3);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 2);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 2);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 2);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 2);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 1);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 1);
                 Thread.Sleep(waitMilisecond);
-                this.ClientSize = new System.Drawing.Size(this.ClientSize.Width, this.ClientSize.Height - 1);
+                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 1);
                 this.拓展功能ToolStripMenuItem.Text = "拓展功能";
             }
             拓展功能ButtonClicked = !拓展功能ButtonClicked;
         }
-            #endregion
+        #endregion
         #endregion
 
         #region 确定键
@@ -292,47 +313,102 @@ namespace 关机助手
                 return;
 
             this.Hide();
+            // 定时成功提示
             if (comboBoxTimeMinutes != 0)
                 this.notifyIcon.ShowBalloonTip(2000, "即将进入" + type + "状态", "程序将等待" + comboBoxTimeMinutes + "分钟后执行" + type + "。如果需要撤销操作请右击图标，选择退出按钮。", ToolTipIcon.Info);
-            new Thread(() =>
+            // 提前10分钟提示
+            if (comboBoxTimeMinutes > 10)
+            {
+                threadPool.Add(new Thread((typeStr) =>
+                {
+                    try
+                    {
+                        Thread.Sleep((int)((comboBoxTimeMinutes - 10) * 60000));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    this.notifyIcon.ShowBalloonTip(2000, "即将进入" + type + "状态", "程序将在10分钟后执行" + type + "。如果需要撤销操作请右击图标，选择退出按钮。", ToolTipIcon.Info);
+                }));
+            }
+            // 提前3分钟提示
+            if (comboBoxTimeMinutes > 3)
+            {
+                threadPool.Add(new Thread((typeStr) =>
+                {
+                    try
+                    {
+                        Thread.Sleep((int)((comboBoxTimeMinutes - 3) * 60000));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    this.notifyIcon.ShowBalloonTip(2000, "即将进入" + type + "状态", "程序将在3分钟后执行" + type + "。如果需要撤销操作请右击图标，选择退出按钮。", ToolTipIcon.Info);
+                }));
+            }
+            // 提前1分钟提示
+            if (comboBoxTimeMinutes > 1)
+            {
+                threadPool.Add(new Thread((typeStr) =>
+                {
+                    try
+                    {
+                        Thread.Sleep((int)((comboBoxTimeMinutes - 1) * 60000));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    this.notifyIcon.ShowBalloonTip(2000, "即将进入" + type + "状态", "程序将在1分钟后执行" + type + "。如果需要撤销操作请右击图标，选择退出按钮。", ToolTipIcon.Info);
+                }));
+            }
+            // 执行休眠/睡眠的线程
+            threadPool.Add(new Thread((typeStr) =>
             {
                 try
                 {
                     Thread.Sleep((int)(comboBoxTimeMinutes * 60000));
                 }
-                catch (ArgumentOutOfRangeException)
+                catch (Exception)
                 {
-                    MessageBox.Show("操作已取消","输入的数字有误，请重新输入！");
-                    this.Show();
-                    //return false;
+                    this.notifyIcon.ShowBalloonTip(2000, "取消成功", type + "已被取消", ToolTipIcon.Info);
+                    return;
                 }
-                if (type == "休眠")
+                if (typeStr.ToString() == "休眠")
                 {
                     RunSuspendCommand(Mode.休眠);
                     if (this.记录关机时间checkBox.Checked)
                         休眠后再次添加开机记录();
                 }
-                else if (type == "睡眠")
+                else if (typeStr.ToString() == "睡眠")
                 {
                     RunSuspendCommand(Mode.睡眠);
                     if (this.记录关机时间checkBox.Checked)
                         休眠后再次添加开机记录();
                 }
-            }).Start();
-            //return true;
+            }));
+            // 启动所有线程
+            foreach (var thread in threadPool)
+                thread.Start(this.comboBoxMode.Text);
+        }
+
+        private void AbordSubThreads()
+        {
+            foreach (var thread in this.threadPool)
+                thread.Abort();
+            threadPool.Clear();
         }
 
         private void button确定_Click(object sender, EventArgs e)
         {
             try
             {
-                if (this.记录关机时间checkBox.Checked && this.comboBoxMode.Text != "延缓") 
-                    SqlExecuter.记录关机事件();
-
                 float comboBoxTimeMinutes = float.Parse(this.comboBoxTime.Text);
                 if (this.label设置倒计时.Text.Contains("小时"))
                     comboBoxTimeMinutes *= 60;
-                if (comboBoxTimeMinutes < 0)
+
+                if (this.记录关机时间checkBox.Checked && this.comboBoxMode.Text != "延缓")
+                    SqlExecuter.记录关机事件();
+                if (comboBoxTimeMinutes < 0) // 如果小于0，说明只是记录时间就可以推出
                     return;
 
                 CancelShutdownCommand();
@@ -345,8 +421,8 @@ namespace 关机助手
                             RunShutdownCommand(Mode.关机, seconds);
                             break;
                         case "重启":
-	                        if (!this.记录关机时间checkBox.Checked)
-	                            File.CreateText(@"C:\Users\"+ProgramLauncher.SystemUserName+@"\DONOTWRITEDATA").Close();
+                            if (!this.记录关机时间checkBox.Checked)
+                                File.CreateText(@"C:\Users\" + ProgramLauncher.SystemUserName + @"\DONOTWRITEDATA").Close();
                             RunShutdownCommand(Mode.重启, comboBoxTimeMinutes * 60);
                             break;
                         case "休眠":
@@ -377,7 +453,8 @@ namespace 关机助手
         #region 休眠后续工作
         private void 休眠后再次添加开机记录()
         {
-            new Thread(() => {
+            new Thread(() =>
+            {
                 SqlExecuter.记录开机事件();
                 ApplicationExit();
             }).Start();
@@ -401,30 +478,43 @@ namespace 关机助手
 
         private void button确认2_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (this.记录关机时间checkBox.Checked)
-                    SqlExecuter.记录关机事件();
+            /* 全面换成委托调用 */
+            var saveTime = this.comboBoxTime.Text; // 保存原来的输入框
+            var restTime_seconds = GetRestTime_Seconds(); // 获得剩余的时间秒数
+            if (restTime_seconds < 0) // 如果小于0，加一天
+                restTime_seconds += 24 * 3600;
+            float comboBoxTime;  // 要放入的数字
+            if (this.label设置倒计时.Text.Contains("小时"))
+                comboBoxTime = (float)restTime_seconds / 3600;
+            else
+                comboBoxTime = (float)restTime_seconds / 60;
+            this.comboBoxTime.Text = comboBoxTime.ToString(); // 放入后点确定
+            this.button确定_Click(null, null);
+            this.comboBoxTime.Text = saveTime; // 还原原来的输入框内容
+            //try
+            //{
+            //    if (this.记录关机时间checkBox.Checked)
+            //        SqlExecuter.记录关机事件();
 
-                int restTime_seconds = GetRestTime_Seconds();
+            //    int restTime_seconds = GetRestTime_Seconds();
 
-                Boolean nextDay = false;
-                if (restTime_seconds <= 0)
-                {
-                    restTime_seconds += 24 * 3600;
-                    nextDay = true;
-                }
-                ShutdownUtil.CancelShutdownCommand();
-                ShutdownUtil.RunShutdownCommand(Mode.关机, restTime_seconds);
-                MessageBox.Show("将在" + ( nextDay ? "明日" : "今日" ) + this.dateTimePicker1.Value.ToLongTimeString() + "关机", "离关机还剩" + restTime_seconds + "秒", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                ExceptionForm.ShowDialog(ex);
-            }
+            //    Boolean nextDay = false;
+            //    if (restTime_seconds <= 0)
+            //    {
+            //        restTime_seconds += 24 * 3600;
+            //        nextDay = true;
+            //    }
+            //    ShutdownUtil.CancelShutdownCommand();
+            //    ShutdownUtil.RunShutdownCommand(Mode.关机, restTime_seconds);
+            //    MessageBox.Show("将在" + (nextDay ? "明日" : "今日") + this.dateTimePicker1.Value.ToLongTimeString() + "关机", "离关机还剩" + restTime_seconds + "秒", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //}
+            //catch (Exception ex)
+            //{
+            //    ExceptionForm.ShowDialog(ex);
+            //}
         }
         #endregion
-        
+
         #region 注册关机倒计时
         public static void WritePowerOnShellInStartUpFolder()
         {
@@ -486,7 +576,7 @@ namespace 关机助手
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("失败！即将获得管理员权限，请在“你要允许来自未知发布者的此应用对你的设备进行更改吗”点击“是”","警示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("失败！即将获得管理员权限，请在“你要允许来自未知发布者的此应用对你的设备进行更改吗”点击“是”", "警示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 restartWithAdminRight();
                 return;
             }
@@ -501,7 +591,7 @@ namespace 关机助手
             }
             catch (UnauthorizedAccessException)
             {
-            	MessageBox.Show("失败！即将获得管理员权限，请在“你要允许来自未知发布者的此应用对你的设备进行更改吗”点击“是”","警示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("失败！即将获得管理员权限，请在“你要允许来自未知发布者的此应用对你的设备进行更改吗”点击“是”", "警示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 restartWithAdminRight();
                 return;
             }
@@ -594,8 +684,8 @@ namespace 关机助手
                     this.插入开机时间ToolStripMenuItem.ForeColor = SystemColors.Menu;
                     this.插入关机时间ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.插入关机时间ToolStripMenuItem.ForeColor = SystemColors.Menu;
-                    this.数据管理ToolStripMenuItem.ForeColor = SystemColors.Window;
-                    this.取消指令ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.管理器ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.立刻取消ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.拓展功能ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.comboBoxTime.BackColor = SystemColors.WindowFrame;
                     this.comboBoxTime.ForeColor = SystemColors.Menu;
@@ -639,7 +729,7 @@ namespace 关机助手
                     this.任务栏隐匿ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.WindowFrame;
                     this.退出ToolStripMenuItem1.ForeColor = SystemColors.Window;
-                    this.label指定时间关机.BackColor = SystemColors.WindowFrame;
+                    this.label指定时间.BackColor = SystemColors.WindowFrame;
                     this.dateTimePicker1.CalendarMonthBackground = SystemColors.WindowFrame;
                     this.buttonOK.BackColor = SystemColors.WindowFrame;
                     this.buttonOK.ForeColor = SystemColors.Window;
@@ -657,8 +747,8 @@ namespace 关机助手
                     this.插入开机时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.插入关机时间ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.插入关机时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    this.数据管理ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    this.取消指令ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.管理器ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.立刻取消ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.拓展功能ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.comboBoxTime.BackColor = SystemColors.Window;
                     this.comboBoxTime.ForeColor = SystemColors.WindowText;
@@ -702,7 +792,7 @@ namespace 关机助手
                     this.任务栏隐匿ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.Control;
                     this.退出ToolStripMenuItem1.ForeColor = SystemColors.ControlText;
-                    this.label指定时间关机.BackColor = SystemColors.Control;
+                    this.label指定时间.BackColor = SystemColors.Control;
                     this.dateTimePicker1.CalendarMonthBackground = SystemColors.Window;
                     this.buttonOK.BackColor = SystemColors.Control;
                     this.buttonOK.ForeColor = SystemColors.ControlText;
@@ -717,7 +807,7 @@ namespace 关机助手
         {
             DarkMode = !DarkMode; //切换暗黑模式状态
         }
-        
+
         private void 显示配置文件内容ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //MessageBox.Show(ConfigManager.RawText);
@@ -741,6 +831,11 @@ namespace 关机助手
             }
         }
 
+        private void 隐藏主窗口ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+
         private void 任务栏隐匿ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ShowInTaskbar = false;
@@ -761,7 +856,6 @@ namespace 关机助手
 
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Application.Exit();
             ApplicationExit();
         }
         #endregion
@@ -783,10 +877,10 @@ namespace 关机助手
 
         private void updateTitleTimer_Tick(object sender, EventArgs e)
         {
-            this.Text = this.Text.Substring(0, this.Text.IndexOf(' ',5)) + " " + DateTime.Now.ToString("HH:mm:ss");
+            this.Text = this.Text.Substring(0, this.Text.IndexOf(' ', 5)) + " " + DateTime.Now.ToString("HH:mm:ss");
         }
         #endregion
-        
+
         #region 外部类调用模块
         /// <summary>
         /// 以管理管身份重新启动本程序
@@ -822,7 +916,7 @@ namespace 关机助手
                 MainForm.mForm.ApplicationExit();
             }
         }
-        
+
         public bool 需要重复开启软件检查 { get; set; } = true;
 
         /// <summary>
@@ -869,6 +963,7 @@ namespace 关机助手
             this.记录关机时间checkBox.Enabled = !enable;
             this.安全模式ToolStripMenuItem.Text = enable ? "关闭安全模式" : "启动安全模式";
         }
+
         #endregion
     }
 }

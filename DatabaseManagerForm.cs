@@ -154,7 +154,7 @@ namespace 关机助手
                 var queryResult = database.ExecuteQuery(
                     "select * from " + 
                     TableName + 
-                    " where 序号>((select max(序号) from " + TableName + ")-14)");
+                    " where 序号>((select max(序号) from " + TableName + ")-20)");
                 dataGridView1.DataSource = queryResult;
                 this.dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
                 this.dataGridView1.RowHeadersWidth = GetRowHeaderWidth(queryResult.Rows.Count);
