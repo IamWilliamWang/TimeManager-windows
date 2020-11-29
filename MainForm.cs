@@ -41,7 +41,7 @@ namespace 关机助手
                     Properties.Resources.MdfFilename);
 
                 MessageBox.Show("检测到您第一次使用本软件，请点击数据管理进行初始化操作。", "欢迎！", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DatabaseManagerForm.needInitialized = true;
+                ManagerForm.needInitialized = true;
             }
             comboBoxMode.SelectedIndex = 0;
             // 加载配置文件，执行相应的操作（调用已有的事件函数，不自主处理过程，以免造成与显示不同步的问题）
@@ -161,6 +161,11 @@ namespace 关机助手
                 button确定_Click(sender, e);
                 if (this.comboBoxMode.Text != "休眠" && this.comboBoxMode.Text != "睡眠")
                     ApplicationExit();
+                else
+                {
+                    if (!float.TryParse(this.comboBoxMode.Text, out float boxTimes) || boxTimes < 0)
+                        ApplicationExit();
+                }
             }
             else if (e.KeyChar == 'q')
                 this.取消关机ToolStripMenuItem_Click(sender, e);
@@ -215,7 +220,7 @@ namespace 关机助手
         {
             if (!MainForm.DatabaseOffline)
                 this.安全模式ToolStripMenuItem.Enabled = false;
-            new DatabaseManagerForm().ShowDialog();
+            new ManagerForm().ShowDialog();
         }
         #endregion
             #region 取消关机

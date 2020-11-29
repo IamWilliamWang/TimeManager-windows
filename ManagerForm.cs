@@ -8,7 +8,7 @@ using 关机助手.Util;
 
 namespace 关机助手
 {
-    public partial class DatabaseManagerForm : Form
+    public partial class ManagerForm : Form
     {
         #region 常量定义
         public readonly static String TableName = "[Table]";
@@ -42,7 +42,7 @@ namespace 关机助手
         #endregion
 
         #region 窗体加载事件
-        public DatabaseManagerForm()
+        public ManagerForm()
         {
             InitializeComponent();
         }
@@ -474,7 +474,7 @@ namespace 关机助手
         private void 查看已连接数据库ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (database.ConnectionOpenned() == true)
-                MessageBox.Show("已连接数据库" + SqliteConnection.DbFullName, "数据库文件名");
+                MessageBox.Show("已连接数据库" + database.DbFullName, "数据库文件名");
             else if (database.ConnectionState == ConnectionState.Connecting)
                 MessageBox.Show("正在连接数据库，请稍后重试. . .");
             else

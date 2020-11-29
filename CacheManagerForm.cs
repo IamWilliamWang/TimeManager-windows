@@ -216,7 +216,15 @@ namespace 关机助手
         public CacheManagerForm()
         {
             InitializeComponent();
-            backup = new BackupCreater(cacheName, interval: 30000, 备份后缀名: ".autobackup", hideBackup: true);
+            void backupFileProcedure(string backupFileName)
+            {
+                if (File.Exists(backup.Original文件名))
+                {
+                    File.Delete(backupFileName);
+                    File.Copy(backup.Original文件名, backupFileName);
+                }
+            }
+            backup = new BackupCreater(cacheName, backupFileProcedure, interval: 30000, 备份后缀名: ".autobackup", hideBackup: true);
         }
 
         /// <summary>
@@ -258,10 +266,7 @@ namespace 关机助手
             if (MainForm.DatabaseOffline)
                 this.buttonClearCache.Enabled = false;
             else
-            {
-                if (File.Exists(backup.Original文件名))
-                    backup.Start();
-            }
+                backup.Start();
             if (File.Exists(Cache.Backup.Backup文件名))
             {
                 if (DialogResult.Yes == MessageBox.Show("检测到上次执行缓存时程序崩溃，是否恢复原来的缓存文件？", "程序崩溃后的自动恢复", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
@@ -294,8 +299,7 @@ namespace 关机助手
 
         private void CacheManagerForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (File.Exists(backup.Original文件名))
-                backup.Stop();
+            backup.Stop();
             backup.DeleteBackup();
         }
         #endregion

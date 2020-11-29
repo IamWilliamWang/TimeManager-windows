@@ -2,7 +2,7 @@
 
 namespace 关机助手
 {
-    partial class DatabaseManagerForm
+    partial class ManagerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -447,15 +447,15 @@ namespace 关机助手
             // 日志管理ToolStripMenuItem
             // 
             this.日志管理ToolStripMenuItem.Name = "日志管理ToolStripMenuItem";
-            this.日志管理ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.日志管理ToolStripMenuItem.Text = "登录日志管理器";
+            this.日志管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.日志管理ToolStripMenuItem.Text = "日志管理器";
             this.日志管理ToolStripMenuItem.Click += new System.EventHandler(this.日志管理ToolStripMenuItem_Click);
             // 
             // 注释管理ToolStripMenuItem
             // 
             this.注释管理ToolStripMenuItem.Name = "注释管理ToolStripMenuItem";
-            this.注释管理ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.注释管理ToolStripMenuItem.Text = "条目备注管理器";
+            this.注释管理ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.注释管理ToolStripMenuItem.Text = "备注管理器";
             this.注释管理ToolStripMenuItem.Click += new System.EventHandler(this.注释管理ToolStripMenuItem_Click);
             // 
             // 数据可视化ToolStripMenuItem
@@ -533,7 +533,7 @@ namespace 关机助手
             this.progressBar1.Step = 20;
             this.progressBar1.TabIndex = 6;
             // 
-            // DatabaseManagerForm
+            // ManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -543,8 +543,8 @@ namespace 关机助手
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "DatabaseManagerForm";
-            this.Text = "开关机时间管理器";
+            this.Name = "ManagerForm";
+            this.Text = "数据管理器";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DatabaseManagerForm_FormClosed);
             this.Load += new System.EventHandler(this.DatabaseManagerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.timeDatabaseDataSetBindingSource)).EndInit();
