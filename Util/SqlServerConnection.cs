@@ -119,6 +119,7 @@ namespace 关机助手.Util
                     OpenConnection();
 
                 SqlCommand cmd = new SqlCommand(commandText, GetConnection());
+                cmd.CommandTimeout = 300;
                 return cmd.ExecuteNonQuery();
             }
             catch (Exception)
