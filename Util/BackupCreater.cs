@@ -161,6 +161,8 @@ namespace 关机助手.Util
         private void WriteBackupInvoke(object sender, EventArgs e)
         {
             WriteBackupEvent.Invoke(this.Backup文件名);
+            if (!File.Exists(this.Backup文件名))
+                return;
             if (this.HiddenBackupFile)
                 File.SetAttributes(this.Backup文件名, FileAttributes.Hidden);
         }
