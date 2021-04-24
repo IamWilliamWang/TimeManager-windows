@@ -51,17 +51,18 @@
             this.label设置倒计时 = new System.Windows.Forms.Label();
             this.主界面contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.安全模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.暗黑模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.缓存管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.配置管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.窗口置顶ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.获得管理员权限ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.禁止一次开机记时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.升级日志ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.源头管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.切断数据库连接ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.外链数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.缓存管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.获得管理员权限ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.禁止一次开机记时间ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.暗黑模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.配置管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.附加功能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripComboBox透明度 = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripComboBox不透明度 = new System.Windows.Forms.ToolStripComboBox();
             this.隐藏主窗口ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.隐藏右下角图标ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.任务栏隐匿ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,21 +98,24 @@
             this.插入ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.插入开机时间ToolStripMenuItem,
             this.插入关机时间ToolStripMenuItem});
+            this.插入ToolStripMenuItem.Font = new System.Drawing.Font("幼圆", 11F);
             this.插入ToolStripMenuItem.Name = "插入ToolStripMenuItem";
             this.插入ToolStripMenuItem.Size = new System.Drawing.Size(51, 19);
             this.插入ToolStripMenuItem.Text = "插入";
             // 
             // 插入开机时间ToolStripMenuItem
             // 
+            this.插入开机时间ToolStripMenuItem.Font = new System.Drawing.Font("宋体", 11F);
             this.插入开机时间ToolStripMenuItem.Name = "插入开机时间ToolStripMenuItem";
-            this.插入开机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.插入开机时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.插入开机时间ToolStripMenuItem.Text = "插入开机时间";
             this.插入开机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入开机时间ToolStripMenuItem_Click);
             // 
             // 插入关机时间ToolStripMenuItem
             // 
+            this.插入关机时间ToolStripMenuItem.Font = new System.Drawing.Font("宋体", 11F);
             this.插入关机时间ToolStripMenuItem.Name = "插入关机时间ToolStripMenuItem";
-            this.插入关机时间ToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.插入关机时间ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.插入关机时间ToolStripMenuItem.Text = "插入关机时间";
             this.插入关机时间ToolStripMenuItem.Click += new System.EventHandler(this.插入关机时间ToolStripMenuItem_Click);
             // 
@@ -120,7 +124,7 @@
             this.管理器ToolStripMenuItem.Name = "管理器ToolStripMenuItem";
             this.管理器ToolStripMenuItem.Size = new System.Drawing.Size(67, 19);
             this.管理器ToolStripMenuItem.Text = "管理器";
-            this.管理器ToolStripMenuItem.Click += new System.EventHandler(this.数据管理ToolStripMenuItem_Click);
+            this.管理器ToolStripMenuItem.Click += new System.EventHandler(this.管理器ToolStripMenuItem_Click);
             // 
             // 立刻取消ToolStripMenuItem
             // 
@@ -134,22 +138,25 @@
             // 
             // 取消关机ToolStripMenuItem
             // 
+            this.取消关机ToolStripMenuItem.Font = new System.Drawing.Font("宋体", 11F);
             this.取消关机ToolStripMenuItem.Name = "取消关机ToolStripMenuItem";
-            this.取消关机ToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.取消关机ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.取消关机ToolStripMenuItem.Text = "取消关机";
             this.取消关机ToolStripMenuItem.Click += new System.EventHandler(this.取消关机ToolStripMenuItem_Click);
             // 
             // 取消休眠睡眠ToolStripMenuItem
             // 
+            this.取消休眠睡眠ToolStripMenuItem.Font = new System.Drawing.Font("宋体", 11F);
             this.取消休眠睡眠ToolStripMenuItem.Name = "取消休眠睡眠ToolStripMenuItem";
-            this.取消休眠睡眠ToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.取消休眠睡眠ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.取消休眠睡眠ToolStripMenuItem.Text = "取消休眠/睡眠";
             this.取消休眠睡眠ToolStripMenuItem.Click += new System.EventHandler(this.取消休眠睡眠ToolStripMenuItem_Click);
             // 
             // 全部取消ToolStripMenuItem
             // 
+            this.全部取消ToolStripMenuItem.Font = new System.Drawing.Font("宋体", 11F);
             this.全部取消ToolStripMenuItem.Name = "全部取消ToolStripMenuItem";
-            this.全部取消ToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.全部取消ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.全部取消ToolStripMenuItem.Text = "全部取消";
             this.全部取消ToolStripMenuItem.Click += new System.EventHandler(this.全部取消ToolStripMenuItem_Click);
             // 
@@ -254,17 +261,18 @@
             // 
             this.主界面contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.安全模式ToolStripMenuItem,
-            this.升级日志ToolStripMenuItem,
-            this.源头管理ToolStripMenuItem,
+            this.暗黑模式ToolStripMenuItem,
             this.缓存管理ToolStripMenuItem,
+            this.配置管理ToolStripMenuItem,
+            this.窗口置顶ToolStripMenuItem,
             this.获得管理员权限ToolStripMenuItem,
             this.禁止一次开机记时间ToolStripMenuItem,
-            this.暗黑模式ToolStripMenuItem,
-            this.配置管理ToolStripMenuItem,
+            this.升级日志ToolStripMenuItem,
+            this.源头管理ToolStripMenuItem,
             this.附加功能ToolStripMenuItem,
             this.退出ToolStripMenuItem1});
             this.主界面contextMenuStrip.Name = "contextMenuStripMainForm";
-            this.主界面contextMenuStrip.Size = new System.Drawing.Size(180, 224);
+            this.主界面contextMenuStrip.Size = new System.Drawing.Size(180, 246);
             this.主界面contextMenuStrip.Tag = "主页面右击界面";
             // 
             // 安全模式ToolStripMenuItem
@@ -273,6 +281,48 @@
             this.安全模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.安全模式ToolStripMenuItem.Text = "启动安全模式";
             this.安全模式ToolStripMenuItem.Click += new System.EventHandler(this.安全模式ToolStripMenuItem_Click);
+            // 
+            // 暗黑模式ToolStripMenuItem
+            // 
+            this.暗黑模式ToolStripMenuItem.Name = "暗黑模式ToolStripMenuItem";
+            this.暗黑模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.暗黑模式ToolStripMenuItem.Text = "打开暗黑模式";
+            this.暗黑模式ToolStripMenuItem.Click += new System.EventHandler(this.darkModeToolStripMenuItem_Click);
+            // 
+            // 缓存管理ToolStripMenuItem
+            // 
+            this.缓存管理ToolStripMenuItem.Name = "缓存管理ToolStripMenuItem";
+            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.缓存管理ToolStripMenuItem.Text = "缓存管理器";
+            this.缓存管理ToolStripMenuItem.Click += new System.EventHandler(this.缓存管理ToolStripMenuItem_Click);
+            // 
+            // 配置管理ToolStripMenuItem
+            // 
+            this.配置管理ToolStripMenuItem.Name = "配置管理ToolStripMenuItem";
+            this.配置管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.配置管理ToolStripMenuItem.Text = "配置内容显示";
+            this.配置管理ToolStripMenuItem.Click += new System.EventHandler(this.显示配置文件内容ToolStripMenuItem_Click);
+            // 
+            // 窗口置顶ToolStripMenuItem
+            // 
+            this.窗口置顶ToolStripMenuItem.Name = "窗口置顶ToolStripMenuItem";
+            this.窗口置顶ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.窗口置顶ToolStripMenuItem.Text = "开启窗口置顶";
+            this.窗口置顶ToolStripMenuItem.Click += new System.EventHandler(this.窗口置顶ToolStripMenuItem_Click);
+            // 
+            // 获得管理员权限ToolStripMenuItem
+            // 
+            this.获得管理员权限ToolStripMenuItem.Name = "获得管理员权限ToolStripMenuItem";
+            this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.获得管理员权限ToolStripMenuItem.Text = "获得管理员权限";
+            this.获得管理员权限ToolStripMenuItem.Click += new System.EventHandler(this.获得管理员权限ToolStripMenuItem_Click);
+            // 
+            // 禁止一次开机记时间ToolStripMenuItem
+            // 
+            this.禁止一次开机记时间ToolStripMenuItem.Name = "禁止一次开机记时间ToolStripMenuItem";
+            this.禁止一次开机记时间ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.禁止一次开机记时间ToolStripMenuItem.Text = "禁止1次开机记时间";
+            this.禁止一次开机记时间ToolStripMenuItem.Click += new System.EventHandler(this.禁止一次开机记时间ToolStripMenuItem_Click);
             // 
             // 升级日志ToolStripMenuItem
             // 
@@ -304,45 +354,10 @@
             this.外链数据库ToolStripMenuItem.Text = "外链数据库";
             this.外链数据库ToolStripMenuItem.Click += new System.EventHandler(this.外链数据库ToolStripMenuItem_Click);
             // 
-            // 缓存管理ToolStripMenuItem
-            // 
-            this.缓存管理ToolStripMenuItem.Name = "缓存管理ToolStripMenuItem";
-            this.缓存管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.缓存管理ToolStripMenuItem.Text = "缓存管理器";
-            this.缓存管理ToolStripMenuItem.Click += new System.EventHandler(this.缓存管理ToolStripMenuItem_Click);
-            // 
-            // 获得管理员权限ToolStripMenuItem
-            // 
-            this.获得管理员权限ToolStripMenuItem.Name = "获得管理员权限ToolStripMenuItem";
-            this.获得管理员权限ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.获得管理员权限ToolStripMenuItem.Text = "获得管理员权限";
-            this.获得管理员权限ToolStripMenuItem.Click += new System.EventHandler(this.获得管理员权限ToolStripMenuItem_Click);
-            // 
-            // 禁止一次开机记时间ToolStripMenuItem
-            // 
-            this.禁止一次开机记时间ToolStripMenuItem.Name = "禁止一次开机记时间ToolStripMenuItem";
-            this.禁止一次开机记时间ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.禁止一次开机记时间ToolStripMenuItem.Text = "禁止1次开机记时间";
-            this.禁止一次开机记时间ToolStripMenuItem.Click += new System.EventHandler(this.禁止一次开机记时间ToolStripMenuItem_Click);
-            // 
-            // 暗黑模式ToolStripMenuItem
-            // 
-            this.暗黑模式ToolStripMenuItem.Name = "暗黑模式ToolStripMenuItem";
-            this.暗黑模式ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.暗黑模式ToolStripMenuItem.Text = "暗黑模式";
-            this.暗黑模式ToolStripMenuItem.Click += new System.EventHandler(this.darkModeToolStripMenuItem_Click);
-            // 
-            // 配置管理ToolStripMenuItem
-            // 
-            this.配置管理ToolStripMenuItem.Name = "配置管理ToolStripMenuItem";
-            this.配置管理ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.配置管理ToolStripMenuItem.Text = "配置内容显示";
-            this.配置管理ToolStripMenuItem.Click += new System.EventHandler(this.显示配置文件内容ToolStripMenuItem_Click);
-            // 
             // 附加功能ToolStripMenuItem
             // 
             this.附加功能ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripComboBox透明度,
+            this.toolStripComboBox不透明度,
             this.隐藏主窗口ToolStripMenuItem,
             this.隐藏右下角图标ToolStripMenuItem,
             this.任务栏隐匿ToolStripMenuItem});
@@ -350,34 +365,34 @@
             this.附加功能ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.附加功能ToolStripMenuItem.Text = "附加功能";
             // 
-            // toolStripComboBox透明度
+            // toolStripComboBox不透明度
             // 
-            this.toolStripComboBox透明度.Items.AddRange(new object[] {
-            "0",
-            "5",
-            "10",
-            "15",
-            "20",
-            "25",
-            "30",
-            "35",
-            "40",
-            "45",
-            "50",
-            "55",
-            "60",
-            "65",
-            "70",
-            "75",
-            "80",
-            "85",
-            "90",
-            "95",
-            "100"});
-            this.toolStripComboBox透明度.Name = "toolStripComboBox透明度";
-            this.toolStripComboBox透明度.Size = new System.Drawing.Size(121, 25);
-            this.toolStripComboBox透明度.Text = "透明度";
-            this.toolStripComboBox透明度.TextChanged += new System.EventHandler(this.toolStripComboBox透明度_TextChanged);
+            this.toolStripComboBox不透明度.Items.AddRange(new object[] {
+            "0%",
+            "5%",
+            "10%",
+            "15%",
+            "20%",
+            "25%",
+            "30%",
+            "35%",
+            "40%",
+            "45%",
+            "50%",
+            "55%",
+            "60%",
+            "65%",
+            "70%",
+            "75%",
+            "80%",
+            "85%",
+            "90%",
+            "95%",
+            "100%"});
+            this.toolStripComboBox不透明度.Name = "toolStripComboBox不透明度";
+            this.toolStripComboBox不透明度.Size = new System.Drawing.Size(121, 25);
+            this.toolStripComboBox不透明度.Text = "不透明度";
+            this.toolStripComboBox不透明度.TextChanged += new System.EventHandler(this.toolStripComboBox透明度_TextChanged);
             // 
             // 隐藏主窗口ToolStripMenuItem
             // 
@@ -538,7 +553,7 @@
         private System.Windows.Forms.ToolStripMenuItem 外链数据库ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 获得管理员权限ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 附加功能ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox透明度;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBox不透明度;
         private System.Windows.Forms.ToolStripMenuItem 任务栏隐匿ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 缓存管理ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 暗黑模式ToolStripMenuItem;
@@ -549,6 +564,7 @@
         private System.Windows.Forms.ToolStripMenuItem 取消休眠睡眠ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 全部取消ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 隐藏主窗口ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 窗口置顶ToolStripMenuItem;
     }
 }
 

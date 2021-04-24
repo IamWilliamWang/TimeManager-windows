@@ -24,6 +24,8 @@ namespace 关机助手
         {
             this.labelInformation.Text = ( CutContent(mException.Message) );
             this.textBox1.Lines = TextBoxContent();
+
+            this.TopMost = MainForm.窗口置顶;
         }
 
         private string ForamtInformation(string label)

@@ -65,17 +65,16 @@ namespace 关机助手.Properties {
         ///&lt;!--填充所有括号，不用的属性行可删除--&gt;
         ///&lt;Config&gt;
         ///	&lt;Main&gt;
-        ///		&lt;DarkMode&gt;（自动开启暗黑模式，true/false）&lt;/DarkMode&gt;
-        ///		&lt;HideInTaskbar&gt;（是否脱离任务栏控制，true/false）&lt;/HideInTaskbar&gt;
-        ///		&lt;HideNotifyIcon&gt;（是否隐藏右下角图标，true/false）&lt;/HideNotifyIcon&gt;
-        ///		&lt;Opacity&gt;（主界面的透明度）&lt;/Opacity&gt;
-        ///		&lt;DefaultComboBoxIndex&gt;（首页的模式选择默认为第几个）&lt;/DefaultComboBoxIndex&gt;
+        ///		&lt;SafeModeBoot&gt;（自动使用安全模式启动，true/false）&lt;/SafeModeBoot&gt;
+        ///		&lt;DarkMode&gt;（主界面自动开启黑暗模式，true/false）&lt;/DarkMode&gt;
+        ///		&lt;HideInTaskbar&gt;（主界面自动脱离任务栏控制，true/false）&lt;/HideInTaskbar&gt;
+        ///		&lt;HideNotifyIcon&gt;（主界面自动隐藏右下角图标，true/false）&lt;/HideNotifyIcon&gt;
+        ///		&lt;Opacity&gt;（主界面透明度）&lt;/Opacity&gt;
+        ///		&lt;DefaultComboBoxIndex&gt;（主页的模式选择默认为第几个）&lt;/DefaultComboBoxIndex&gt;
         ///		&lt;AutoShutdownSeconds&gt;（自动执行几秒后关机）&lt;/AutoShutdownSeconds&gt;
         ///	&lt;/Main&gt;
         ///	&lt;CacheManager&gt;
-        ///		&lt;From&gt;（合并源文件名）&lt;/From&gt;
-        ///		&lt;To&gt;（合并目标文件名）&lt;/To&gt;
-        ///		&lt;AutoMerge&gt;（自动执行合并操作，true/false）&lt;/A [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///		&lt;From&gt;（日志管理器默认合并源文 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string ConfigExample {
             get {

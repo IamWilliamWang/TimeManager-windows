@@ -32,7 +32,7 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.分析时间分布ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.开机时间分布ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,10 +54,10 @@
             this.曲线图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.切换3D效果ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.保存图片ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关闭ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.数据标签ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.结束程序ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,7 +74,7 @@
             // 
             // chart1
             // 
-            this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             chartArea1.Area3DStyle.Enable3D = true;
@@ -83,18 +83,18 @@
             chartArea1.AxisY.Title = "总计时长（小时）";
             chartArea1.AxisY.TitleFont = new System.Drawing.Font("微软雅黑", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            this.chart.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(13, 28);
-            this.chart1.Name = "chart1";
+            this.chart.Legends.Add(legend1);
+            this.chart.Location = new System.Drawing.Point(13, 28);
+            this.chart.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.Label = "#VALX #VAL";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(819, 452);
-            this.chart1.TabIndex = 1;
+            this.chart.Series.Add(series1);
+            this.chart.Size = new System.Drawing.Size(819, 452);
+            this.chart.TabIndex = 1;
             // 
             // menuStrip1
             // 
@@ -104,7 +104,7 @@
             this.图形切换ToolStripMenuItem,
             this.切换3D效果ToolStripMenuItem,
             this.保存图片ToolStripMenuItem,
-            this.关闭ToolStripMenuItem,
+            this.数据标签ToolStripMenuItem,
             this.结束程序ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -267,12 +267,12 @@
             this.保存图片ToolStripMenuItem.Text = "保存图片";
             this.保存图片ToolStripMenuItem.Click += new System.EventHandler(this.保存图片ToolStripMenuItem_Click);
             // 
-            // 关闭ToolStripMenuItem
+            // 数据标签ToolStripMenuItem
             // 
-            this.关闭ToolStripMenuItem.Name = "关闭ToolStripMenuItem";
-            this.关闭ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
-            this.关闭ToolStripMenuItem.Text = "关闭窗口";
-            this.关闭ToolStripMenuItem.Click += new System.EventHandler(this.关闭本窗口ToolStripMenuItem_Click);
+            this.数据标签ToolStripMenuItem.Name = "数据标签ToolStripMenuItem";
+            this.数据标签ToolStripMenuItem.Size = new System.Drawing.Size(92, 21);
+            this.数据标签ToolStripMenuItem.Text = "关闭数据标签";
+            this.数据标签ToolStripMenuItem.Click += new System.EventHandler(this.数据标签ToolStripMenuItem_Click);
             // 
             // 结束程序ToolStripMenuItem
             // 
@@ -286,7 +286,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1193, 492);
-            this.Controls.Add(this.chart1);
+            this.Controls.Add(this.chart);
             this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -294,7 +294,7 @@
             this.Text = "数据可视化";
             this.Load += new System.EventHandler(this.Form_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -305,9 +305,9 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem 关闭ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 数据标签ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 切换3D效果ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 图形切换ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 饼图ToolStripMenuItem;

@@ -17,6 +17,10 @@ namespace 关机助手
                 if (DialogResult.Yes == MessageBox.Show("检测到您没有配置文件，是否生成范例？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information))
                     if (Util.ConfigManager.InitConfigFile())
                         MessageBox.Show("配置文件生成完毕，请将括号处替换至有效值！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // SafeModeBoot
+            this.listBoxName.Items.Add("自动使用安全模式启动");
+            if (Util.ConfigManager.MainFormConfigLoaded)
+                this.listBoxValue.Items.Add("默认" + (Util.ConfigManager.SafeModeBoot ? "" : "不") + "使用安全模式启动");
             // MainFormAutoDarkMode
             this.listBoxName.Items.Add("主界面自动开启黑暗模式");
             if (Util.ConfigManager.MainFormConfigLoaded)
@@ -36,7 +40,7 @@ namespace 关机助手
             else
                 this.listBoxValue.Items.Add("不自动隐藏");
             // MainDefaultComboBoxIndex
-            this.listBoxName.Items.Add("首页的模式选择默认为第几个");
+            this.listBoxName.Items.Add("主页的模式选择默认为第几个");
             if (Util.ConfigManager.MainFormConfigLoaded)
             {
                 int index = Util.ConfigManager.MainDefaultComboBoxIndex;
@@ -54,7 +58,7 @@ namespace 关机助手
             else
                 this.listBoxValue.Items.Add("未设置");
             // MainFormAutoShutdownSeconds
-            this.listBoxName.Items.Add("启动程序后几秒后执行关机");
+            this.listBoxName.Items.Add("自动执行" + MainForm.当前选择模式 + "命令的秒数设置");
             if (Util.ConfigManager.MainFormConfigLoaded)
             {
                 int seconds = Util.ConfigManager.MainFormAutoShutdownSeconds;
@@ -80,6 +84,8 @@ namespace 关机助手
                 this.listBoxValue.Items.Add(Util.ConfigManager.CacheManagerAutoMerge ? "自动合并" : "不自动合并");
             else
                 this.listBoxValue.Items.Add("未设置");
+
+            this.TopMost = MainForm.窗口置顶;
         }
 
         private void 配置文件格式ToolStripMenuItem_Click(object sender, EventArgs e)

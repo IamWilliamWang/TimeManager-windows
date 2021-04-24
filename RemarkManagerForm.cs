@@ -22,8 +22,10 @@ namespace 关机助手
             DataTable data = (DataTable)this.dataGridViewDatas.DataSource;
             if (data == null)
                 return;
-            
-            this.textBoxId.Text = data.Rows[data.Rows.Count - 1][0].ToString();
+            if (data.Rows.Count != 0) 
+                this.textBoxId.Text = data.Rows[data.Rows.Count - 1][0].ToString();
+
+            this.TopMost = MainForm.窗口置顶;
         }
         #endregion
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Reflection;
@@ -65,8 +66,10 @@ namespace 关机助手
             if (File.Exists(Properties.Resources.RecorderShellFullFilename) == false)
             {
                 if (MessageBox.Show(needInitialized ? "是否自动完成初始化工作？" : "检测到开机记录已经失效，是否进行修复？", needInitialized ? "欢迎使用本软件" : "警告！", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-                    安装写入开机记录时间插件ToolStripMenuItem_Click(sender, e);
+                    安装ToolStripMenuItem_Click(sender, e);
             }
+
+            this.TopMost = MainForm.窗口置顶;
         }
 
         private void DatabaseManagerForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -93,7 +96,7 @@ namespace 关机助手
         }
         #endregion
 
-        #region 数据显示模块
+        #region 数据显示
         /// <summary>
         /// 获得多少条查询结果对应的行号宽度
         /// </summary>
@@ -134,7 +137,7 @@ namespace 关机助手
                 ShowTotalTable();
         }
         
-        private void 显示后15条ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 显示后20条ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
@@ -198,37 +201,44 @@ namespace 关机助手
 
         private bool? InputCustomSQLString()
         {
-            String input = Interaction.InputBox("请输入要查询的日期。支持年、年月、年月日", "精准查找", hint: "如“2018年1月1日”");
+            String input = Interaction.InputBox("请输入要查询的日期。支持年、月、日的任意组合", "精准查找", defaultText: "2018年1月1日").Trim();
             if (input == "")
                 return null;
-            String[] conditions = input.Split(new char[] { '年', '月', '日' }, StringSplitOptions.RemoveEmptyEntries);
-            // Check sanity
-            foreach (String condition in conditions)
-                foreach (Char ch in condition.ToCharArray())
-                    if (char.IsDigit(ch) == false)
-                        return false;
+            int year = 0, month = 0, day = 0;
+            int tmp = 0;
+            foreach(char ch in input.ToCharArray())
+            {
+                if (ch == ' ')
+                    continue;
+                if (char.IsDigit(ch))
+                    tmp = tmp * 10 + ch - '0';
+                else if ("年月日".IndexOf(ch) != -1)
+                {
+                    if ('年' == ch)
+                        year = tmp;
+                    else if ('月' == ch)
+                        month = tmp;
+                    else if ('日' == ch)
+                        day = tmp;
+                    else
+                        throw new Exception();
+                    tmp = 0;
+                }
+                else
+                    return false;
+            }
+            if (tmp != 0)
+                return false;
 
-            if (conditions.Length == 1)
-            {
-                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*", "YEAR(开机时间)=" + conditions[0]);
-                return true;
-            }
-            else if (conditions.Length == 2)
-            {
-                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*"
-                    , "YEAR(开机时间)=" + conditions[0] + " and " +
-                    "MONTH(开机时间)=" + conditions[1]);
-                return true;
-            }
-            else if (conditions.Length == 3)
-            {
-                QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*"
-                    , "YEAR(开机时间)=" + conditions[0] + " and " +
-                    "MONTH(开机时间)=" + conditions[1] + " and " +
-                    "DAY(开机时间)=" + conditions[2]);
-                return true;
-            }
-            return false;
+            List<string> conditions = new List<string>();
+            if (year != 0)
+                conditions.Add("YEAR(开机时间)=" + year);
+            if (month != 0)
+                conditions.Add("MONTH(开机时间)=" + month);
+            if (day != 0)
+                conditions.Add("DAY(开机时间)=" + day);
+            QueryCustomSQL = SqlUtil.Select_Sql("[Table]", "*", string.Join(" and ", conditions));
+            return true;
         }
 
         private void 精准查找显示ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -267,10 +277,6 @@ namespace 关机助手
                 return;
             if (MessageBox.Show("该操作会将时长、当天使用次数、当月使用次数完全计算并填补，是否继续？", "一键填补", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
                 return;
-            //this.progressBar1.Value = 40;
-            //this.statusLabel.Text = "正在填补空处";
-            //backgroundQueryMode = QueryMode.统计结算填补;
-            //this.dbBackgroundWorker.RunWorkerAsync(null);
             SqlExecuter.记录结算();
             this.Focus();
             this.progressBar1.Value = 40;
@@ -291,7 +297,7 @@ namespace 关机助手
 
             if (SqlExecuter.记录开机事件(TableName))
                 MessageBox.Show("插入记录成功!", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.显示后15条ToolStripMenuItem_Click(null, null);
+            this.显示后20条ToolStripMenuItem_Click(null, null);
         }
 
         private void 插入关机记录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -299,14 +305,14 @@ namespace 关机助手
             if (SqlExecuter.记录关机事件())
             {
                 MessageBox.Show("添加关机记录成功！");
-                显示后15条ToolStripMenuItem_Click(null, null);
+                显示后20条ToolStripMenuItem_Click(null, null);
             }
         }
             #endregion
             #region 删除数据
         private bool TruncateTable(string TableName)
         {
-            if (MessageBox.Show("此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            if (MessageBox.Show("此操作将永久清空该表，执行后不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return false;
 
             if (database.ExecuteUpdate("delete from " + TableName) != 0)
@@ -328,7 +334,7 @@ namespace 关机助手
                 return;
 
             TruncateTable(TableName);
-            this.显示后15条ToolStripMenuItem_Click(null, null);
+            this.显示后20条ToolStripMenuItem_Click(null, null);
         }
 
         private void 清除日志数据ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -350,7 +356,7 @@ namespace 关机助手
         {
             if (AlertBusy())
                 return;
-            string input = Interaction.InputBox("请输入要删除条目前的序号", "删除指定条记录",hint:"要删除的记录序号列对应的数字");
+            string input = Interaction.InputBox("请输入要删除记录前方的序号", "删除指定一条记录", hint: "要删除的记录序号列对应的数字").Trim();
             if (input == "")
                 return;
             string sql = "DELETE " +
@@ -366,13 +372,13 @@ namespace 关机助手
             }
             try
             {
-                if (MessageBox.Show("序号为"+input+"将被删除。此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                if (MessageBox.Show("序号为"+input+"将被永久删除。此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return;
 
                 if (database.ExecuteUpdate(sql) > 0)
                 {
                     MessageBox.Show("删除成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.显示后15条ToolStripMenuItem_Click(null, null);
+                    this.显示后20条ToolStripMenuItem_Click(null, null);
                 }
                 else
                     MessageBox.Show("发生未知错误，删除失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -381,6 +387,48 @@ namespace 关机助手
             {
                 MessageBox.Show("发生未知错误，删除失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void 删除指定范围记录ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AlertBusy())
+                return;
+
+            string input = Interaction.InputBox("请输入要删除记录的序号范围", "删除指定范围记录", hint: "如，删除前十条记录可输入：1-10").Trim();
+            if (input == "")
+                return;
+            List<int> inputSplit = new List<int>();
+            int tmp = 0;
+            foreach(char ch in input)
+            {
+                if (char.IsDigit(ch))
+                    tmp = tmp * 10 + ch - '0';
+                else if (ch == '-' && tmp != 0) 
+                {
+                    inputSplit.Add(tmp);
+                    tmp = 0;
+                }
+            }
+            if (tmp != 0)
+                inputSplit.Add(tmp);
+            if (inputSplit.Count < 2 || inputSplit[0] > inputSplit[1]) 
+            {
+                MessageBox.Show("输入格式错误，请确认无误后重试！", "错误提示");
+                return;
+            }
+
+            string sql = "DELETE " +
+                    "FROM[Table] " +
+                    "WHERE 序号>=" + inputSplit[0] + " and 序号<=" + inputSplit[1];
+            if (MessageBox.Show("序号范围为 " + inputSplit[0] + "至" + inputSplit[1] + " 的记录将被永久删除。此操作不可恢复！是否继续？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) 
+                return;
+            if (database.ExecuteUpdate(sql) > 0)
+            {
+                MessageBox.Show("序号范围为 " + inputSplit[0] + "至" + inputSplit[1] + " 的记录已被永久删除！", "删除成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.显示后20条ToolStripMenuItem_Click(null, null);
+            }
+            else
+                MessageBox.Show("发生未知错误，删除失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void 删除最后一条记录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -393,7 +441,7 @@ namespace 关机助手
             if (database.ExecuteUpdate(DeleteMaxIDSQL()) != 0)
             {
                 MessageBox.Show("删除最后一条记录成功!", "删除成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.显示后15条ToolStripMenuItem_Click(null, null);
+                this.显示后20条ToolStripMenuItem_Click(null, null);
             }
         }
 
@@ -403,18 +451,18 @@ namespace 关机助手
             "WHERE 开机时间 = ( " +
             "SELECT MAX(开机时间) " +
             "FROM[Table])";
-        #endregion
+            #endregion
             #region 修改数据
-        private void 提交修改ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 提交全部修改ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
 
             if (database.UpdateDatabase((DataTable)dataGridView1.DataSource))
                 System.Windows.MessageBox.Show("手动修改已提交到数据库。", "修改成功！", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-            this.显示后15条ToolStripMenuItem_Click(sender, e);
+            this.显示后20条ToolStripMenuItem_Click(sender, e);
         }
-        #endregion
+            #endregion
             #region 高级选项
         private void 执行SQL语句ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -436,9 +484,9 @@ namespace 关机助手
             {
                 int count = database.ExecuteUpdate(executeSQL);
                 if (count == 0)
-                    MessageBox.Show("执行失败，没有条目受到影响");
+                    MessageBox.Show("执行失败，没有记录受到影响");
                 else
-                    MessageBox.Show("执行成功，" + count + "条条目受到影响");
+                    MessageBox.Show("执行成功，" + count + "条记录受到影响");
             }
         }
 
@@ -460,12 +508,12 @@ namespace 关机助手
 
             int count = database.ExecuteUpdate(File.ReadAllText(filename).Replace("go", " "));
             if (count == 0)
-                MessageBox.Show("执行失败，没有条目受到影响");
+                MessageBox.Show("执行失败，没有记录受到影响");
             else
-                MessageBox.Show("执行成功，" + count + "条条目受到影响");
+                MessageBox.Show("执行成功，" + count + "条记录受到影响");
         }
 
-        private void 释放数据库ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 释放数据库连接ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             database.ResetConnection();
             MessageBox.Show("释放成功");
@@ -504,25 +552,18 @@ namespace 关机助手
             #endregion
         #endregion
 
-        #region 必要插件安装
-        private void 安装写入开机记录时间插件ToolStripMenuItem_Click(object sender, EventArgs e)
+        #region 插件安装
+        private void 安装ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //try
-            //{
-            //File.WriteAllText(Properties.Resources.RecorderShellFullFilename, @"C:\Users\" + ProgramLauncher.SystemUserName + @"\sd.exe" + " -k " + Directory.GetCurrentDirectory() + "\\" + Properties.Resources.MdfFilename, System.Text.Encoding.ASCII);
             if (MainForm.WritePowerOnShellInStartUpFolderBat())
                 MessageBox.Show("插件已经安装！", "安装成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 MessageBox.Show("操作已取消！", "取消操作", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            //}
-            //catch (UnauthorizedAccessException)
-            //{
-            //    MainForm.restartWithAdminRight();
-            //}
+            
             File.Delete("write_bat.bat");
         }
 
-        private void 卸载写入开机记录时间插件ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 卸载ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -563,7 +604,7 @@ namespace 关机助手
             }
         }
         
-        private void 还原数据库_RarToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 导入所有数据ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "还原文件 (*.rar)|*.rar|所有文件 (*.*)|*.*";
@@ -587,7 +628,7 @@ namespace 关机助手
         }
             #endregion
             #region 导出所有数据
-        private void 无损导出数据库ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 导出所有数据ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             database.ResetConnection();
 
@@ -626,7 +667,7 @@ namespace 关机助手
                     MessageBox.Show("备份失败！该操作需要电脑上装有WinRAR软件。", "失败提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void 保存下方数据ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 导出下方表格ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("即将输出所有内容到EXCEL表格中，期间可能要等待数十秒。是否继续？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
                 return;
@@ -681,11 +722,11 @@ namespace 关机助手
 
             return true;
         }
-        #endregion
+            #endregion
         #endregion
 
-        #region 高级功能
-        private void 日志管理ToolStripMenuItem_Click(object sender, EventArgs e)
+        #region 其他管理器
+        private void 日志管理器ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
@@ -701,7 +742,7 @@ namespace 关机助手
             new AnalysingForm().Show();
         }
 
-        private void 注释管理ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 备注管理器ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlertBusy())
                 return;
@@ -709,15 +750,12 @@ namespace 关机助手
             new RemarkManagerForm().Show();
         }
         
-        #endregion
-
-        #region 返回主界面
-        private void 返回主界面ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 缓存管理器ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
+            new CacheManagerForm().ShowDialog();
         }
         #endregion
-        
+
         #region 数据库后台线程
         /// <summary>
         /// 后台线程执行函数。只负责打开数据库
@@ -749,7 +787,7 @@ namespace 关机助手
                 ShowTotalTable();
             else if (backgroundQueryMode == QueryMode.显示后十五条数据)
             {
-                this.显示后15条ToolStripMenuItem_Click(sender, e);
+                this.显示后20条ToolStripMenuItem_Click(sender, e);
             }
             else if (backgroundQueryMode == QueryMode.精准查找)
             {
@@ -778,29 +816,29 @@ namespace 关机助手
         {
             this.statusLabel.Text = "完成";
             this.progressBar1.Value = 100;
-            显示后15条ToolStripMenuItem_Click(sender, e);
+            显示后20条ToolStripMenuItem_Click(sender, e);
         }
         #endregion
 
-        #region 安全模式模块
+        #region 安全模式
         public bool DatabaseOffline { set { Enable安全模式(value); } }
         private void Enable安全模式(bool enable = true)
         {
             // 无用操作提前返回，提高代码效率
-            if (this.查询所有记录ToolStripMenuItem.Enabled == !enable)
+            if (this.时间记录显示ToolStripMenuItem.Enabled == !enable)
                 return;
 
-            this.查询所有记录ToolStripMenuItem.Enabled = !enable;
-            this.插入一条开机记录ToolStripMenuItem.Enabled = !enable;
+            this.时间记录显示ToolStripMenuItem.Enabled = !enable;
+            this.插入开机记录_ToolStripMenuItem.Enabled = !enable;
             this.填补空处ToolStripMenuItem.Enabled = !enable;
             this.添加数据ToolStripMenuItem.Enabled = !enable;
             this.删除数据ToolStripMenuItem.Enabled = !enable;
             this.修改数据ToolStripMenuItem.Enabled = !enable;
             this.执行SQL语句ToolStripMenuItem.Enabled = !enable;
-            this.保存下方表格ToolStripMenuItem.Enabled = !enable;
-            this.日志管理ToolStripMenuItem.Enabled = !enable;
+            this.导出下方表格ToolStripMenuItem.Enabled = !enable;
+            this.日志管理器ToolStripMenuItem.Enabled = !enable;
             this.数据可视化ToolStripMenuItem.Enabled = !enable;
-            this.注释管理ToolStripMenuItem.Enabled = !enable;
+            this.备注管理器ToolStripMenuItem.Enabled = !enable;
             this.命令行选项使用ToolStripMenuItem.Enabled = !enable;
             this.运行SQL脚本ToolStripMenuItem.Enabled = !enable;
 
@@ -821,7 +859,6 @@ namespace 关机助手
             MainForm.DatabaseOffline = false; //取消主页安全模式状态
             高级选项ToolStripMenuItem.DropDownItems.RemoveByKey("停用安全模式ToolStripMenuItem"); //删除停用安全模式按钮
         }
-
         #endregion
     }
 }

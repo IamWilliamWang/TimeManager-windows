@@ -28,7 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.textBoxCache = new System.Windows.Forms.TextBox();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.撤销ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.剪切ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.复制ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.粘贴ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.删除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.全选ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonClearCache = new System.Windows.Forms.Button();
             this.buttonOpenFile = new System.Windows.Forms.Button();
@@ -43,6 +51,7 @@
             this.直观模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.经典模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.原始模式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.修改字号ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox缓存编辑 = new System.Windows.Forms.GroupBox();
             this.groupBox合并 = new System.Windows.Forms.GroupBox();
             this.button合并 = new System.Windows.Forms.Button();
@@ -50,6 +59,7 @@
             this.textBox源 = new System.Windows.Forms.TextBox();
             this.label目标 = new System.Windows.Forms.Label();
             this.label源 = new System.Windows.Forms.Label();
+            this.contextMenuStrip.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.groupBox缓存编辑.SuspendLayout();
             this.groupBox合并.SuspendLayout();
@@ -60,11 +70,67 @@
             this.textBoxCache.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCache.ContextMenuStrip = this.contextMenuStrip;
+            this.textBoxCache.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxCache.Location = new System.Drawing.Point(6, 20);
             this.textBoxCache.Multiline = true;
             this.textBoxCache.Name = "textBoxCache";
             this.textBoxCache.Size = new System.Drawing.Size(522, 281);
             this.textBoxCache.TabIndex = 1;
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.撤销ToolStripMenuItem,
+            this.剪切ToolStripMenuItem,
+            this.复制ToolStripMenuItem,
+            this.粘贴ToolStripMenuItem,
+            this.删除ToolStripMenuItem,
+            this.全选ToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(101, 136);
+            // 
+            // 撤销ToolStripMenuItem
+            // 
+            this.撤销ToolStripMenuItem.Name = "撤销ToolStripMenuItem";
+            this.撤销ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.撤销ToolStripMenuItem.Text = "撤销";
+            this.撤销ToolStripMenuItem.Click += new System.EventHandler(this.撤销ToolStripMenuItem_Click);
+            // 
+            // 剪切ToolStripMenuItem
+            // 
+            this.剪切ToolStripMenuItem.Name = "剪切ToolStripMenuItem";
+            this.剪切ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.剪切ToolStripMenuItem.Text = "剪切";
+            this.剪切ToolStripMenuItem.Click += new System.EventHandler(this.剪切ToolStripMenuItem_Click);
+            // 
+            // 复制ToolStripMenuItem
+            // 
+            this.复制ToolStripMenuItem.Name = "复制ToolStripMenuItem";
+            this.复制ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.复制ToolStripMenuItem.Text = "复制";
+            this.复制ToolStripMenuItem.Click += new System.EventHandler(this.复制ToolStripMenuItem_Click);
+            // 
+            // 粘贴ToolStripMenuItem
+            // 
+            this.粘贴ToolStripMenuItem.Name = "粘贴ToolStripMenuItem";
+            this.粘贴ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.粘贴ToolStripMenuItem.Text = "粘贴";
+            this.粘贴ToolStripMenuItem.Click += new System.EventHandler(this.粘贴ToolStripMenuItem_Click);
+            // 
+            // 删除ToolStripMenuItem
+            // 
+            this.删除ToolStripMenuItem.Name = "删除ToolStripMenuItem";
+            this.删除ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.删除ToolStripMenuItem.Text = "删除";
+            this.删除ToolStripMenuItem.Click += new System.EventHandler(this.删除ToolStripMenuItem_Click);
+            // 
+            // 全选ToolStripMenuItem
+            // 
+            this.全选ToolStripMenuItem.Name = "全选ToolStripMenuItem";
+            this.全选ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.全选ToolStripMenuItem.Text = "全选";
+            this.全选ToolStripMenuItem.Click += new System.EventHandler(this.全选ToolStripMenuItem_Click);
             // 
             // buttonSave
             // 
@@ -106,7 +172,8 @@
             this.文件ToolStripMenuItem,
             this.插入开机缓存ToolStripMenuItem,
             this.插入关机缓存ToolStripMenuItem,
-            this.显示模式ToolStripMenuItem});
+            this.显示模式ToolStripMenuItem,
+            this.修改字号ToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(558, 25);
@@ -188,6 +255,13 @@
             this.原始模式ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.原始模式ToolStripMenuItem.Text = "原始模式";
             this.原始模式ToolStripMenuItem.Click += new System.EventHandler(this.原始模式ToolStripMenuItem_Click);
+            // 
+            // 修改字号ToolStripMenuItem
+            // 
+            this.修改字号ToolStripMenuItem.Name = "修改字号ToolStripMenuItem";
+            this.修改字号ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.修改字号ToolStripMenuItem.Text = "修改字号";
+            this.修改字号ToolStripMenuItem.Click += new System.EventHandler(this.修改字号ToolStripMenuItem_Click);
             // 
             // groupBox缓存编辑
             // 
@@ -294,6 +368,7 @@
             this.Load += new System.EventHandler(this.CacheManagerForm_Load);
             this.DoubleClick += new System.EventHandler(this.CacheManagerForm_DoubleClick);
             this.Resize += new System.EventHandler(this.CacheManagerForm_Resize);
+            this.contextMenuStrip.ResumeLayout(false);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.groupBox缓存编辑.ResumeLayout(false);
@@ -328,5 +403,13 @@
         private System.Windows.Forms.ToolStripMenuItem 直观模式ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 经典模式ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 原始模式ToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem 撤销ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 剪切ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 复制ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 粘贴ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 删除ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 全选ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 修改字号ToolStripMenuItem;
     }
 }

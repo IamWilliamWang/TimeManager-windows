@@ -26,6 +26,8 @@ namespace 关机助手
             labelVersions.Text = labelVersions.Text.Replace("{Version}", ProgramLauncher.Version(2));
             this.textBoxUpdateLog.Text = this.textBoxUpdateLog.Text.Replace("{Version}", ProgramLauncher.Version(2));
             this.labelCopyright.Text = this.labelCopyright.Text.Replace("{Year}", DateTime.Now.Year.ToString());
+
+            this.TopMost = MainForm.窗口置顶;
         }
     }
 }

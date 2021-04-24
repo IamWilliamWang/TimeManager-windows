@@ -32,6 +32,7 @@ namespace 关机助手.Util
             internal bool mainDark = false;
             internal bool mainHideInTaskbar = false;
             internal bool mainHideNotifyIcon = false;
+            internal bool mainSafeModeBoot = false;
             internal int mainAutoShutdownSeconds = -1;
             internal int mainOpacity = -1;
             internal int mainDefaultComboBoxIndex = -1;
@@ -127,6 +128,17 @@ namespace 关机助手.Util
             get {
                 if (!This.mainConfig.configLoaded) throw new MethodAccessException("Please check configLoaded before call of this function!");
                 return This.mainConfig.mainHideNotifyIcon;
+            }
+        }
+        /// <summary>
+        /// 自动使用安全模式启动
+        /// </summary>
+        public static bool SafeModeBoot
+        {
+            get
+            {
+                if (!This.mainConfig.configLoaded) throw new MethodAccessException("Please check configLoaded before call of this function!");
+                return This.mainConfig.mainSafeModeBoot;
             }
         }
         /// <summary>
@@ -231,6 +243,11 @@ namespace 关机助手.Util
                     if (Contains(mainNode, "HideNotifyIcon"))
                     {
                         this.mainConfig.mainHideNotifyIcon = mainNode["HideNotifyIcon"].InnerText == "true";
+                        emptyConfig = false;
+                    }
+                    if (Contains(mainNode, "SafeModeBoot"))
+                    {
+                        this.mainConfig.mainSafeModeBoot = mainNode["SafeModeBoot"].InnerText == "true";
                         emptyConfig = false;
                     }
                     this.mainConfig.configLoaded = !emptyConfig;

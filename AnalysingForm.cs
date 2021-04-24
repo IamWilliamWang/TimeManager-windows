@@ -13,6 +13,7 @@ namespace 关机助手
     {
         DataTable resultTable { get; set; }
         DatabaseAgency sqlite = new DatabaseAgency();
+        List<string> pointLabels = new List<string>();
 
         public AnalysingForm()
         {
@@ -24,6 +25,8 @@ namespace 关机助手
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this.FillDataGridView();
             this.FillChart();
+
+            this.TopMost = MainForm.窗口置顶;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -81,8 +84,6 @@ namespace 关机助手
 
         private string DeleteTempVarsSQL() =>
             "drop function SecToDateTime ";
-            //"select * from 每月累计时长表 " +
-            //"drop table 每月累计时长表";
 
         private string CountSumDateTimeOfEachMonthSQL() =>
             "/*创建该函数对象*/\n" +
@@ -97,12 +98,6 @@ namespace 关机助手
         #region Chart初始化
         private void FillChart()
         {
-            //Series series = new Series();
-            //series.ChartType = SeriesChartType.Column;//直方图
-            //series.BorderWidth = 2;
-            //series.Color = graphColor;
-            //series.LegendText = LegendText;
-            //series.IsValueShownAsLabel = this.IsValueShownAsLabel;
             List<string> xData = new List<string>();
             List<double> yData = new List<double>();
 
@@ -112,12 +107,13 @@ namespace 关机助手
                 yData.Add(Transfer2Hour(row[2].ToString()));
             }
 
-
-            //chart1.Series[0]["PieLabelStyle"] = "Outside";
-            chart1.Series[0].Points.Clear();
-            chart1.Series[0]["PieLineColor"] = "Black";//绘制黑色的连线。
-            chart1.Series[0].Points.DataBindXY(xData, yData);
-
+            chart.Series[0].Points.Clear();
+            chart.Series[0]["PieLineColor"] = "Black"; //绘制黑色的连线
+            chart.Series[0].Points.DataBindXY(xData, yData); //绑定数据，进行绘图并添加了数据标签
+            chart.Series[0].IsVisibleInLegend = false;
+            chart.Series[0].ToolTip = "月份：#VALX\n时长：#VALY小时";
+            
+            SaveLabels();
         }
 
         private double Transfer2Hour(String original)
@@ -139,85 +135,120 @@ namespace 关机助手
             int tmp = (int) Math.Floor(longNumber * Math.Pow(10, smallNumberLength));
             return 1.0 * tmp / Math.Pow(10, smallNumberLength);
         }
+        
+        /// <summary>
+        /// 保存现有的所有数据标签
+        /// </summary>
+        private void SaveLabels()
+        {
+            this.pointLabels.Clear();
+            foreach (var point in this.chart.Series[0].Points)
+                this.pointLabels.Add(point.Label);
+        }
+
+        /// <summary>
+        /// 去除图中所有的数据标签
+        /// </summary>
+        private void RemoveLabels()
+        {
+            foreach (var point in this.chart.Series[0].Points)
+                point.Label = "";
+        }
+
+        /// <summary>
+        /// 恢复图中所有的数据标签
+        /// </summary>
+        private void RestoreLabels()
+        {
+            for (var i = 0; i < this.chart.Series[0].Points.Count; i++)
+                this.chart.Series[0].Points[i].Label = this.pointLabels[i];
+        }
         #endregion
 
         #region 图形切换选项卡
         private void 饼图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].ChartType = SeriesChartType.Pie;
-            this.chart1.Series[0].IsVisibleInLegend = true;
+            this.chart.Series[0].ChartType = SeriesChartType.Pie;
+            this.chart.Series[0].IsVisibleInLegend = true;
         }
 
         private void 空心饼图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].ChartType = SeriesChartType.Doughnut;
-            this.chart1.Series[0].IsVisibleInLegend = true;
+            this.chart.Series[0].ChartType = SeriesChartType.Doughnut;
+            this.chart.Series[0].IsVisibleInLegend = true;
         }
 
         private void 柱状图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].ChartType = SeriesChartType.Column;
-            this.chart1.Series[0].IsVisibleInLegend = false;
+            this.chart.Series[0].ChartType = SeriesChartType.Column;
+            this.chart.Series[0].IsVisibleInLegend = false;
         }
 
         private void 折线图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].ChartType = SeriesChartType.Line;
-            this.chart1.Series[0].IsVisibleInLegend = false;
+            this.chart.Series[0].ChartType = SeriesChartType.Line;
+            this.chart.Series[0].IsVisibleInLegend = false;
         }
 
         private void 曲线图ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].ChartType = SeriesChartType.Spline;
-            this.chart1.Series[0].IsVisibleInLegend = false;
+            this.chart.Series[0].ChartType = SeriesChartType.Spline;
+            this.chart.Series[0].IsVisibleInLegend = false;
         }
-
-
         #endregion
 
         #region 更换颜色选项卡
         private void 红色ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].Color = Color.Red;
+            this.chart.Series[0].Color = Color.Red;
         }
 
         private void 蓝色ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].Color = Color.Blue;
+            this.chart.Series[0].Color = Color.Blue;
         }
 
         private void 黄色ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].Color = Color.Yellow;
+            this.chart.Series[0].Color = Color.Yellow;
         }
 
         private void 紫色ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].Color = Color.BlueViolet;
+            this.chart.Series[0].Color = Color.BlueViolet;
         }
 
         private void 灰色ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].Color = Color.Gray;
+            this.chart.Series[0].Color = Color.Gray;
         }
 
         private void 浅蓝色ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.Series[0].Color = Color.LightSkyBlue;
+            this.chart.Series[0].Color = Color.LightSkyBlue;
         }
         #endregion
 
         #region 切换3D效果选项卡
         private void 切换3D效果ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.chart1.ChartAreas[0].Area3DStyle.Enable3D = !this.chart1.ChartAreas[0].Area3DStyle.Enable3D;
+            this.chart.ChartAreas[0].Area3DStyle.Enable3D = !this.chart.ChartAreas[0].Area3DStyle.Enable3D;
         }
         #endregion
 
         #region 关闭选项卡
-        private void 关闭本窗口ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 数据标签ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
+            if (this.数据标签ToolStripMenuItem.Text == "关闭数据标签")
+            {
+                RemoveLabels();
+                this.数据标签ToolStripMenuItem.Text = "打开数据标签";
+            }
+            else if (this.数据标签ToolStripMenuItem.Text == "打开数据标签") 
+            {
+                RestoreLabels();
+                this.数据标签ToolStripMenuItem.Text = "关闭数据标签";
+            }
         }
 
         private void 关闭程序ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -238,12 +269,11 @@ namespace 关机助手
                 String fullFileName = fileDialog.FileName;
                 if (fullFileName.Contains("png") == false)
                     fullFileName += ".png";
-                chart1.SaveImage(fullFileName, ChartImageFormat.Png);
+                chart.SaveImage(fullFileName, ChartImageFormat.Png);
                 MessageBox.Show("已经成功保存图片！", "保存成功", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
         }
-
         #endregion
 
         #region 分析时间分布
@@ -258,10 +288,8 @@ namespace 关机助手
             }
             AnalyseByTimes(hourNums, 频度, "开机");
 
-            this.chart1.Series[0].Points.Clear();
-            this.chart1.Series[0].Points.DataBindXY(hourNums, 频度);
-            //this.柱状图ToolStripMenuItem_Click(sender, e);
-
+            this.chart.Series[0].Points.Clear();
+            this.chart.Series[0].Points.DataBindXY(hourNums, 频度);
             this.返回总图ToolStripMenuItem.Enabled = true;
         }
 
@@ -291,11 +319,8 @@ namespace 关机助手
             }
             AnalyseByTimes(hourNums, 频度, "关机");
 
-            this.chart1.Series[0].Points.Clear();
-            this.chart1.Series[0].Points.DataBindXY(hourNums, 频度);
-
-            //this.柱状图ToolStripMenuItem_Click(sender, e);
-
+            this.chart.Series[0].Points.Clear();
+            this.chart.Series[0].Points.DataBindXY(hourNums, 频度);
             this.返回总图ToolStripMenuItem.Enabled = true;
         }
 
@@ -304,7 +329,5 @@ namespace 关机助手
             this.Form_Load(sender, e);
         }
         #endregion
-
-
     }
 }

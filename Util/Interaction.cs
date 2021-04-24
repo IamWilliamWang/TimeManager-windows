@@ -155,8 +155,11 @@ namespace 关机助手.Util
             else if (e.KeyChar == 27)
                 this.button取消_Click(sender, e);
             // 确保在hint状态下输入时删除掉提示
-            if (this.needClearDefaultText == true && this.BoxText == this.defaultText) 
+            if (this.needClearDefaultText == true)
+            {
                 this.BoxText = String.Empty;
+                this.needClearDefaultText = false;
+            }
         }
         
         public void SetDefaultText(string text)
@@ -178,6 +181,7 @@ namespace 关机助手.Util
             // 在hint状态下清空文本框
             if (this.needClearDefaultText == true) 
                 BoxText = String.Empty;
+            this.needClearDefaultText = false;
         }
 
         public bool InputSuccess()

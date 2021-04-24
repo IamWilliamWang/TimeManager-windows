@@ -12,14 +12,18 @@ namespace 关机助手
 {
     public partial class MainForm : Form
     {
-        private static MainForm mForm = null;
         private DatabaseAgency database { get; set; } = new DatabaseAgency(); // 数据库连接代理
         private List<Thread> threadPool = new List<Thread>(); // 保存休眠/睡眠的线程列表
+        private static MainForm mForm = null;
 
         #region 窗体加载关闭事件
         public MainForm()
         {
             InitializeComponent();
+            // 保存this，MainForm只允许被实例化一次
+            if (mForm != null)
+                throw new Exception("Illegal initialization!");
+            mForm = this;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -28,9 +32,11 @@ namespace 关机助手
             {
                 // 检测后台是否运行同一程序
                 Process[] processes = Process.GetProcessesByName("关机助手");
+                if (processes.Length == 0)
+                    processes = Process.GetProcessesByName("TimeManager");
                 if (processes.Length > 1)
                 {
-                    MessageBox.Show("检测到后台已经启动本程序，强烈建议只开启一个本程序，否则可能会导致意外后果。", "警告");
+                    MessageBox.Show("检测到后台已经启动本程序，建议关闭其他窗口至只剩下本窗口。", "温馨提示");
                 }
             }
             // 检测数据库文件是否存在，不存在则解压缩空数据库
@@ -44,23 +50,25 @@ namespace 关机助手
                 ManagerForm.needInitialized = true;
             }
             comboBoxMode.SelectedIndex = 0;
-            // 加载配置文件，执行相应的操作（调用已有的事件函数，不自主处理过程，以免造成与显示不同步的问题）
+            // 加载配置文件，执行相应的操作（调用已有的事件函数，以免造成与显示不同步的问题）
             if (ConfigManager.MainFormConfigLoaded)
             {
+                if (ConfigManager.SafeModeBoot)
+                    MainForm.DatabaseOffline = true;
                 if (ConfigManager.MainFormAutoDarkMode)
                     darkModeToolStripMenuItem_Click(null, null);
+                if (ConfigManager.MainFormOpacity != -1)
+                    this.toolStripComboBox不透明度.Text = ConfigManager.MainFormOpacity.ToString() + "%";
+                if (ConfigManager.MainDefaultComboBoxIndex != -1)
+                    this.comboBoxMode.SelectedIndex = ConfigManager.MainDefaultComboBoxIndex;
                 if (ConfigManager.MainFormAutoShutdownSeconds != -1)
                 {
                     if (this.label设置倒计时.Text.Contains("分钟"))
                         this.comboBoxTime.Text = ((double)ConfigManager.MainFormAutoShutdownSeconds / 60).ToString();
                     else
-                        this.comboBoxTime.Text = ConfigManager.MainFormAutoShutdownSeconds.ToString();
+                        this.comboBoxTime.Text = ((double)ConfigManager.MainFormAutoShutdownSeconds / 3600).ToString();
                     button确定_Click(sender, e);
                 }
-                if (ConfigManager.MainFormOpacity != -1)
-                    this.toolStripComboBox透明度.Text = ConfigManager.MainFormOpacity.ToString();
-                if (ConfigManager.MainDefaultComboBoxIndex != -1)
-                    this.comboBoxMode.SelectedIndex = ConfigManager.MainDefaultComboBoxIndex;
                 if (ConfigManager.MainFormHideInTaskbar)
                     任务栏隐匿ToolStripMenuItem_Click(null, null);
                 if (ConfigManager.MainFormHideNotifyIcon)
@@ -68,8 +76,6 @@ namespace 关机助手
             }
             // 获取版本号并替换标题
             this.Text = this.Text.Replace("{Version}", ProgramLauncher.Version());
-            // 保存Form
-            mForm = this;
             // 给ComboBox添加选项
             AddSelectOptionsInComboBoxTime();
             // 添加鼠标滚动事件
@@ -214,15 +220,15 @@ namespace 关机助手
             if (SqlExecuter.记录关机事件())
                 MessageBox.Show("添加关机记录成功！");
         }
-        #endregion
-            #region 数据管理
-        private void 数据管理ToolStripMenuItem_Click(object sender, EventArgs e)
+            #endregion
+            #region 管理器
+        private void 管理器ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!MainForm.DatabaseOffline)
                 this.安全模式ToolStripMenuItem.Enabled = false;
             new ManagerForm().ShowDialog();
         }
-        #endregion
+            #endregion
             #region 取消关机
         private void 取消关机ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -232,20 +238,27 @@ namespace 关机助手
         private void 取消休眠睡眠ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process[] processes = Process.GetProcessesByName("关机助手");
+            if (processes.Length == 0)
+                processes = Process.GetProcessesByName("TimeManager");
             var nowId = Process.GetCurrentProcess().Id;
+            List<int> killedIds = new List<int>();
             foreach (var process in processes)
             {
                 if (process.Id == nowId)
                     continue;
+                killedIds.Add(process.Id);
                 process.Kill();
             }
+            string killedIdsInfoString = killedIds.Count == 0 ? "" : ("同时检测到后台还有其它本程序正在运行，已结束这些进程（ID:" + String.Join(",", killedIds) + "）。");
             if (this.threadPool.Count == 0)
             {
-                this.notifyIcon.ShowBalloonTip(2000, "无操作", "没有需要被取消的定时休眠/睡眠。", ToolTipIcon.Info);
-                return;
+                this.notifyIcon.ShowBalloonTip(2000, "无操作", "没有需要被取消的定时休眠/睡眠。" + killedIdsInfoString, ToolTipIcon.Info);
             }
-            this.AbordSubThreads();
-            this.notifyIcon.ShowBalloonTip(2000, "取消成功", "定时休眠/睡眠已经取消。", ToolTipIcon.Info);
+            else
+            {
+                this.AbordSubThreads();
+                this.notifyIcon.ShowBalloonTip(2000, "取消成功", "定时休眠/睡眠已经取消。" + killedIdsInfoString, ToolTipIcon.Info);
+            }
         }
 
         private void 全部取消ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -253,62 +266,68 @@ namespace 关机助手
             取消关机ToolStripMenuItem_Click(null, null);
             取消休眠睡眠ToolStripMenuItem_Click(null, null);
         }
-        #endregion
+            #endregion
             #region 拓展功能
-        bool 拓展功能ButtonClicked { get; set; } = false;
+        private int 拓展功能ButtonClickedAnimatedTimes = 2; // 动画剩余显示次数。双数表示未展开
         private void 拓展功能ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (拓展功能ButtonClicked == false)
+            if (拓展功能ButtonClickedAnimatedTimes % 2 == 0)
             {
-                int waitMilisecond = 25;
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 10);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 5);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 3);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 2);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 2);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 1);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 1);
+                if (拓展功能ButtonClickedAnimatedTimes > 0) // 动画被启用
+                {
+                    int waitMilisecond = 25;
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 10);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 5);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 4);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 3);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 2);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 2);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height + 1);
+                    Thread.Sleep(waitMilisecond);
+                }
+                this.ClientSize = new Size(this.ClientSize.Width, 136);
                 this.拓展功能ToolStripMenuItem.Text = "精简功能";
             }
             else
             {
-                int waitMilisecond = 50;
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 10);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 5);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 3);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 2);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 2);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 1);
-                Thread.Sleep(waitMilisecond);
-                this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 1);
+                if (拓展功能ButtonClickedAnimatedTimes > 0) // 动画被启用
+                {
+                    int waitMilisecond = 50;
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 10);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 5);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 4);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 3);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 2);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 2);
+                    Thread.Sleep(waitMilisecond);
+                    this.ClientSize = new Size(this.ClientSize.Width, this.ClientSize.Height - 1);
+                    Thread.Sleep(waitMilisecond);
+                }
+                this.ClientSize = new Size(this.ClientSize.Width, 98);
                 this.拓展功能ToolStripMenuItem.Text = "拓展功能";
             }
-            拓展功能ButtonClicked = !拓展功能ButtonClicked;
+            拓展功能ButtonClickedAnimatedTimes--;
         }
-        #endregion
+            #endregion
         #endregion
 
         #region 确定键
@@ -466,7 +485,7 @@ namespace 关机助手
         }
         #endregion
 
-        #region 确定键2
+        #region 拓展功能确定键
         private int GetRestTime_Seconds()
         {
             int hoursRest;
@@ -617,7 +636,7 @@ namespace 关机助手
         {
             if (((ToolStripMenuItem)sender).Text.IndexOf("启动安全模式") != -1)
             {
-                if (DialogResult.Yes == MessageBox.Show("在数据库无法正常使用情况下，推荐使用此项功能。虽然可以保证软件的绝对稳定，但是会损失本系统绝大部分的功能。是否继续？", "离线使用警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                if (DialogResult.Yes == MessageBox.Show("在数据库无法正常使用情况下，推荐使用此项功能。虽然可以保证软件的绝对稳定，但是会损失本系统绝大部分的功能。是否继续？", "即将启动安全模式", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
                     MainForm.DatabaseOffline = true;
             }
             else
@@ -675,11 +694,11 @@ namespace 关机助手
         {
             get
             {
-                return this.暗黑模式ToolStripMenuItem.Text != "暗黑模式";
+                return this.暗黑模式ToolStripMenuItem.Text != "打开暗黑模式";
             }
             set
             {
-                if (value) //开启暗黑模式
+                if (value) //打开暗黑模式
                 {
                     this.BackColor = SystemColors.WindowFrame;
                     this.ForeColor = SystemColors.Window;
@@ -722,14 +741,10 @@ namespace 关机助手
                     this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.配置管理ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.配置管理ToolStripMenuItem.ForeColor = SystemColors.Window;
-                    //this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
-                    //this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.Window;
-                    //this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
-                    //this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.附加功能ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.Window;
-                    this.toolStripComboBox透明度.BackColor = SystemColors.WindowFrame;
-                    this.toolStripComboBox透明度.ForeColor = SystemColors.Window;
+                    this.toolStripComboBox不透明度.BackColor = SystemColors.WindowFrame;
+                    this.toolStripComboBox不透明度.ForeColor = SystemColors.Window;
                     this.任务栏隐匿ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.任务栏隐匿ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.WindowFrame;
@@ -740,6 +755,14 @@ namespace 关机助手
                     this.buttonOK.ForeColor = SystemColors.Window;
                     this.确定button2.BackColor = SystemColors.WindowFrame;
                     this.确定button2.ForeColor = SystemColors.Window;
+                    this.记录关机时间checkBox.BackColor = SystemColors.WindowFrame;
+                    this.记录关机时间checkBox.ForeColor = SystemColors.Window;
+                    this.隐藏主窗口ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.隐藏主窗口ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.隐藏右下角图标ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.隐藏右下角图标ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.窗口置顶ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.窗口置顶ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.暗黑模式ToolStripMenuItem.Text = "关闭暗黑模式";
                 }
                 else //关闭暗黑模式
@@ -785,14 +808,10 @@ namespace 关机助手
                     this.禁止一次开机记时间ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.配置管理ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.配置管理ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    //this.显示配置文件内容ToolStripMenuItem.BackColor = SystemColors.Control;
-                    //this.显示配置文件内容ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    //this.配置文件格式ToolStripMenuItem.BackColor = SystemColors.Control;
-                    //this.配置文件格式ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.附加功能ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.附加功能ToolStripMenuItem.ForeColor = SystemColors.ControlText;
-                    this.toolStripComboBox透明度.BackColor = SystemColors.Control;
-                    this.toolStripComboBox透明度.ForeColor = SystemColors.ControlText;
+                    this.toolStripComboBox不透明度.BackColor = SystemColors.Window;
+                    this.toolStripComboBox不透明度.ForeColor = SystemColors.WindowText;
                     this.任务栏隐匿ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.任务栏隐匿ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.退出ToolStripMenuItem1.BackColor = SystemColors.Control;
@@ -803,7 +822,15 @@ namespace 关机助手
                     this.buttonOK.ForeColor = SystemColors.ControlText;
                     this.确定button2.BackColor = SystemColors.Control;
                     this.确定button2.ForeColor = SystemColors.ControlText;
-                    this.暗黑模式ToolStripMenuItem.Text = "暗黑模式";
+                    this.记录关机时间checkBox.BackColor = SystemColors.Control;
+                    this.记录关机时间checkBox.ForeColor = SystemColors.ControlText;
+                    this.隐藏主窗口ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.隐藏主窗口ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.隐藏右下角图标ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.隐藏右下角图标ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.窗口置顶ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.窗口置顶ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.暗黑模式ToolStripMenuItem.Text = "打开暗黑模式";
                 }
             }
         }
@@ -815,8 +842,12 @@ namespace 关机助手
 
         private void 显示配置文件内容ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show(ConfigManager.RawText);
             new ConfigurationForm().ShowDialog();
+        }
+
+        private void 窗口置顶ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            窗口置顶 = !窗口置顶;
         }
 
         private void toolStripComboBox透明度_TextChanged(object sender, EventArgs e)
@@ -824,11 +855,11 @@ namespace 关机助手
             float opacity = 100;
             try
             {
-                opacity = float.Parse(this.toolStripComboBox透明度.Text);
+                opacity = float.Parse(this.toolStripComboBox不透明度.Text.Replace("%", ""));
             }
             catch
             {
-                this.toolStripComboBox透明度.Text = "100";
+                this.toolStripComboBox不透明度.Text = "100";
             }
             finally
             {
@@ -924,6 +955,10 @@ namespace 关机助手
 
         public bool 需要重复开启软件检查 { get; set; } = true;
 
+        public static string 当前选择模式 { get { return MainForm.mForm.comboBoxMode.Text; } }
+
+        public static bool 窗口置顶 { get { return MainForm.mForm.TopMost; } set { MainForm.mForm.TopMost = value; mForm.窗口置顶ToolStripMenuItem.Text = (value ? "撤销" : "开启") + "窗口置顶"; } }
+
         /// <summary>
         /// 重新显示主窗口
         /// </summary>
@@ -968,7 +1003,6 @@ namespace 关机助手
             this.记录关机时间checkBox.Enabled = !enable;
             this.安全模式ToolStripMenuItem.Text = enable ? "关闭安全模式" : "启动安全模式";
         }
-
         #endregion
     }
 }

@@ -17,6 +17,8 @@ namespace 关机助手
         {
             FillDataGridView();
             FillTextBox();
+
+            this.TopMost = MainForm.窗口置顶;
         }
 
         private void FillDataGridView()

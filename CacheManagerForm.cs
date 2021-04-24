@@ -282,6 +282,11 @@ namespace 关机助手
                     this.button合并_Click(sender, e);
             }
             this.储存的缓存内容 = this.CacheText;
+
+            this.contextMenuStrip.Items.Insert(5, new ToolStripSeparator());
+            this.contextMenuStrip.Items.Insert(1, new ToolStripSeparator());
+
+            this.TopMost = MainForm.窗口置顶;
         }
 
         private string 储存的缓存内容 { get; set; }
@@ -411,6 +416,25 @@ namespace 关机助手
                 .Replace("GETDATE()", "'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "'"), false);
             this.Close();
         }
+
+        private void 修改字号ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var fontSize = float.Parse(Interaction.InputBox("当前字号大小为" + this.textBoxCache.Font.Size + "。请输入修改后的字号大小：", "正在修改字号大小"));
+                if (fontSize <= 0 || fontSize > System.Single.MaxValue) 
+                {
+                    MessageBox.Show("字号超过合理范围，请输入一个大于0且小于等于" + System.Single.MaxValue + "的值。");
+                    return;
+                }
+                this.textBoxCache.Font = new System.Drawing.Font(this.textBoxCache.Font.Name, fontSize);
+                MessageBox.Show("字号大小已被修改为" + fontSize);
+            }
+            catch (FormatException)
+            {
+                return;
+            }
+        }
         #endregion
 
         #region 缓存编辑
@@ -427,7 +451,7 @@ namespace 关机助手
         private void buttonSave_Click(object sender, EventArgs e)
         {
             UpdateCache();
-            MessageBox.Show("保存成功！");
+            MessageBox.Show("保存成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void UpdateCache()
@@ -523,6 +547,7 @@ namespace 关机助手
             if (opState != OutputState.MODERN)
                 opState = OutputState.MODERN;
             LoadData();
+            AutoScrollBar();
         }
 
         private void 经典模式ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -530,6 +555,7 @@ namespace 关机助手
             if (opState != OutputState.TRADITIONAL)
                 opState = OutputState.TRADITIONAL;
             LoadData();
+            AutoScrollBar();
         }
 
         private void 原始模式ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -537,6 +563,39 @@ namespace 关机助手
             if (opState != OutputState.ORIGINAL)
                 opState = OutputState.ORIGINAL;
             LoadData();
+            AutoScrollBar();
+        }
+        #endregion
+        
+        #region 右键菜单
+        private void 撤销ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SendKeys.Send("^{z}");
+        }
+
+        private void 剪切ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SendKeys.Send("^{x}");
+        }
+
+        private void 复制ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SendKeys.Send("^{c}");
+        }
+
+        private void 粘贴ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SendKeys.Send("^{v}");
+        }
+
+        private void 删除ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SendKeys.Send("{DEL}");
+        }
+
+        private void 全选ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SendKeys.Send("^{a}");
         }
         #endregion
         
