@@ -167,11 +167,6 @@ namespace 关机助手
                 button确定_Click(sender, e);
                 if (this.comboBoxMode.Text != "休眠" && this.comboBoxMode.Text != "睡眠")
                     ApplicationExit();
-                else
-                {
-                    if (!float.TryParse(this.comboBoxMode.Text, out float boxTimes) || boxTimes < 0)
-                        ApplicationExit();
-                }
             }
             else if (e.KeyChar == 'q')
                 this.取消关机ToolStripMenuItem_Click(sender, e);
@@ -763,6 +758,12 @@ namespace 关机助手
                     this.隐藏右下角图标ToolStripMenuItem.ForeColor = SystemColors.Window;
                     this.窗口置顶ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
                     this.窗口置顶ToolStripMenuItem.ForeColor = SystemColors.Window;
+                    this.取消关机ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.取消关机ToolStripMenuItem.ForeColor = SystemColors.Menu;
+                    this.取消休眠睡眠ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.取消休眠睡眠ToolStripMenuItem.ForeColor = SystemColors.Menu;
+                    this.全部取消ToolStripMenuItem.BackColor = SystemColors.WindowFrame;
+                    this.全部取消ToolStripMenuItem.ForeColor = SystemColors.Menu;
                     this.暗黑模式ToolStripMenuItem.Text = "关闭暗黑模式";
                 }
                 else //关闭暗黑模式
@@ -830,6 +831,12 @@ namespace 关机助手
                     this.隐藏右下角图标ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.窗口置顶ToolStripMenuItem.BackColor = SystemColors.Control;
                     this.窗口置顶ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.取消关机ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.取消关机ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.取消休眠睡眠ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.取消休眠睡眠ToolStripMenuItem.ForeColor = SystemColors.ControlText;
+                    this.全部取消ToolStripMenuItem.BackColor = SystemColors.Control;
+                    this.全部取消ToolStripMenuItem.ForeColor = SystemColors.ControlText;
                     this.暗黑模式ToolStripMenuItem.Text = "打开暗黑模式";
                 }
             }
