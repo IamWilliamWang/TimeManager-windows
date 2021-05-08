@@ -54,11 +54,14 @@ namespace 关机助手
         /// <returns></returns>
         private SqlItem GetSqlItemFromDisplayedString(string displayedItem)
         {
-            ///直观模式的每条格式
-            ///开机时间：2019-12-26 21:31:16.410
-            ///关机时间： -- 2019-12-26 21:31:16.410
+            // 直观模式的每条格式
+            // 开机时间：2019-12-26 21:31:16.410
+            // 关机时间： -- 2019-12-26 21:31:16.410
             if (opState == OutputState.MODERN)
             {
+                if (UnicodeSaverUtil.IsChineseString(displayedItem))
+                    throw new ArgumentException("直观模式的时间字符串存在非法字符！");
+
                 if (displayedItem.Contains(" -- ") == false) //开机
                 {
                     string time = displayedItem;
@@ -75,17 +78,19 @@ namespace 关机助手
                     return item;
                 }
             }
-            ///经典模式的每条格式
-            ///开机时间：2019-12-26 21:31:16.410
-            ///关机时间：2019-12-26 21:31:16.410
+            // 经典模式的每条格式
+            // 开机时间：2019-12-26 21:31:16.410
+            // 关机时间：2019-12-26 21:31:16.410
             else if (opState == OutputState.TRADITIONAL)
             {
                 if (displayedItem.Contains("开机"))
                 {
                     int index = displayedItem.IndexOf('：');
                     if (index == -1)
-                        throw new Exception("有条目不包含：");
+                        throw new ArgumentException("有条目不包含：");
                     string time = displayedItem.Substring(index + 1);
+                    if (UnicodeSaverUtil.IsChineseString(time))
+                        throw new ArgumentException("经典模式的时间字符串存在非法字符！");
                     string sqlString = "INSERT INTO [Table](开机时间) VALUES ('@time')".Replace("@time", time);
                     SqlItem item = new SqlItem(sqlString);
                     return item;
@@ -94,16 +99,19 @@ namespace 关机助手
                 {
                     int index = displayedItem.IndexOf('：');
                     if (index == -1)
-                        throw new Exception("有条目不包含：");
+                        throw new ArgumentException("有条目不包含：");
                     string time = displayedItem.Substring(index + 1);
+                    if (UnicodeSaverUtil.IsChineseString(time))
+                        throw new ArgumentException("经典模式的时间字符串存在非法字符！");
                     string sqlString = "UPDATE [Table] SET 关机时间 = '@time', 时长 = '@time' - 开机时间 WHERE 序号 in (SELECT MAX(序号) FROM[Table]) "
                         .Replace("@time", time);
                     SqlItem item = new SqlItem(sqlString);
                     return item;
                 }
                 else
-                    throw new ArgumentException("转换字符串无效！");
+                    throw new ArgumentException("经典模式的时间字符串存在非法字符！");
             }
+            // 原始模式
             else if (opState == OutputState.ORIGINAL)
                 return new SqlItem(displayedItem);
             return null;
@@ -210,6 +218,63 @@ namespace 关机助手
                 }
                 this.textBoxCache.Lines = displayedList.ToArray();
             } }
+
+        private OutputState OpState
+        {
+            get
+            {
+                return this.opState;
+            }
+            set
+            {
+                this.opState = value;
+                if (value == OutputState.MODERN)
+                    this.Title(mode: "直观模式");
+                else if (value == OutputState.TRADITIONAL)
+                    this.Title(mode: "经典模式");
+                else
+                    this.Title(mode: "原始模式");
+            }
+        }
+
+        private void Title(string title = "", string mode = "", string remark = "")
+        {
+            List<StringBuilder> strs = new List<StringBuilder>();
+            for (int i = 0; i < 3; i++)
+                strs.Add(new StringBuilder());
+            int p = 0;
+
+            foreach (var ch in this.Text.ToCharArray())
+            {
+                switch (ch)
+                {
+                    case '[':
+                    case '(':
+                    case '（':
+                        p++;
+                        break;
+                    case ']':
+                    case ')':
+                    case '）':
+                        break;
+                    default:
+                        strs[p].Append(ch);
+                        break;
+                }
+            }
+
+            string newTitle = strs[0].ToString();
+            string newMode = strs[1].ToString();
+            string newRemark = strs[2].ToString();
+            if (title != "")
+                newTitle = title;
+            if (mode != "")
+                newMode = mode;
+            if (remark != "")
+                newRemark = remark;
+
+            this.Text = newTitle + '[' + newMode + ']' + (newRemark == "" ? "" : ('(' + newRemark + ')'));
+        }
         #endregion
 
         #region 加载与关闭窗口
@@ -244,7 +309,7 @@ namespace 关机助手
             string[] allLines = Cache.GetAllLines();
             if (allLines == null)
             {
-                this.Text = "缓存管理器（未找到缓存文件）";
+                this.Title(remark: "未找到缓存文件");
                 return;
             }
             CacheTextLines = allLines;
@@ -281,7 +346,7 @@ namespace 关机助手
                 if (ConfigManager.CacheManagerAutoMerge)
                     this.button合并_Click(sender, e);
             }
-            this.储存的缓存内容 = this.CacheText;
+            this.储存的CacheText = this.CacheText;
 
             this.contextMenuStrip.Items.Insert(5, new ToolStripSeparator());
             this.contextMenuStrip.Items.Insert(1, new ToolStripSeparator());
@@ -289,15 +354,15 @@ namespace 关机助手
             this.TopMost = MainForm.窗口置顶;
         }
 
-        private string 储存的缓存内容 { get; set; }
+        private string 储存的CacheText { get; set; }
         private void CacheManagerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.CacheText != this.储存的缓存内容) 
+            if (this.CacheText != this.储存的CacheText) 
             {
                 var result = MessageBox.Show("检测到有未保存的内容，是否对缓存内容进行保存？", "警告", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                 if (DialogResult.Yes == result)
                     UpdateCache();
-                else if(DialogResult.Cancel == result)
+                else if (DialogResult.Cancel == result)
                     e.Cancel = true;
             }
         }
@@ -456,10 +521,21 @@ namespace 关机助手
 
         private void UpdateCache()
         {
-            if (this.CacheText == "")
-                File.Delete(cacheName);
-            Cache.SetAllLines(CacheTextLines);
-            this.储存的缓存内容 = this.CacheText;
+            try
+            {
+                if (this.CacheText == "")
+                    File.Delete(cacheName);
+                Cache.SetAllLines(CacheTextLines);
+                this.储存的CacheText = this.CacheText;
+            }
+            catch (ArgumentException e)
+            {
+                if (DialogResult.OK == MessageBox.Show(e.Message + "继续操作将会在清除缓存时出现问题。点击确定将会撤销所有修改，文本框内所有文本会保存至剪切板", "文本格式错误", MessageBoxButtons.OK, MessageBoxIcon.Error)) 
+                {
+                    Clipboard.SetText(this.textBoxCache.Text);
+                    this.CacheText = this.储存的CacheText;
+                }
+            }
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -537,31 +613,31 @@ namespace 关机助手
                 File.Delete(this.textBox源.Text);
             this.LoadData();
             MessageBox.Show("合并成功！");
-            this.储存的缓存内容 = this.CacheText;
+            this.储存的CacheText = this.CacheText;
         }
         #endregion
 
         #region 模式切换
         private void 直观模式ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (opState != OutputState.MODERN)
-                opState = OutputState.MODERN;
+            if (OpState != OutputState.MODERN)
+                OpState = OutputState.MODERN;
             LoadData();
             AutoScrollBar();
         }
 
         private void 经典模式ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (opState != OutputState.TRADITIONAL)
-                opState = OutputState.TRADITIONAL;
+            if (OpState != OutputState.TRADITIONAL)
+                OpState = OutputState.TRADITIONAL;
             LoadData();
             AutoScrollBar();
         }
 
         private void 原始模式ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (opState != OutputState.ORIGINAL)
-                opState = OutputState.ORIGINAL;
+            if (OpState != OutputState.ORIGINAL)
+                OpState = OutputState.ORIGINAL;
             LoadData();
             AutoScrollBar();
         }

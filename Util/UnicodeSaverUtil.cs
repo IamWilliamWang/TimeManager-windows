@@ -33,7 +33,10 @@ namespace 关机助手.Util
             foreach(char ch in content.ToCharArray())
             {
                 if (IsChineseChar(ch))
+                {
                     result = true;
+                    break;
+                }
             }
             return result;
         }
